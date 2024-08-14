@@ -1,113 +1,153 @@
-import Image from "next/image";
+// pages/index.js
+"use client";
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import TypingHeader from "./Typing";
 
 export default function Home() {
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 4000); // 4 seconds delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col items-end justify-center py-2 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-purple-500 opacity-10 -skew-x-12 transform origin-top-right"></div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <Head>
+        <title>סמנטיקס - פתרונות בינה מלאכותית</title>
+        <meta
+          name="description"
+          content="סמנטיקס - פתרונות חדשניים בבינה מלאכותית לעתיד"
         />
-      </div>
+        <link rel="icon" href="/semantix.png" />
+      </Head>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      <main className="flex flex-col w-full flex-1 px-4 sm:px-8 md:px-20 relative z-10">
+        <section dir="rtl" className="my-16 text-right max-w-4xl">
+          <TypingHeader />
+          
+          <div className={`transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+            <p className="text-xl text-gray-600 mb-8 font-bold"></p>
+            <Link href="/product">
+              <button className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 mb-8 flex items-center">
+                איך זה עובד
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2 rotate-180"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </Link>
+            <p className="text-gray-700 leading-relaxed fontfamily-sans">
+              שורות החיפוש המסורתיות באתרים של E-Commerce עדיין מתבססות על מילות
+              מפתח, מה שמוביל לתוצאות חיפוש לא מדויקות. לדוגמה, חיפוש פשוט כמו
+              "יין לבן" בחנות יין מקוונת יחזיר כל תוצאה שבה מופיעות המילים "יין"
+              או "לבן", ולא בהכרח את היין המדויק שאתם מחפשים.
+            </p>
+            <br></br>
+            <p className="text-gray-700 leading-relaxed fontfamily-sans font-semibold">
+              ב-Semantix אנחנו משנים את כללי המשחק עם שורת חיפוש סמנטית המבוססת על
+              בינה מלאכותית מתקדמת. במקום להקליד "יין לבן" ולקוות לטוב, תוכלו לחפש
+              בדיוק את מה שאתם רוצים, כמו "יין לבן פירותי וקליל שמתאים לארוחת ערב
+              ים תיכונית, במחיר של 70 עד 120 ש״ח", ולקבל את התוצאה המושלמת עבורכם.
+            </p>
+            <br></br>
+            <p className="text-gray-700 leading-relaxed">
+              בנוסף, שורת החיפוש שלנו יכולה לתרגם תמונות לתיאורים מילוליים. כך,
+              בחנות בגדים מקוונת תוכלו לחפש פריטים כמו "נעל ספורט לבנה בגזרה נמוכה
+              עם סוליית גומי חומה, עד 300 שקלים" ולמצוא בדיוק את מה שאתם מחפשים,
+              בקלות ובמהירות.
+            </p>
+          </div>
+        </section>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
+        <section id="contact" className={`my-16 text-right transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+          <h2 className="text-3xl font-bold mb-4">צור קשר</h2>
+          <p className="text-gray-600 mb-8 fontfamily-sans font-semibold">
+            תרגישו הכי בנוח לשאול, להתייעץ או לדבר - אנחנו כאן - בווטסאפ או
+            במייל.
           </p>
-        </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
+          <p className="mb-4">
+            <strong>מייל:</strong>{" "}
+            <a href="mailto:galpaz2210@gmail.com" className="text-blue-500">
+              galpaz2210@gmail.com
+            </a>
           </p>
-        </a>
+          <p className="mb-8">
+            <strong>טלפון:</strong>{" "}
+            <a href="tel:+972542251558" className="text-blue-500">
+              054-2251558/7
+            </a>
+          </p>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+          <div dir="" className="flex flex-space gap-4">
+            
+             <a href="https://wa.me/972542251558"
+              target="_blank"
+              rel="noopener noreferrer">
+          
+              <svg
+                className="w-10 h-10"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="25"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  fillRule="evenodd"
+                  d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
+                  clipRule="evenodd"
+                />
+                <path
+                  fill="currentColor"
+                  d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"
+                />
+              </svg> 
+            </a>
+            
+            <a href="mailto:galpaz2210@gmail.com">
+              <svg
+                className="w-10 h-10 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"
+                />
+              </svg>
+            </a>
+          </div>
+        </section>
+      </main>
+
+    </div>
+
+
+  ); 
 }
