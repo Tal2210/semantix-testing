@@ -8,9 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך",
   description: " סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר",
-  icons: {
-    icon: "/logo-semantix.png",
-  },
+
 
 };
 

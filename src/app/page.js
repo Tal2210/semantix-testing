@@ -53,7 +53,7 @@ export default function Home() {
               </button>
             </Link>
             <p className="text-gray-700 leading-relaxed fontfamily-sans">
-              שורות החיפוש המסורתיות באתרים של E-Commerce עדיין מתבססות על מילות
+              שורות החיפוש המסורתיות באתרי E-Commerce עדיין מתבססות על מילות
               מפתח, מה שמוביל לתוצאות חיפוש לא מדויקות. לדוגמה, חיפוש פשוט כמו
               "יין לבן" בחנות יין מקוונת יחזיר כל תוצאה שבה מופיעות המילים "יין"
               או "לבן", ולא בהכרח את היין המדויק שאתם מחפשים.
@@ -82,18 +82,7 @@ export default function Home() {
             במייל.
           </p>
 
-          <p className="mb-4">
-            <strong>מייל:</strong>{" "}
-            <a href="mailto:galpaz2210@gmail.com" className="text-blue-500">
-              galpaz2210@gmail.com
-            </a>
-          </p>
-          <p className="mb-8">
-            <strong>טלפון:</strong>{" "}
-            <a href="tel:+972542251558" className="text-blue-500">
-              054-2251558/7
-            </a>
-          </p>
+   
 
           <div dir="" className="flex flex-space gap-4">
             
