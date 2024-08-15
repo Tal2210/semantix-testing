@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "סמנטיקס - פתרונות בינה מלאכותית",
-  description: "סמנטיקס - פתרונות חדשניים בבינה מלאכותית לעתיד",
+  title: "סמנטיקס - חיפוש AI לתוצאות מדויקות בעסק שלך",
+  description: " סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר",
 };
 
 export default function RootLayout({ children }) {
