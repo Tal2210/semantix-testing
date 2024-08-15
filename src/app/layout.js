@@ -25,13 +25,7 @@ export default function RootLayout({ children }) {
           
           <header className="relative z-10">
             <nav className="flex justify-end items-center w-full py-4 px-4 sm:px-8 md:px-20">
-          {/* Add your navigation links here 
-            <ul className="flex gap-4 ">
-              <li><Link href="/contact" className="text-gray-600 hover:text-gray-900">צור קשר</Link></li>
-              <li><Link href="/product" className="text-gray-600 hover:text-gray-900">מוצרים</Link></li>
-              <li><Link href="/about" className="text-gray-600 hover:text-gray-900">אודות</Link></li>
-          
-            </ul>*/}
+      
           
              <Link href="/"> <img src="/semantix black-cutout.png" alt="לוגו סמנטיקס- חיפוש סמנטי לעסק שלך" width={200} height={150} /> </Link>
             </nav>
