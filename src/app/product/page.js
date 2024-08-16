@@ -169,7 +169,7 @@ function ProductSearch() {
 
         <input
           type="text"
-          placeholder="חפש מוצרים..."
+          placeholder="יין אדום לארוחה איטלקית בפחות מ100 שקלים"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
@@ -338,7 +338,7 @@ function ServiceSearch() {
 
         <input
           type="text"
-          placeholder="חפש מוצרים..."
+          placeholder="סנדל אלגנטי"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
