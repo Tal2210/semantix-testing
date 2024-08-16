@@ -21,7 +21,6 @@ export default function SearchDemo() {
     <div className="min-h-screen text-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">חיפוש AI</h1>
-        <img src="/search.png" alt="search" className="w-64 h-64 mx-auto" />
         <p className="text-gray-600 mb-8 text-center"> לפניכם דמו (מצומצם) של המוצר בשני מתארים- חיפוש סמנטי לפי תיאור וחיפוש לפי תוכן תמונה. </p>
    
         <div className="bg-gray-400 bg-opacity-20 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
