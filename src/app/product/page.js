@@ -235,7 +235,7 @@ function ServiceSearch() {
       collectionName: "picsearchCollection",
       query: query,
       systemPrompt:
-        'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return {category: null}',
+        'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
     };
   
     // Fetch products when the component mounts
