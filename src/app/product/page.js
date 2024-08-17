@@ -143,10 +143,33 @@ function ProductSearch() {
     <div>
       
       <div className="flex">
-     
+        <style jsx>{`
+          @keyframes placeholderColorChange {
+            0% {
+              color: #d1d5db; /* Light gray */
+            }
+            25% {
+              color: #c084fc; /* Light purple */
+            }
+            50% {
+              color: #7dd3fc; /* Light blue */
+            }
+            75% {
+              color: #6ee7b7; /* Light green */
+            }
+            100% {
+              color: #d1d5db; /* Back to light gray */
+            }
+          }
+
+          .animated-placeholder::placeholder {
+            animation: placeholderColorChange 5s infinite alternate;
+          }
+        `}</style>
+
         <input
           type="text"
-          placeholder='"יין אדום לארוחה איטלקית בפחות מ100 ש"ח"'
+          placeholder='"יין אדום לארוחה איטלקית בפחות מ100 שקלים"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
@@ -289,11 +312,33 @@ function ServiceSearch() {
     <div>
      
       <div className="flex">
-        
+        <style jsx>{`
+          @keyframes placeholderColorChange {
+            0% {
+              color: #d1d5db; /* Light gray */
+            }
+            25% {
+              color: #c084fc; /* Light purple */
+            }
+            50% {
+              color: #7dd3fc; /* Light blue */
+            }
+            75% {
+              color: #6ee7b7; /* Light green */
+            }
+            100% {
+              color: #d1d5db; /* Back to light gray */
+            }
+          }
+
+          .animated-placeholder::placeholder {
+            animation: placeholderColorChange 5s infinite alternate;
+          }
+        `}</style>
 
         <input
           type="text"
-          placeholder='"סנדל אלגנטי לאירוע חגיגי"'
+          placeholder='"סנדל אלגנטי"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
