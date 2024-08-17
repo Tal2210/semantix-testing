@@ -21,7 +21,7 @@ export default function SearchDemo() {
     <div className="min-h-screen text-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">חיפוש AI</h1>
-        <p className="text-gray-600 mb-8 text-center"> לפניכם דמו (מצומצם) של המוצר בשני מתארים- חיפוש סמנטי לפי תיאור וחיפוש לפי תוכן תמונה. </p>
+        <p className="text-gray-600 mb-8 text-center"> לפניכם דמו (מצומצם) של המוצר בשני מתארים- חיפוש סמנטי לפי תיאור וחיפוש לפי תוכן תמונה. התוצאות הרלוונטיות ביותר יסודרו מימין לשמאל, כשהתוצאה הרלוונטית ביותר תופיע מימין למעלה. </p>
    
         <div className="bg-gray-400 bg-opacity-20 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
           <div className="flex justify-center mb-8 bg-gray-100 p-2  shadow-inner">
@@ -143,33 +143,10 @@ function ProductSearch() {
     <div>
       
       <div className="flex">
-        <style jsx>{`
-          @keyframes placeholderColorChange {
-            0% {
-              color: #d1d5db; /* Light gray */
-            }
-            25% {
-              color: #c084fc; /* Light purple */
-            }
-            50% {
-              color: #7dd3fc; /* Light blue */
-            }
-            75% {
-              color: #6ee7b7; /* Light green */
-            }
-            100% {
-              color: #d1d5db; /* Back to light gray */
-            }
-          }
-
-          .animated-placeholder::placeholder {
-            animation: placeholderColorChange 5s infinite alternate;
-          }
-        `}</style>
-
+     
         <input
           type="text"
-          placeholder="יין אדום לארוחה איטלקית בפחות מ100 שקלים"
+          placeholder='"יין אדום לארוחה איטלקית בפחות מ100 ש"ח"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
@@ -312,33 +289,11 @@ function ServiceSearch() {
     <div>
      
       <div className="flex">
-        <style jsx>{`
-          @keyframes placeholderColorChange {
-            0% {
-              color: #d1d5db; /* Light gray */
-            }
-            25% {
-              color: #c084fc; /* Light purple */
-            }
-            50% {
-              color: #7dd3fc; /* Light blue */
-            }
-            75% {
-              color: #6ee7b7; /* Light green */
-            }
-            100% {
-              color: #d1d5db; /* Back to light gray */
-            }
-          }
-
-          .animated-placeholder::placeholder {
-            animation: placeholderColorChange 5s infinite alternate;
-          }
-        `}</style>
+        
 
         <input
           type="text"
-          placeholder="סנדל אלגנטי"
+          placeholder='"סנדל אלגנטי לאירוע חגיגי"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
