@@ -122,7 +122,7 @@ function ProductSearch() {
   
         const data = await response.json();
         setProducts(data);
-        console.log(data);
+    
         setError(data.results?.length === 0 ? "No products found" : "");
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -291,7 +291,7 @@ function ServiceSearch() {
   
         const data = await response.json();
         setProducts(data);
-        console.log(data);
+        
         setError(data.results?.length === 0 ? "No products found" : "");
       } catch (error) {
         console.error("Error fetching products:", error);
