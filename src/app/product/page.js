@@ -247,7 +247,7 @@ function ServiceSearch() {
           const mongodbUri = encodeURIComponent(
             "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
           );
-          const dbName = encodeURIComponent("p'icsearc'hDB");
+          const dbName = encodeURIComponent("picsearchDB");
           const collectionName = encodeURIComponent("picsearchCollection");
           const limit = 10;
   
