@@ -79,8 +79,8 @@ function ProductSearch() {
           const dbName = encodeURIComponent("wineDB");
           const collectionName = encodeURIComponent("website");
           const limit = 10;
-  
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
+          const siteId = 'wine'  
+          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}$siteId=${siteId}`;
   
           const response = await fetch(url, {
             method: "GET",
@@ -248,8 +248,9 @@ function ServiceSearch() {
           const dbName = encodeURIComponent("picsearchDB");
           const collectionName = encodeURIComponent("picsearchCollection");
           const limit = 10;
+          const siteId = 'clothes'
   
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
+          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}&siteId=${siteId}`;
   
           const response = await fetch(url, {
             method: "GET",
