@@ -7,17 +7,32 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך",
-  description: " סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר",
-
-
+  description: "סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="he" dir="rtl">
       <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="icon" href="/logo-semantix.png" type="image/png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
+        <meta name="keywords" content="חיפוש סמנטי, AI, התאמת מוצרים, תוצאות מדויקות, חיפוש בעסק, חיפוש חכם" />
+        <meta name="author" content="סמנטיקס" />
+        
+        <meta property="og:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
+        <meta property="og:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
+        <meta property="og:image" content="/semantix black-cutout.png" />
+        <meta property="og:url" content="https://yourwebsite.com" />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
+        <meta name="twitter:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
+        <meta name="twitter:image" content="/semantix black-cutout.png" />
+        
+        <link rel="icon" href="/logo-semantix.png" type="image/png" />
+        
+        <title>{metadata.title}</title>
       </head>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
         <div className="flex-grow relative overflow-hidden">
@@ -25,9 +40,9 @@ export default function RootLayout({ children }) {
           
           <header className="relative z-10">
             <nav className="flex justify-end items-center w-full py-4 px-4 sm:px-8 md:px-20">
-      
-          
-             <Link href="/"> <img src="/semantix black-cutout.png" alt="לוגו סמנטיקס- חיפוש סמנטי לעסק שלך" width={200} height={150} /> </Link>
+              <Link href="/">
+                <img src="/semantix black-cutout.png" alt="לוגו סמנטיקס - חיפוש סמנטי לעסק שלך" width={200} height={150} />
+              </Link>
             </nav>
           </header>
 
