@@ -64,6 +64,7 @@ function ProductSearch() {
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "wineDB",
       collectionName: "website",
+      siteId: "wine",
       query: query,
       systemPrompt:
         'extract the next filters out of the query- minPrice, maxPrice and category- it can be red or white. return the answer in JSON. if you dont find any filters, return undefined (e.g- {"minPrice": undefined, "maxPrice": 200, "category": "red"}).',
@@ -79,8 +80,8 @@ function ProductSearch() {
           const dbName = encodeURIComponent("wineDB");
           const collectionName = encodeURIComponent("website");
           const limit = 10;
-          const siteId = encodeURIComponent("wine");
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}$siteId=${siteId}`;
+  
+          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
   
           const response = await fetch(url, {
             method: "GET",
@@ -233,6 +234,7 @@ function ServiceSearch() {
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "picsearchDB",
       collectionName: "picsearchCollection",
+      siteId: "clothes",
       query: query,
       systemPrompt:
         'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
@@ -248,9 +250,8 @@ function ServiceSearch() {
           const dbName = encodeURIComponent("picsearchDB");
           const collectionName = encodeURIComponent("picsearchCollection");
           const limit = 10;
-          const siteId = encodeURIComponent("clothes");
   
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}&siteId=${siteId}`;
+          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
   
           const response = await fetch(url, {
             method: "GET",
