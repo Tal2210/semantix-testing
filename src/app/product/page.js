@@ -410,7 +410,7 @@ function JewelrySearch() {
     siteId: "jewelry",
     query: query,
     systemPrompt:
-      'extract the next filter out of the query- type (can be silver or gold only). answer in the next format {type: gold} the type did not mentioned, return null. answer in json format (e.g- {"type": "gold"}).',
+      'extract the next filter out of the query- type (can be silver or gold only), and category (can be ring or bracelet) answer in the next format {type: gold, category: ring} and if the type or category did not mentioned, return null. answer in json format (e.g- {"type": "gold", "category": "ring"}).',
   };
 
   // Fetch products when the component mounts
