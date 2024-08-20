@@ -183,7 +183,7 @@ function ProductSearch() {
             key={product.id}
             className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
           >
-            <div className="w-72 h-72 mb-4 flex justify-center items-center">
+            <div className="w-65 h-72 mb-4 flex justify-center items-center">
               <Image
                 width={70}
                 height={100}
@@ -481,7 +481,7 @@ return (
           key={product.id}
           className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
         >
-          <div className="w-80 h-65 mb-4 flex justify-center items-center">
+          <div className="w-75 h-65 mb-4 flex justify-center items-center">
             <img
               width={200}
               height={100}
