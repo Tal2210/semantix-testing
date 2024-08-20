@@ -147,29 +147,7 @@ function ProductSearch() {
     <div>
       
       <div className="flex">
-        <style jsx>{`
-          @keyframes placeholderColorChange {
-            0% {
-              color: #d1d5db; /* Light gray */
-            }
-            25% {
-              color: #c084fc; /* Light purple */
-            }
-            50% {
-              color: #7dd3fc; /* Light blue */
-            }
-            75% {
-              color: #6ee7b7; /* Light green */
-            }
-            100% {
-              color: #d1d5db; /* Back to light gray */
-            }
-          }
-
-          .animated-placeholder::placeholder {
-            animation: placeholderColorChange 5s infinite alternate;
-          }
-        `}</style>
+       
 
         <input
           type="text"
@@ -317,29 +295,7 @@ function ServiceSearch() {
     <div>
      
       <div className="flex">
-        <style jsx>{`
-          @keyframes placeholderColorChange {
-            0% {
-              color: #d1d5db; /* Light gray */
-            }
-            25% {
-              color: #c084fc; /* Light purple */
-            }
-            50% {
-              color: #7dd3fc; /* Light blue */
-            }
-            75% {
-              color: #6ee7b7; /* Light green */
-            }
-            100% {
-              color: #d1d5db; /* Back to light gray */
-            }
-          }
-
-          .animated-placeholder::placeholder {
-            animation: placeholderColorChange 5s infinite alternate;
-          }
-        `}</style>
+      
 
         <input
           type="text"
@@ -371,9 +327,9 @@ function ServiceSearch() {
             key={product.id}
             className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
           >
-            <div className="w-72 h-72 mb-4 flex justify-center items-center">
+            <div className="w-82 h-62 mb-4 flex justify-center items-center">
               <img
-                width={200}
+                width={230}
                 height={100}
                 src={product.image}
                 alt={product.title}
@@ -485,35 +441,14 @@ function JewelrySearch() {
 
 return (
   <div>
+    <h1 className=" font-bold mb-8">כרגע במלאי החיפוש יש צמידים וטבעות בלבד- יתעדכן בקרוב</h1>
    
     <div className="flex">
-      <style jsx>{`
-        @keyframes placeholderColorChange {
-          0% {
-            color: #d1d5db; /* Light gray */
-          }
-          25% {
-            color: #c084fc; /* Light purple */
-          }
-          50% {
-            color: #7dd3fc; /* Light blue */
-          }
-          75% {
-            color: #6ee7b7; /* Light green */
-          }
-          100% {
-            color: #d1d5db; /* Back to light gray */
-          }
-        }
-
-        .animated-placeholder::placeholder {
-          animation: placeholderColorChange 5s infinite alternate;
-        }
-      `}</style>
+      
 
       <input
         type="text"
-        placeholder='"סנדל אלגנטי"'
+        placeholder='"צמיד כסף משובץ אבנים שחורות", "טבעת זהב חלקה עם יהלום קטן" '
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
@@ -541,7 +476,7 @@ return (
           key={product.id}
           className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
         >
-          <div className="w-72 h-72 mb-4 flex justify-center items-center">
+          <div className="w-80 h-65 mb-4 flex justify-center items-center">
             <img
               width={200}
               height={100}
