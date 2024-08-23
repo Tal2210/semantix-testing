@@ -72,7 +72,7 @@ function ProductSearch() {
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "wineDB",
       collectionName: "website",
-      siteId: "wine",
+      siteId:"wine",
       query: query,
       systemPrompt:
         'extract the next filters out of the query- minPrice, maxPrice and category- it can be red or white. return the answer in JSON. if you dont find any filters, return undefined (e.g- {"minPrice": undefined, "maxPrice": 200, "category": "red"}).',
@@ -218,8 +218,8 @@ function ServiceSearch() {
     const requestBody = {
       mongodbUri:
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      dbName: "wineDB",
-      collectionName: "website",
+      dbName: "website",
+      collectionName: "clothes",
       siteId: "clothes",
       query: query,
       systemPrompt:
@@ -366,8 +366,8 @@ function JewelrySearch() {
   const requestBody = {
     mongodbUri:
       "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    dbName: "wineDB",
-    collectionName: "website",
+    dbName: "website",
+    collectionName: "jewelry",
     siteId: "jewelry",
     query: query,
     systemPrompt:
