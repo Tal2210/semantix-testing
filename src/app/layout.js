@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
         <meta property="og:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
         <meta property="og:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
         <meta property="og:image" content="/semantix black-cutout.png" />
-        <meta property="og:url" content="https://yourwebsite.com" />
+        <meta property="og:url" content="https://semantix.co.il." />
         <meta property="og:type" content="website" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
         <meta name="twitter:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
         <meta name="twitter:image" content="/semantix black-cutout.png" />
         
-        <link rel="icon" href="/logo-semantix.png" type="image/png" />
+        <link rel="icon" href="/logo-semantix.svg" type="image/png" />
         
         <title>{metadata.title}</title>
       </head>

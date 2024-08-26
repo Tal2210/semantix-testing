@@ -71,11 +71,11 @@ function ProductSearch() {
       mongodbUri:
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "wineDB",
-      collectionName: "website",
-      siteId:"wine",
+      collectionName: "wines",
       query: query,
+      noWord: ["wine", "white","red", "rose"],
       systemPrompt:
-        'extract the next filters out of the query- minPrice, maxPrice and category- it can be red or white. return the answer in JSON. if you dont find any filters, return undefined (e.g- {"minPrice": undefined, "maxPrice": 200, "category": "red"}).',
+        'extract the next filters out of the query- minPrice, maxPrice, category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response'
     };
   
     // Fetch products when the component mounts
@@ -86,7 +86,7 @@ function ProductSearch() {
             "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
           );
           const dbName = encodeURIComponent("wineDB");
-          const collectionName = encodeURIComponent("website");
+          const collectionName = encodeURIComponent("newallcohome");
           const limit = 10;
   
           const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
@@ -184,7 +184,7 @@ function ProductSearch() {
             className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
           >
             <div className="w-65 h-72 mb-4 flex justify-center items-center">
-              <Image
+              <img
                 width={70}
                 height={100}
                 src={product.image}
@@ -193,7 +193,7 @@ function ProductSearch() {
               />
             </div>
 
-            <h3 className="text-xl font-semibold mb-2">{product.title}</h3>
+            <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
             <p className="text-black-200 mb-3">{product.description}</p>
             <p className="text-black-300 font-bold mb-4">₪{product.price}</p>
             <a
@@ -222,6 +222,7 @@ function ServiceSearch() {
       collectionName: "clothes",
       siteId: "clothes",
       query: query,
+      noWord: ["ring","silver","gold","bracelet"],
       systemPrompt:
         'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
     };
