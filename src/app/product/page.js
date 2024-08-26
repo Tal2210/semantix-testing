@@ -222,7 +222,6 @@ function ServiceSearch() {
       collectionName: "clothes",
       siteId: "clothes",
       query: query,
-      noWord: ["ring","silver","gold","bracelet"],
       systemPrompt:
         'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
     };
@@ -371,6 +370,7 @@ function JewelrySearch() {
     collectionName: "jewelry",
     siteId: "jewelry",
     query: query,
+    noWord: ["ring","silver","gold","bracelet"],
     systemPrompt:
       'extract the next filter out of the query- type (can be silver or gold only), and category (can be ring or bracelet) answer in the next format {type: gold, category: ring} and if the type or category did not mentioned, return null. answer in json format (e.g- {"type": "gold", "category": "ring"}).',
   };
