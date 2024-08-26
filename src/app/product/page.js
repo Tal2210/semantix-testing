@@ -71,7 +71,7 @@ function ProductSearch() {
       mongodbUri:
         "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "wineDB",
-      collectionName: "wines",
+      collectionName: "newallcohome",
       query: query,
       noWord: ["wine", "white","red", "rose"],
       systemPrompt:
