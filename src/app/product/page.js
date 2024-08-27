@@ -370,7 +370,7 @@ function JewelrySearch() {
     collectionName: "jewelry",
     siteId: "jewelry",
     query: query,
-    noWord: ["ring","silver","gold","bracelet","earrings"],
+    noWord: ["ring","silver","gold","bracelet","earring","earrings"],
     systemPrompt:
       'extract the next filter out of the query- type (can be silver or gold only), and category (can be ring, bracelet or earrings) answer in the next format {type: gold, category: ring} and if the type or category did not mentioned, return null. answer in json format (e.g- {"type": "gold", "category": "ring"}).',
   };
