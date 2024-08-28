@@ -69,7 +69,7 @@ function ProductSearch() {
   
     const requestBody = {
       mongodbUri:
-        "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "wineDB",
       collectionName: "newallcohome",
       query: query,
@@ -83,7 +83,7 @@ function ProductSearch() {
       const fetchInitialProducts = async () => {
         try {
           const mongodbUri = encodeURIComponent(
-            "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+            "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
           );
           const dbName = encodeURIComponent("wineDB");
           const collectionName = encodeURIComponent("newallcohome");
@@ -217,7 +217,7 @@ function ServiceSearch() {
   
     const requestBody = {
       mongodbUri:
-        "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       dbName: "website",
       collectionName: "clothes",
       siteId: "clothes",
@@ -231,7 +231,7 @@ function ServiceSearch() {
       const fetchInitialProducts = async () => {
         try {
           const mongodbUri = encodeURIComponent(
-            "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+           "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
           );
           const dbName = encodeURIComponent("picsearchDB");
           const collectionName = encodeURIComponent("picsearchCollection");
@@ -365,7 +365,7 @@ function JewelrySearch() {
 
   const requestBody = {
     mongodbUri:
-      "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+      "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     dbName: "website",
     collectionName: "jewelry",
     siteId: "jewelry",
@@ -380,7 +380,7 @@ function JewelrySearch() {
     const fetchInitialProducts = async () => {
       try {
         const mongodbUri = encodeURIComponent(
-          "mongodb+srv://galpaz2210:jGqI4pEv3gZuJTCc@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+          "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         );
         const dbName = encodeURIComponent("wineDB");
         const collectionName = encodeURIComponent("jewelry");
