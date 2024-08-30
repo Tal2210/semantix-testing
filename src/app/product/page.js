@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import { noSSR } from "next/dynamic";
 
 export default function SearchDemo() {
   const [activeTab, setActiveTab] = useState("products");
@@ -221,6 +222,7 @@ function ServiceSearch() {
       dbName: "website",
       collectionName: "clothes",
       siteId: "clothes",
+      noWords:["women, men"],
       query: query,
       systemPrompt:
         'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
