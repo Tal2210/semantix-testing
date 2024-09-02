@@ -16,8 +16,8 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
-        <meta name="keywords" content="חיפוש סמנטי, AI, התאמת מוצרים, תוצאות מדויקות, חיפוש בעסק, חיפוש חכם" />
-        <meta name="author" content="סמנטיקס" />
+        <meta name="keywords" content="חיפוש סמנטי, AI, semantix, תוצאות מדויקות, חיפוש בעסק, חיפוש חכם" />
+        <meta name="author" content="semantix"/>
         
         <meta property="og:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
         <meta property="og:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
