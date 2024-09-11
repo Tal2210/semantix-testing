@@ -74,7 +74,7 @@ function ProductSearch() {
       dbName: "wineDB",
       collectionName: "newallcohome",
       query: query,
-      noWord: ["wine", "white","red", "rose", "rosé"],
+      noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from", "between", "more", "less"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
       systemPrompt:
         'extract the next filters out of the query- minPrice, maxPrice, category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response'
@@ -369,13 +369,14 @@ function JewelrySearch() {
   const requestBody = {
     mongodbUri:
       "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    dbName: "website",
-    collectionName: "jewelry",
+    dbName: "wineDB",
+    collectionName: "theyDream",
     siteId: "jewelry",
     query: query,
-    noWord: ["ring","silver","gold","bracelet","earring","earrings"],
+    noHebrewWord:["שרשרת", "טבעת","צמיד","עגילים","עגיל"],
+    noWord: ["ring","silver","gold","bracelet","earring","earrings", "necklace"],
     systemPrompt:
-      'extract the next filter out of the query- type (can be silver or gold only), and category (can be ring, bracelet or earrings) answer in the next format {type: gold, category: ring} and if the type or category did not mentioned, return null. answer in json format (e.g- {"type": "gold", "category": "ring"}).',
+      'extract the category filter out of the query. the options are- שרשראות, עגילים, צמידים, טבעות. answer only in JSON, like in this example {category: "שרשראות"}. make sure to extract the category only if you really find the relevant words!',
   };
 
   // Fetch products when the component mounts
@@ -385,7 +386,7 @@ function JewelrySearch() {
         const mongodbUri = encodeURIComponent(
           "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         );
-        const dbName = encodeURIComponent("wineDB");
+        const dbName = encodeURIComponent("website");
         const collectionName = encodeURIComponent("jewelry");
         const limit = 10;
 
@@ -490,12 +491,12 @@ return (
               width={200}
               height={100}
               src={product.image}
-              alt={product.title}
+              alt={product.name}
               className="rounded-md object-cover h-full"
             />
           </div>
 
-          <p className="text-xl font-semibold mb-2 text-black">{product.title}</p>
+          <p className="text-xl font-semibold mb-2 text-black">{product.name}</p>
     
          
           <a
