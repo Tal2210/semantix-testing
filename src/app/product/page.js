@@ -74,7 +74,7 @@ function ProductSearch() {
       dbName: "wineDB",
       collectionName: "newallcohome",
       query: query,
-      noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from", "between", "more", "less"],
+      noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from", "between", "more", "less", "for","shekels"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
       systemPrompt:
         'extract the next filters out of the query- price (exact price), minPrice, maxPrice, category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response'
