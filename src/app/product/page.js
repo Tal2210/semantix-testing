@@ -71,8 +71,8 @@ function ProductSearch() {
     const requestBody = {
       mongodbUri:
         "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      dbName: "wineDB",
-      collectionName: "newallcohome",
+      dbName: "alcohome",
+      collectionName: "products",
       query: query,
       noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from", "between", "more", "less", "for","shekels"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
