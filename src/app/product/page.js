@@ -77,7 +77,7 @@ function ProductSearch() {
       noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from", "between", "more", "less", "for","shekels","on","sale"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
       systemPrompt:
-        "extract the next filters out of the query- price (exact price! if you see the words `until` or `starting from`, ignore it), minPrice, maxPrice(pay attention to the words `up to`), category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response"
+        "extract the next filters out of the query: 1. price (exact price! if you see the words `until` or `starting from`, ignore it), 2.minPrice (minimum price- search for 'starting at'), maxPrice(pay attention to the words `up to`), category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response"
     };
   
     // Fetch products when the component mounts
