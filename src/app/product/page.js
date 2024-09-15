@@ -80,7 +80,7 @@ function ProductSearch() {
       1. price (exact price, indicated by the words 'ב' or 'באיזור ה-').
       2. minPrice (minimum price, indicated by 'החל מ' or 'מ').
       3. maxPrice (maximum price, indicated by the word 'עד').
-      4. category (one of the following Hebrew words: יין אדום, יין לבן, יין מבעבע, יין רוזה).
+      4. category (one of the following Hebrew words: יין אדום, יין לבן, יין מבעבע, יין רוזה) sometimes you will get only the types themselves- רןזה, לבן, אדום - count it in.
       5. type (one or both of the following Hebrew words: כשר, מבצע).
     Return the extracted filters in JSON format. If a filter is not present in the query, omit it from the JSON response. For example:
     { 'category': 'יין לבן', 'type': 'כשר', 'minPrice': 100, 'maxPrice': 200 }.
