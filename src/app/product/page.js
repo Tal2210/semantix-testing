@@ -380,7 +380,7 @@ function JewelrySearch() {
     collectionName: "theyDream",
     siteId: "jewelry",
     query: query,
-    noHebrewWord:["שרשרת", "טבעת","צמיד","עגילים","עגיל","תכשיטים"],
+    noHebrewWord:["שרשרת", "טבעת","צמיד","עגילים","עגיל","תכשיטים","צ'ארמס"],
     noWord: ["ring","silver","gold","bracelet","earring","earrings", "necklace", "for","jewelry"],
     systemPrompt:
       'extract the category filter out of the query. the options are- שרשראות, עגילים, צמידים, טבעות. answer only in JSON, like in this example {category: "שרשראות"}. make sure to extract the category only if you really find the relevant words!',
