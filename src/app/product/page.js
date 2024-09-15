@@ -84,8 +84,7 @@ function ProductSearch() {
       5. type (one or both of the following Hebrew words: כשר, מבצע).
     Return the extracted filters in JSON format. If a filter is not present in the query, omit it from the JSON response. For example:
     { 'category': 'יין לבן', 'type': 'כשר', 'minPrice': 100, 'maxPrice': 200 }.
-    If only one filter is found, return only that filter. For example:
-    { 'category': 'יין אדום' }.` 
+` 
     };
   
     // Fetch products when the component mounts
