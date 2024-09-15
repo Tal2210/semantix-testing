@@ -76,8 +76,16 @@ function ProductSearch() {
       query: query,
       noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from","kosher", "between", "more", "less", "for","shekels","on","sale"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
-      systemPrompt:
-        "extract the next filters out of the query: 1. price (exact price! if you see the words 'ב' or 'באיזור ה-'), 2.minPrice (minimum price- search for 'החל מ' or 'מ'), maxPrice(pay attention to the words `עד`), category and type. the categories are only the next hebrew words- יין אדום, יין לבן, יין מבעבע, יין רוזה. the types are only the next hebrew words- כשר, מבצע or both (כשר,מבצע) answer ONLY with the JSON response. e.g - {category: `יין לבן`, type: `כשר, מבצע`, minPrice: 100, maxPrice: 200} "
+      systemPrompt: `Extract the following filters from the query if they exist:
+      1. price (exact price, indicated by the words 'ב' or 'באיזור ה-').
+      2. minPrice (minimum price, indicated by 'החל מ' or 'מ').
+      3. maxPrice (maximum price, indicated by the word 'עד').
+      4. category (one of the following Hebrew words: יין אדום, יין לבן, יין מבעבע, יין רוזה).
+      5. type (one or both of the following Hebrew words: כשר, מבצע).
+    Return the extracted filters in JSON format. If a filter is not present in the query, omit it from the JSON response. For example:
+    { 'category': 'יין לבן', 'type': 'כשר', 'minPrice': 100, 'maxPrice': 200 }.
+    If only one filter is found, return only that filter. For example:
+    { 'category': 'יין אדום' }.` 
     };
   
     // Fetch products when the component mounts
