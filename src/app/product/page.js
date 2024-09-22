@@ -383,7 +383,7 @@ function JewelrySearch() {
     noHebrewWord:["שרשרת", "טבעת","צמיד","עגילים","עגיל","תכשיטים","צ'ארמס"],
     noWord: ["ring","silver","gold","bracelet","earring","earrings", "necklace", "for","jewelry"],
     systemPrompt:
-      'extract the category filter out of the query. the options are- שרשראות, עגילים, צמידים, טבעות. answer only in JSON, like in this example {category: "שרשראות"}. make sure to extract the category only if you really find the relevant words!',
+      'extract the category filter out of the query. the options are- שרשראות, עגילים, צמידים, טבעות. answer only in JSON, like in this example {category: "שרשראות"}. notice that some queries use singular words (like "שרשרת", "עגיל)- extract the right category accordingly. make sure to extract the category only if you really find the relevant words!',
   };
 
   // Fetch products when the component mounts
