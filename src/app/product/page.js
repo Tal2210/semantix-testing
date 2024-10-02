@@ -377,6 +377,7 @@ function JewelrySearch() {
     mongodbUri:
       "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     dbName: "wineDB",
+    context :"jewelry",
     collectionName: "theyDream",
     siteId: "jewelry",
     query: query,
