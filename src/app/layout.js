@@ -2,6 +2,7 @@
 import { Inter } from "next/font/google";
 import Link from 'next/link';
 import "./globals.css";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +15,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="he" dir="rtl">
       <head>
+      <Script
+          async
+           src="https://www.googletagmanager.com/gtag/js?id=G-8KT8DK42GV"
+        />
+
+        <Script id="google-analytics">
+          {`
+              window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8KT8DK42GV');
+          `}
+        </Script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
         <meta name="keywords" content="חיפוש סמנטי, AI, semantix, תוצאות מדויקות, חיפוש בעסק, חיפוש חכם" />
