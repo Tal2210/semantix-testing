@@ -120,6 +120,7 @@ function ProductSearch() {
   
     // Function to fetch products based on user query
     const fetchProducts = async () => {
+      setProducts([]);
       setLoading(true);
   
       try {
