@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
           <header className="relative z-10">
             <nav className="flex justify-end items-center w-full py-4 px-4 sm:px-8 md:px-20">
               <Link href="/">
-                <img src="/semantix black-cutout.png" alt="לוגו סמנטיקס - חיפוש סמנטי לעסק שלך" width={200} height={150} />
+                <img src="/semantix black-cutout.png" alt="לוגו סמנטיקס - חיפוש סמנטי לעסק שלך" width={230} height={150} />
               </Link>
             </nav>
           </header>

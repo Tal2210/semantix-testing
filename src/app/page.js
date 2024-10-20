@@ -66,7 +66,7 @@ export default function Home() {
               ים תיכונית, במחיר של 70 עד 120 ש״ח", ולקבל את התוצאה המושלמת עבורכם.
             </p>
             <br></br>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed fontfamily-sans font-semibold">
               בנוסף, שורת החיפוש שלנו יכולה לתרגם תמונות לתיאורים מילוליים. כך,
               בחנות בגדים מקוונת תוכלו לחפש פריטים כמו "נעל ספורט לבנה בגזרה נמוכה
               עם סוליית גומי חומה, עד 300 שקלים" ולמצוא בדיוק את מה שאתם מחפשים,
