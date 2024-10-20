@@ -94,8 +94,8 @@ function ProductSearch() {
           const mongodbUri = encodeURIComponent(
             "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
           );
-          const dbName = encodeURIComponent("wineDB");
-          const collectionName = encodeURIComponent("newallcohome");
+          const dbName = encodeURIComponent("manoVino");
+          const collectionName = encodeURIComponent("products");
           const limit = 10;
   
           const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
@@ -159,7 +159,10 @@ function ProductSearch() {
 
   return (
     <div>
-      
+        <h1 className="font-bold mb-8">
+  מבוסס על הקטלוג של <a href="https://www.manovino.co.il" className="text-blue-600" target="_blank" rel="noopener noreferrer">Mano Vino</a>
+</h1>
+
       <div className="flex">
        
 
@@ -394,8 +397,8 @@ function JewelrySearch() {
         const mongodbUri = encodeURIComponent(
           "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         );
-        const dbName = encodeURIComponent("website");
-        const collectionName = encodeURIComponent("jewelry");
+        const dbName = encodeURIComponent("wineDB");
+        const collectionName = encodeURIComponent("theyDream");
         const limit = 10;
 
         const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
@@ -459,7 +462,10 @@ function JewelrySearch() {
 
 return (
   <div>
-    <h1 className=" font-bold mb-8">כרגע במלאי החיפוש יש צמידים וטבעות בלבד- יתעדכן בקרוב</h1>
+          <h1 className="font-bold mb-8">
+  מבוסס על הקטלוג של <a href="https://theydream-online.com" className="text-blue-600" target="_blank" rel="noopener noreferrer">TheyDream</a>
+</h1>
+
    
     <div className="flex">
       
