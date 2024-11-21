@@ -98,7 +98,7 @@ function ProductSearch() {
           const collectionName = encodeURIComponent("products");
           const limit = 10;
   
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
+          const url = `https://shopifyserver-1.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
   
           const response = await fetch(url, {
             method: "GET",
@@ -125,7 +125,7 @@ function ProductSearch() {
   
       try {
         const response = await fetch(
-          "https://shopifyserver-8o24.onrender.com/search",
+          "https://shopifyserver-1.onrender.com/search",
           {
             method: "POST",
             headers: {
@@ -251,7 +251,7 @@ function ServiceSearch() {
           const collectionName = encodeURIComponent("picsearchCollection");
           const limit = 10;
   
-          const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
+          const url = `https://shopifyserver-1.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
   
           const response = await fetch(url, {
             method: "GET",
@@ -277,7 +277,7 @@ function ServiceSearch() {
   
       try {
         const response = await fetch(
-          "https://shopifyserver-8o24.onrender.com/search",
+          "https://shopifyserver-1.onrender.com/search",
           {
             method: "POST",
             headers: {
@@ -402,7 +402,7 @@ function JewelrySearch() {
         const collectionName = encodeURIComponent("theyDream");
         const limit = 10;
 
-        const url = `https://shopifyserver-8o24.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
+        const url = `https://shopifyserver-1.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
 
         const response = await fetch(url, {
           method: "GET",
@@ -428,7 +428,7 @@ function JewelrySearch() {
 
     try {
       const response = await fetch(
-        "https://shopifyserver-8o24.onrender.com/search",
+        "https://shopifyserver-1.onrender.com/search",
         {
           method: "POST",
           headers: {
