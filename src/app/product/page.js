@@ -314,7 +314,7 @@ return (
 
       <input
         type="text"
-        placeholder='"צמיד כסף משובץ אבנים שחורות", "טבעת זהב חלקה עם יהלום קטן" '
+        placeholder='"כל התכשיטים שיש בהם שמש או ירח" '
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
