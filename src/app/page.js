@@ -1,95 +1,168 @@
-// pages/index.js
-"use client";
-import { useState, useEffect } from "react";
-import Head from "next/head";
-import Link from "next/link";
-import TypingHeader from "./Typing";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Home() {
-  const [showContent, setShowContent] = useState(false);
+const HomePage = () => {
+  const router = useRouter();
+  const queriesWithImages = [
+    {
+      query: "יין אדום שמתאים לבשרים עד 120 ש׳׳ח",
+      images: [
+        "https://alcohome.co.il/wp-content/uploads/2023/11/file-386.png",
+        "https://alcohome.co.il/wp-content/uploads/2023/11/Cumulus_small__2_-1-600x600-1.jpeg",
+        "https://alcohome.co.il/wp-content/uploads/2023/11/file-704.png",
+        "https://alcohome.co.il/wp-content/uploads/2024/04/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%9C%D7%90-%D7%A9%D7%9D-2024-04-14T125034.639.png",
+      ]
+    },
+    {
+      query: "שעון ספורט שאפשר גם לשלם איתו",
+      images: [
+        "https://shipi.b-cdn.net/wp-content/uploads/2023/06/Apple-Watch-SE-2022-40mm-600x600.webp",
+        "https://shipi.b-cdn.net/wp-content/uploads/2023/01/Untitled-1-RADSecovered-2-600x600-1-600x600.jpg",
+        "https://shipi.b-cdn.net/wp-content/uploads/2022/08/16382009-600x600.jpg",
+        "https://shipi.b-cdn.net/wp-content/uploads/2022/06/6339680_sd-600x600.jpg",
+      ]
+    },
+    {
+      query: "אני מחפשת תכשיט לבת שלי- היא אוהבת לבבות וצדפים",
+      images: [
+        "https://theydream-online.com/wp-content/uploads/2024/06/1717340426_I8PsgQ_C-1.jpeg.webp",
+        "https://theydream-online.com/wp-content/uploads/2023/07/1690810117_1690117322_06-652x652.jpg.webp",
+        "https://theydream-online.com/wp-content/uploads/2024/02/1707144894_0E6A1819-520x780.jpg.webp",
+        "https://theydream-online.com/wp-content/uploads/2024/01/1704373234_1195213438_0E6A2495-710x1065.jpg",
+      ]
+    },
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [showImages, setShowImages] = useState(false);
+
+  const currentQuery = queriesWithImages[currentIndex].query;
+  const currentImages = queriesWithImages[currentIndex].images;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 4000); // 4 seconds delay
+    if (!isFadingOut && text.length < currentQuery.length) {
+      const typingTimeout = setTimeout(() => {
+        setText(currentQuery.slice(0, text.length + 1));
+      }, 100);
+      return () => clearTimeout(typingTimeout);
+    } else if (text.length === currentQuery.length && !showImages) {
+      const showImagesTimeout = setTimeout(() => {
+        setShowImages(true);
+      }, 500);
+      return () => clearTimeout(showImagesTimeout);
+    }
+  }, [text, isFadingOut, currentQuery, showImages]);
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    if (showImages) {
+      const displayTimeout = setTimeout(() => {
+        setIsFadingOut(true);
+      }, 2500);
+      return () => clearTimeout(displayTimeout);
+    }
+  }, [showImages]);
+
+  useEffect(() => {
+    if (isFadingOut) {
+      const nextQueryTimeout = setTimeout(() => {
+        setText('');
+        setShowImages(false);
+        setIsFadingOut(false);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % queriesWithImages.length);
+      }, 500);
+      return () => clearTimeout(nextQueryTimeout);
+    }
+  }, [isFadingOut, queriesWithImages.length]);
+
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+    return () => clearInterval(cursorInterval);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-end justify-center py-2 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-purple-500 opacity-10 -skew-x-12 transform origin-top-right"></div>
-
-      <Head>
-        <title>סמנטיקס - פתרונות בינה מלאכותית</title>
-        <meta
-          name="description"
-          content="סמנטיקס - פתרונות חדשניים בבינה מלאכותית לעתיד"
-        />
-        <link rel="icon" href="/semantix.png" />
-      </Head>
-
-      <main className="flex flex-col w-full flex-1 px-4 sm:px-8 md:px-20 relative z-10">
-        <section dir="rtl" className="my-16 text-right max-w-4xl">
-          <TypingHeader />
-          
-          <div className={`transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-            <p className="text-xl text-gray-600 mb-8 font-bold"></p>
-            <Link href="/product">
-              <button className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 mb-8 flex items-center">
-                איך זה עובד
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 rotate-180"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </Link>
-            <p className="text-gray-700 leading-relaxed fontfamily-sans">
-              שורות החיפוש המסורתיות באתרי E-Commerce עדיין מתבססות על מילות
-              מפתח, מה שמוביל לתוצאות חיפוש לא מדויקות. לדוגמה, חיפוש פשוט כמו
-              "יין לבן" בחנות יין מקוונת יחזיר כל תוצאה שבה מופיעות המילים "יין"
-              או "לבן", ולא בהכרח את היין המדויק שאתם מחפשים.
-            </p>
-            <br></br>
-            <p className="text-gray-700 leading-relaxed fontfamily-sans font-semibold">
-              ב-Semantix אנחנו משנים את כללי המשחק עם שורת חיפוש סמנטית המבוססת על
-              בינה מלאכותית מתקדמת. במקום להקליד "יין לבן" ולקוות לטוב, תוכלו לחפש
-              בדיוק את מה שאתם רוצים, כמו "יין לבן פירותי וקליל שמתאים לארוחת ערב
-              ים תיכונית, במחיר של 70 עד 120 ש״ח", ולקבל את התוצאה המושלמת עבורכם.
-            </p>
-            <br></br>
-            <p className="text-gray-700 leading-relaxed fontfamily-sans font-semibold">
-              בנוסף, שורת החיפוש שלנו יכולה לתרגם תמונות לתיאורים מילוליים. כך,
-              בחנות בגדים מקוונת תוכלו לחפש פריטים כמו "נעל ספורט לבנה בגזרה נמוכה
-              עם סוליית גומי חומה, עד 300 שקלים" ולמצוא בדיוק את מה שאתם מחפשים,
-              בקלות ובמהירות.
-            </p>
+    <div className="min-h-screen flex flex-col">
+      {/* Dynamic content container with fixed min-height */}
+      <div className="flex-grow flex flex-col" style={{  maxHeight: '350px' }}> {/* Adjust minHeight as needed */}
+        <div className="flex w-full">
+          <div className="w-2/3 justify-center items-center ml-6 mt-5">
+          <h1
+  className={`text-2xl sm:text-3xl lg:text-7xl font-bold mb-4 transition-opacity duration-500 ${
+    isFadingOut ? 'opacity-0' : 'opacity-100'
+  }`}
+>
+  {text}
+  <span
+    className={`${
+      showCursor ? 'opacity-100' : 'opacity-0'
+    } transition-opacity duration-100`}
+  >
+    .
+  </span>
+</h1>
           </div>
-        </section>
+          <div
+            className={`mt-4 transition-opacity duration-700 ${
+              showImages && !isFadingOut ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <div className="grid grid-cols-2 gap-4 p-4">
+              {showImages &&
+                currentImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className="bg-white shadow-md rounded-lg p-2"
+                  >
+                    <img
+                      src={image}
+                      alt={`Image for ${currentQuery}`}
+                      className="w-full h-auto object-cover rounded-md max-h-60"
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <section id="contact" className={`my-16 text-right transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 className="text-3xl font-bold mb-4">צור קשר</h2>
-          <p className="text-gray-600 mb-8 fontfamily-sans font-semibold">
-            תרגישו הכי בנוח לשאול, להתייעץ או לדבר - אנחנו כאן - בווטסאפ או
-            במייל.
-          </p>
+      {/* Contact section - remains fixed at the bottom */}
+      <div className="w-full flex justify-right">
+        <section className="text-right pr-4 mb-20">
+        <button
+  onClick={() => router.push('/product')}
+  className="group relative bg-gradient-to-r from-purple-400 to-purple-500 hover: text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl flex items-center gap-3"
+>
+  <span>איך זה עובד</span>
+  <svg
+    className="w-6 h-6 transform group-hover:translate-x--2 transition-transform duration-300"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M7 8l-4 4m0 0l4 4m-4-4h18"
+    />
+  </svg>
+</button>
 
-   
 
-          <div dir="" className="flex flex-space gap-4">
-            
-             <a href="https://wa.me/972542251558"
+          <div className="flex space-x-4 mt-8 gap-4"> {/* Corrected className for spacing */}
+            <a 
+              href="https://wa.me/972542251558"
               target="_blank"
-              rel="noopener noreferrer">
-          
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity"
+            >
+              {/* WhatsApp icon */}
               <svg
                 className="w-10 h-10"
                 aria-hidden="true"
@@ -107,12 +180,16 @@ export default function Home() {
                 />
                 <path
                   fill="currentColor"
-                  d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"
+                  d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.160 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"
                 />
-              </svg> 
+              </svg>
             </a>
             
-            <a href="mailto:galpaz2210@gmail.com">
+            <a 
+              href="mailto:galpaz2210@gmail.com"
+              className="hover:opacity-80 transition-opacity"
+            >
+              {/* Email icon */}
               <svg
                 className="w-10 h-10 text-gray-800 dark:text-white"
                 aria-hidden="true"
@@ -133,10 +210,9 @@ export default function Home() {
             </a>
           </div>
         </section>
-      </main>
-
+      </div>
     </div>
+  );
+};
 
-
-  ); 
-}
+export default HomePage;

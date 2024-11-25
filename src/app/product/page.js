@@ -33,7 +33,7 @@ export default function SearchDemo() {
    
         <div className="bg-gray-400 bg-opacity-20 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
           <div className="flex justify-center mb-8 bg-gray-100 p-2  shadow-inner">
-            {["products", "services", "jewelry"].map((tab) => (
+            {["products",  "jewelry"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -48,7 +48,6 @@ export default function SearchDemo() {
       `}
               >
                 {tab === "products" && "יין"}
-                {tab === "services" && "בגדים"}
                 {tab === "jewelry" && "תכשיטים"}
           
               </button>
@@ -76,15 +75,7 @@ function ProductSearch() {
       query: query,
       noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from","kosher", "between", "more", "less", "for","shekels","on","sale"],
       noHebrewWord: ["אדום","לבן","יין","מבעבע","רוזה","מעל","עד","מתחת","יותר"],
-      systemPrompt: `Extract the following filters from the query if they exist:
-      1. price (exact price, indicated by the words 'ב' or 'באיזור ה-').
-      2. minPrice (minimum price, indicated by 'החל מ' or 'מ').
-      3. maxPrice (maximum price, indicated by the word 'עד').
-      4. category (one of the following Hebrew words: יין אדום, יין לבן, יין מבעבע, יין רוזה) sometimes you will get only the types themselves- רןזה, לבן, אדום - count it in.
-      5. type (one or both of the following Hebrew words: כשר, מבצע).
-    Return the extracted filters in JSON format. If a filter is not present in the query, omit it from the JSON response. For example:
-    { 'category': 'יין לבן', 'type': 'כשר', 'minPrice': 100, 'maxPrice': 200 }.
-` 
+      categories: "יין לבן, יין אדום, יין מבעבע, יין רוזה"
     };
   
     // Fetch products when the component mounts
@@ -222,155 +213,6 @@ function ProductSearch() {
   );
 }
 
-function ServiceSearch() {
-    const [query, setQuery] = useState("");
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-  
-    const requestBody = {
-      mongodbUri:
-        "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      dbName: "website",
-      collectionName: "clothes",
-      siteId: "clothes",
-      noWords:["women, men"],
-      query: query,
-      systemPrompt:
-        'extract the right category out of the query, it can be only - ילדים, גבר, אישה. in hebrew only! answer in JSON with the category hebrew name only (e.g- {category: "ילדים"}. if you cant find any category out of the query, return - null (e.g- {category: null})',
-    };
-  
-    // Fetch products when the component mounts
-    useEffect(() => {
-      const fetchInitialProducts = async () => {
-        try {
-          const mongodbUri = encodeURIComponent(
-           "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-          );
-          const dbName = encodeURIComponent("picsearchDB");
-          const collectionName = encodeURIComponent("picsearchCollection");
-          const limit = 10;
-  
-          const url = `https://shopifyserver-1.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
-  
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-  
-          const products = await response.json();
-          setProducts(products); // Update the UI with the fetched products
-        } catch (error) {
-          console.error("Error fetching products:", error);
-          setError("Failed to fetch products");
-        }
-      };
-  
-      fetchInitialProducts();
-    }, []); // Empty dependency array ensures this runs only once on mount
-  
-    // Function to fetch products based on user query
-    const fetchProducts = async () => {
-      setLoading(true);
-  
-      try {
-        const response = await fetch(
-          "https://shopifyserver-1.onrender.com/search",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-          }
-        );
-  
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
-        }
-  
-        const data = await response.json();
-        setProducts(data);
-        
-        setError(data.results?.length === 0 ? "No products found" : "");
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to fetch products");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    const handleSearch = () => {
-      if (query.trim()) {
-        fetchProducts();
-      }
-    };
-  
-
-  return (
-    <div>
-     
-      <div className="flex">
-      
-
-        <input
-          type="text"
-          placeholder='"סנדל אלגנטי"'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
-        >
-          חפש
-        </button>
-      </div>
-
-      {loading && <p className="mt-4 text-center">טוען...</p>}
-      {error && <p className="mt-4 text-center text-red-300">{error}</p>}
-
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.length === 0 && !loading && !error && (
-          <p className="text-black font-semibold text-center col-span-full">
-            טוען...
-          </p>
-        )}
-        {products.map((product) => (
-        
-          <div
-            key={product.id}
-            className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
-          >
-            <div className="w-82 h-62 mb-4 flex justify-center items-center">
-              <img
-                width={230}
-                height={100}
-                src={product.image}
-                alt={product.title}
-                className="rounded-md object-cover h-full"
-              />
-            </div>
-
-            <p className="text-xl font-semibold mb-2 text-black">{product.title}</p>
-      
-           
-            <a
-              href={product.url}
-              className="text-purple-300 hover:text-purple-100 transition-colors duration-200"
-            >
-              לפרטים נוספים
-            </a>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 function JewelrySearch() {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
@@ -387,8 +229,7 @@ function JewelrySearch() {
     query: query,
     noHebrewWord:["שרשרת", "טבעת","צמיד","עגילים","עגיל","תכשיטים","צ'ארמס"],
     noWord: ["ring","silver","gold","bracelet","earring","earrings", "necklace", "for","jewelry"],
-    systemPrompt:
-      'extract the category filter out of the query. the options are- שרשראות, עגילים, צמידים, טבעות. answer only in JSON, like in this example {category: "שרשראות"}. notice that some queries use singular words (like "שרשרת", "עגיל)- extract the right category accordingly. make sure to extract the category only if you really find the relevant words!',
+    categories: "טבעות, צמידים, עגילים, שרשראות"
   };
 
   // Fetch products when the component mounts
