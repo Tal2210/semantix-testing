@@ -210,7 +210,7 @@ const HomePage = () => {
 
     {/* LinkedIn button */}
     <a
-      href="https://linkedin.com/in/your-profile"
+      href="https://www.linkedin.com/company/semantix-io/posts/?feedView=all"
       target="_blank"
       rel="noopener noreferrer"
       className="hover:opacity-80 transition-opacity"
