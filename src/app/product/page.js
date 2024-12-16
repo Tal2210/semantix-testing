@@ -70,7 +70,7 @@ function ProductSearch() {
     const requestBody = {
       mongodbUri:
         "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-      dbName: "manoVino",
+      dbName: "alcohome",
       collectionName: "products",
       query: query,
       noWord: ["wine", "white","red", "rose", "rosé", "up", "to", "from","kosher", "between", "more", "less", "for","shekels","on","sale"],
