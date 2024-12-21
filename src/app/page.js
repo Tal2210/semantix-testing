@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
 
 const HomePage = () => {
   const router = useRouter();
@@ -86,6 +87,12 @@ const HomePage = () => {
   }, []);
 
   return (
+    <>
+    <Head>
+           {/* This tells Google (and other bots that honor it) not to index images on this page */}
+           <meta name="robots" content="noimageindex" />
+        <meta name="googlebot" content="noimageindex" />
+    </Head>
     <div className="min-h-screen flex flex-col">
       {/* Dynamic content container with fixed min-height */}
       <div className="flex-grow flex flex-col" style={{  maxHeight: '350px' }}> {/* Adjust minHeight as needed */}
@@ -235,6 +242,7 @@ const HomePage = () => {
 
       </div>
     </div>
+    </>
   );
 };
 
