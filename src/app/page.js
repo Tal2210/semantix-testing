@@ -91,7 +91,7 @@ const HomePage = () => {
     <Head>
            {/* This tells Google (and other bots that honor it) not to index images on this page */}
            <meta name="robots" content="noimageindex" />
-        <meta name="googlebot" content="noimageindex" />
+           <meta name="googlebot" content="noimageindex" />
     </Head>
     <div className="min-h-screen flex flex-col">
       {/* Dynamic content container with fixed min-height */}

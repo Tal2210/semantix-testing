@@ -43,6 +43,8 @@ export default function RootLayout({ children }) {
         <meta name="twitter:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
         <meta name="twitter:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
         <meta name="twitter:image" content="/semantix black-cutout.png" />
+        <meta name="robots" content="noimageindex" />
+        <meta name="googlebot" content="noimageindex" />
         
         <link rel="icon" href="/logo-semantix.svg" type="image/png" />
         
