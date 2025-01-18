@@ -182,32 +182,49 @@ function ProductSearch() {
             טוען...
           </p>
         )}
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105"
-          >
-            <div className="w-65 h-72 mb-4 flex justify-center items-center">
-              <img
-                width={70}
-                height={100}
-                src={product.image}
-                alt={product.title}
-                className="rounded-md object-cover h-full"
-              />
-            </div>
+   {products.map((product) => (
+  <div
+    key={product.id}
+    // If you want a special border or style when highlight = true, you can conditionally apply a Tailwind class here:
+    className={`bg-white p-6 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105 ${
+      product.highlight ? "border-2 border-purple-300" : ""
+    }`}
+  >
+    {/* Perfect Match Badge */}
+    {product.highlight && (
+      <div  dir="ltr" className="flex items-center mb-3">
+        <span className="font-bold text-black-500 ">Perfect Match!</span>
+        <img
+          src="https://alcohome.co.il/wp-content/uploads/2024/09/ai_stars_icon-removebg-preview.png"
+          alt="Sparkling Star"
+          width="30"
+          height="30"
+          className="inline-block mr-2"
+        />
+      </div>
+    )}
 
-            <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-            <p className="text-black-200 mb-3">{product.description}</p>
-            <p className="text-black-300 font-bold mb-4">₪{product.price}</p>
-            <a
-              href={product.url}
-              className="text-purple-300 hover:text-purple-100 transition-colors duration-200"
-            >
-              לפרטים נוספים
-            </a>
-          </div>
-        ))}
+    <div className="w-65 h-72 mb-4 flex justify-center items-center">
+      <img
+        width={120}
+        height={100}
+        src={product.image}
+        alt={product.title}
+        className="rounded-md object-cover h-full"
+      />
+    </div>
+
+    <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+    <p className="text-black-200 mb-3">{product.description}</p>
+    <p className="text-black-300 font-bold mb-4">₪{product.price}</p>
+    <a
+      href={product.url}
+      className="text-purple-400 hover:text-purple-100 transition-colors duration-200"
+    >
+      לפרטים נוספים
+    </a>
+  </div>
+))}
       </div>
     </div>
   );

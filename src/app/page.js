@@ -142,7 +142,7 @@ const HomePage = () => {
       <section className="text-right pr-4 mb-20">
   <button
     onClick={() => router.push('/product')}
-    className="group relative bg-gradient-to-r from-purple-400 to-purple-500 hover: text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl flex items-center gap-3"
+    className="group relative bg-gradient-to-r from-purple-400 to-purple-500 hover: text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl flex items-center gap-3 relative left-2"
   >
     <span>איך זה עובד</span>
     <svg
@@ -193,11 +193,11 @@ const HomePage = () => {
 
     {/* Email button */}
     <a
-      href="mailto:galpaz2210@gmail.com"
+      href="mailto:sales@semantix.co.il"
       className="hover:opacity-80 transition-opacity"
     >
       <svg
-        className="w-10 h-10 text-gray-800 dark:text-white"
+        className="w-12 h-12 text-gray-800 dark:text-white relative bottom-1" 
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
