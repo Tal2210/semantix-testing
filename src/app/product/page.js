@@ -399,7 +399,7 @@ function GlassesSearch() {
       "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
     dbName: "shopify",
     context :"sunglasses",
-    collectionName: "product2",
+    collectionName: "products2",
     context:"sunglasses- translate the hebrew word מנומר to tortoise",
     query: query,
     useImages:true
