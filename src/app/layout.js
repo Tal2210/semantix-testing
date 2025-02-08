@@ -16,8 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="he" dir="rtl">
       <head>
       <Script
-          async
-           src="https://www.googletagmanager.com/gtag/js?id=G-8KT8DK42GV"
+          async src="https://www.googletagmanager.com/gtag/js?id=G-BLXY1X669N"
         />
         <Script id="google-analytics">
           {`
