@@ -7,8 +7,8 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך",
-  description: "סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר",
+  title: "semantix - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך",
+  description: "מנוע החיפוש המתקדם בעולם לחנויות אי-קומרס בכל הפלטפורמות",
 };
 
 export default function RootLayout({ children }) {
