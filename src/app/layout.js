@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
           </main>
 
           <footer className="relative z-10 w-full border-t border-gray-200 py-4 text-center">
-            <p className="text-gray-600">© 2024 סמנטיקס. כל הזכויות שמורות.</p>
+            <p className="text-gray-600">© 2025 סמנטיקס. כל הזכויות שמורות.</p>
           </footer>
         </div>
       </body>
