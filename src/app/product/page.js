@@ -121,7 +121,7 @@ function ProductSearch() {
       "sale",
     ],
     noHebrewWord: ["אדום", "לבן", "יין", "מבעבע", "רוזה", "מעל", "עד", "מתחת", "יותר"],
-    categories: "יין, יין לבן, יין אדום, יין מבעבע, יין רוזה",
+    categories: ", יין לבן, יין אדום, יין מבעבע, יין רוזה",
   };
 
   // Fetch products when the component mounts
