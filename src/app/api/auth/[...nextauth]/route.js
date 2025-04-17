@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import clientPromise from "/lib/mongodb.js"; // Adjust path if necessary
 import bcrypt from "bcryptjs";
+import next from "next";
 
 export const authOptions = {
   providers: [
@@ -30,6 +31,7 @@ export const authOptions = {
   ],
   adapter: MongoDBAdapter(clientPromise),
   secret: process.env.NEXTAUTH_SECRET,
+  nextAuthUrl: process.env.NEXTAUTH_URL,
   session: { strategy: "jwt" }, // Use JWT session strategy instead of database sessions
   callbacks: {
     async jwt({ token, user }) {
