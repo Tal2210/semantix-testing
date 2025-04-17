@@ -1,8 +1,9 @@
-
-import { Inter } from "next/font/google";
+import { Inter } from "next/font/google"; 
 import Link from 'next/link';
 import "./globals.css";
 import Script from "next/script";
+import { Providers } from "./providers";
+import HeaderAuthButton from "./HeaderAuthButton.js";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="he" dir="rtl">
       <head>
-      <Script
+        <Script
           async src="https://www.googletagmanager.com/gtag/js?id=G-BLXY1X669N"
         />
         <Script id="google-analytics">
@@ -37,7 +38,7 @@ export default function RootLayout({ children }) {
         <meta property="og:image" content="/semantix black-cutout.png" />
         <meta property="og:url" content="https://semantix.co.il." />
         <meta property="og:type" content="website" />
-
+        
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="סמנטיקס - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך" />
         <meta name="twitter:description" content="סמנטיקס - התאמה מושלמת וחכמה בין חיפוש למוצר בעסק שלך. חיפוש סמנטי מבוסס AI לתוצאות מדויקות." />
@@ -52,8 +53,10 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} min-h-screen flex flex-col bg-gradient-to-t from-purple-200 via-purple-200 to-purple-50`}>
         <div className="flex-grow relative overflow-hidden">
           <header className="relative z-10">
-
-            <nav className="flex justify-end items-center w-full py-4 px-4 sm:px-8 md:px-20">
+            <nav className="flex justify-between items-center w-full py-4 px-4 sm:px-8 md:px-20">
+              <Providers>
+                <HeaderAuthButton />
+              </Providers>
               <Link href="/">
                 <img src="/semantix black-cutout.svg" alt="לוגו סמנטיקס - חיפוש סמנטי לעסק שלך" width={250} height={150} />
               </Link>
@@ -61,7 +64,7 @@ export default function RootLayout({ children }) {
           </header>
 
           <main className="flex-grow relative z-10 px-4 sm:px-8 md:px-20">
-            {children}
+            <Providers>{children}</Providers>
           </main>
 
           <footer className="relative z-10 w-full border-t border-gray-200 py-4 text-center">
