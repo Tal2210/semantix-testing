@@ -3,79 +3,58 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { UserCircle } from "lucide-react";
+import { UserCircle, LayoutDashboard, LogOut, LogIn } from "lucide-react";
+import Link from "next/link";
 
 export default function HeaderAuthButton() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const popoverRef = useRef(null);
+
   const buttonRef = useRef(null);
+  const popoverRef = useRef(null);
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
 
-  const [showPopover, setShowPopover] = useState(false);
-  const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Close popover when clicking outside.
+  // Close popover when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
+    function onClick(e) {
       if (
         popoverRef.current &&
-        !popoverRef.current.contains(event.target) &&
+        !popoverRef.current.contains(e.target) &&
         buttonRef.current &&
-        !buttonRef.current.contains(event.target)
+        !buttonRef.current.contains(e.target)
       ) {
-        setShowPopover(false);
+        setShow(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  // Calculate popover position relative to the button.
+  // Position popover under the icon
   useEffect(() => {
-    if (showPopover && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      const popoverWidth = Math.min(280, viewportWidth * 0.9);
-      let leftPosition = rect.left + window.scrollX + rect.width / 2 - popoverWidth / 2;
-      if (leftPosition < 10) leftPosition = 10;
-      if (leftPosition + popoverWidth > viewportWidth - 10) {
-        leftPosition = viewportWidth - popoverWidth - 10;
-      }
-      setPopoverPosition({
-        top: rect.bottom + window.scrollY + 8,
-        left: leftPosition,
-      });
-    }
-  }, [showPopover]);
+    if (!show || !buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const w = Math.min(260, window.innerWidth * 0.9);
+    let left = rect.left + rect.width / 2 - w / 2;
+    left = Math.max(10, Math.min(left, window.innerWidth - w - 10));
+    setPos({ top: rect.bottom + window.scrollY + 8, left });
+  }, [show]);
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        username,
-        password,
-      });
-      if (result.error) {
-        setError("Invalid username or password");
-      } else {
-        setShowPopover(false);
-        setUsername("");
-        setPassword("");
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+  // Close popover after successfully signing in
+  useEffect(() => {
+    if (status === "authenticated") {
+      setShow(false);
     }
-  };
+  }, [status]);
+
+  /* ──────────────────────────────────────────────────────────── */
+  /*  helpers                                                   */
+  const googleSignIn = () =>
+    signIn("google", {
+      callbackUrl: "/subscription",
+      authorizationParams: { prompt: "select_account" }
+    });
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -84,90 +63,78 @@ export default function HeaderAuthButton() {
 
   return (
     <>
+      {/* Always LTR so the element stays left-to-right aligned */}
       <div dir="ltr" className="relative z-[9999]">
         {session ? (
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-1.5 py-1.5 px-4 rounded-md bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-md transition-all duration-300 text-sm font-medium"
-          >
-            <span>Dashboard</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* DASHBOARD BUTTON MADE INVISIBLE */}
+            {null}
+            {/* <button
+              onClick={() => router.push("/dashboard")}
+              className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
+            >
+              <LayoutDashboard size={18} className="stroke-[2.5]" />
+              <span>Dashboard</span>
+            </button> */}
+            
+            <button 
+              onClick={handleLogout}
+              className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label="Sign out"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
         ) : (
-          <button
-            ref={buttonRef}
-            onClick={() => setShowPopover(!showPopover)}
-            className="text-gray-700 hover:text-blue-600 transition-colors duration-300"
-            aria-label="Sign In"
-          >
-            <UserCircle size={26} className="text-gray-700" />
-          </button>
+          // SIGN IN BUTTON MADE INVISIBLE
+          null
+          // <button
+          //   ref={buttonRef}
+          //   onClick={() => setShow((s) => !s)}
+          //   className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
+          //   aria-label="Sign in"
+          // >
+          //   <LogIn size={18} className="stroke-[2.5]" />
+          //   <span>Sign In</span>
+          // </button>
         )}
       </div>
 
-      {showPopover &&
-        createPortal(
-          <div
-            ref={popoverRef}
-            className="bg-white rounded-lg shadow-md p-4 border border-gray-100 animate-fadeIn"
-            style={{
-              position: "absolute",
-              top: popoverPosition.top,
-              left: popoverPosition.left,
-              width: "min(280px, 90vw)",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              zIndex: 9999,
-              direction: "ltr",
-            }}
+      {/* Popover (for unauthenticated users) - This will also be hidden as the button that triggers it is now null */}
+      {show && status !== "authenticated" && createPortal(
+        <div
+          ref={popoverRef}
+          style={{
+            position: "absolute",
+            top: pos.top,
+            left: pos.left,
+            width: "min(260px,90vw)",
+            zIndex: 9999
+          }}
+          className="bg-white rounded-lg shadow-xl p-5 border border-gray-100 animate-fadeIn"
+        >
+          <h2 className="text-center text-base font-medium text-gray-800 mb-4">
+            Welcome to Semantix
+          </h2>
+          <button
+            onClick={googleSignIn}
+            className="w-full flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            {/* Centered arrow */}
-          
-
-            <div  className="mb-2 text-center">
-              <h2 className="text-base font-medium text-gray-800">Sign In</h2>
-            </div>
-
-            <form onSubmit={handleLoginSubmit} className="space-y-3">
-              <div>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  placeholder="Username"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                />
-              </div>
-              <div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="Password"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all text-sm"
-                />
-              </div>
-              {error && (
-                <p className="text-red-600 text-xs mt-1">{error}</p>
-              )}
-              <div className="flex items-center justify-between pt-1">
-                <a href="#" className="text-xs text-blue-600">
-                  Forgot password?
-                </a>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="px-4 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Signing in..." : "Sign In"}
-                </button>
-              </div>
-            </form>
-
-           
-          </div>,
-          document.body
-        )}
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt=""
+              className="w-5 h-5"
+            />
+            <span className="font-medium text-sm">
+              Continue with Google
+            </span>
+          </button>
+          <p className="mt-4 text-xs text-gray-500 text-center">
+            We'll create your account automatically on first sign-in.
+          </p>
+        </div>,
+        document.body
+      )}
     </>
   );
 }
