@@ -76,6 +76,22 @@ export async function POST(request) {
         // Handle app uninstallation
         await handleAppUninstall(db, shop);
         break;
+      
+      // GDPR Webhooks
+      case "customers/data_request":
+        // Handle customer data request
+        await handleCustomerDataRequest(db, shop, data);
+        break;
+        
+      case "customers/redact":
+        // Handle customer data redaction
+        await handleCustomerRedact(db, shop, data);
+        break;
+        
+      case "shop/redact":
+        // Handle shop data redaction
+        await handleShopRedact(db, shop, data);
+        break;
         
       default:
         // Log other webhook topics
@@ -199,4 +215,272 @@ async function handleAppUninstall(db, shop) {
   } catch (error) {
     console.error("Error handling app uninstall:", error);
   }
+}
+
+/**
+ * Handle customer data request webhook (GDPR)
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {Object} data - The webhook data
+ */
+async function handleCustomerDataRequest(db, shop, data) {
+  try {
+    console.log(`Processing customer data request for shop: ${shop}`);
+    
+    // Extract customer info from the webhook data
+    const { shop_id, shop_domain, customer, orders_requested } = data;
+    const customerId = customer.id;
+    const customerEmail = customer.email;
+    
+    // Log the request in a dedicated GDPR collection
+    await db.collection("gdpr_requests").insertOne({
+      type: "data_request",
+      shop,
+      shopId: shop_id,
+      customerId,
+      customerEmail,
+      ordersRequested: orders_requested,
+      requestedAt: new Date(),
+      status: "received",
+      completedAt: null
+    });
+    
+    // Find all customer data in your database
+    const customerData = await collectCustomerData(db, shop, customerId, customerEmail);
+    
+    // Store the collected data for later export
+    await db.collection("gdpr_data_exports").insertOne({
+      shop,
+      customerId,
+      customerEmail,
+      data: customerData,
+      createdAt: new Date()
+    });
+    
+    // Update the request status
+    await db.collection("gdpr_requests").updateOne(
+      { shop, customerId, type: "data_request" },
+      { 
+        $set: { 
+          status: "completed",
+          completedAt: new Date()
+        } 
+      }
+    );
+    
+    console.log(`Completed customer data request for customer ID: ${customerId}`);
+  } catch (error) {
+    console.error("Error handling customer data request:", error);
+  }
+}
+
+/**
+ * Handle customer data redaction webhook (GDPR)
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {Object} data - The webhook data
+ */
+async function handleCustomerRedact(db, shop, data) {
+  try {
+    console.log(`Processing customer data redaction for shop: ${shop}`);
+    
+    // Extract customer info from the webhook data
+    const { shop_id, shop_domain, customer } = data;
+    const customerId = customer.id;
+    const customerEmail = customer.email;
+    
+    // Log the request in a dedicated GDPR collection
+    await db.collection("gdpr_requests").insertOne({
+      type: "customer_redact",
+      shop,
+      shopId: shop_id,
+      customerId,
+      customerEmail,
+      requestedAt: new Date(),
+      status: "received",
+      completedAt: null
+    });
+    
+    // Redact or anonymize customer data
+    await redactCustomerData(db, shop, customerId, customerEmail);
+    
+    // Update the request status
+    await db.collection("gdpr_requests").updateOne(
+      { shop, customerId, type: "customer_redact" },
+      { 
+        $set: { 
+          status: "completed",
+          completedAt: new Date()
+        } 
+      }
+    );
+    
+    console.log(`Completed customer data redaction for customer ID: ${customerId}`);
+  } catch (error) {
+    console.error("Error handling customer data redaction:", error);
+  }
+}
+
+/**
+ * Handle shop data redaction webhook (GDPR)
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {Object} data - The webhook data
+ */
+async function handleShopRedact(db, shop, data) {
+  try {
+    console.log(`Processing shop data redaction for shop: ${shop}`);
+    
+    // Extract shop info from the webhook data
+    const { shop_id, shop_domain } = data;
+    
+    // Log the request in a dedicated GDPR collection
+    await db.collection("gdpr_requests").insertOne({
+      type: "shop_redact",
+      shop,
+      shopId: shop_id,
+      requestedAt: new Date(),
+      status: "received",
+      completedAt: null
+    });
+    
+    // Redact or anonymize shop data
+    await redactShopData(db, shop, shop_id);
+    
+    // Update the request status
+    await db.collection("gdpr_requests").updateOne(
+      { shop, shopId: shop_id, type: "shop_redact" },
+      { 
+        $set: { 
+          status: "completed",
+          completedAt: new Date()
+        } 
+      }
+    );
+    
+    console.log(`Completed shop data redaction for shop: ${shop}`);
+  } catch (error) {
+    console.error("Error handling shop data redaction:", error);
+  }
+}
+
+/**
+ * Collect all data related to a customer
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {string} customerId - The customer ID
+ * @param {string} customerEmail - The customer email
+ * @returns {Object} - The collected customer data
+ */
+async function collectCustomerData(db, shop, customerId, customerEmail) {
+  // Collect all data related to this customer from your database
+  const searchQueries = await db.collection("search_queries").find({
+    shop,
+    customerId: customerId.toString()
+  }).toArray();
+  
+  const searchInteractions = await db.collection("search_interactions").find({
+    shop,
+    customerId: customerId.toString()
+  }).toArray();
+  
+  // Return the collected data
+  return {
+    searchQueries,
+    searchInteractions,
+    // Add any other customer-related data you collect
+  };
+}
+
+/**
+ * Redact or anonymize customer data
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {string} customerId - The customer ID
+ * @param {string} customerEmail - The customer email
+ */
+async function redactCustomerData(db, shop, customerId, customerEmail) {
+  // Anonymize search queries
+  await db.collection("search_queries").updateMany(
+    { shop, customerId: customerId.toString() },
+    { 
+      $set: { 
+        query: "[REDACTED]",
+        customerEmail: "[REDACTED]",
+        customerIp: "[REDACTED]",
+        redacted: true,
+        redactedAt: new Date()
+      } 
+    }
+  );
+  
+  // Anonymize search interactions
+  await db.collection("search_interactions").updateMany(
+    { shop, customerId: customerId.toString() },
+    { 
+      $set: { 
+        customerEmail: "[REDACTED]",
+        customerIp: "[REDACTED]",
+        redacted: true,
+        redactedAt: new Date()
+      } 
+    }
+  );
+  
+  // Add redaction for any other customer data you collect
+}
+
+/**
+ * Redact or anonymize shop data
+ * @param {Object} db - MongoDB database connection
+ * @param {string} shop - The shop domain
+ * @param {string} shopId - The shop ID
+ */
+async function redactShopData(db, shop, shopId) {
+  // Delete or anonymize all data related to this shop
+  
+  // Anonymize shop information
+  await db.collection("users").updateMany(
+    { shopifyShop: shop },
+    { 
+      $set: { 
+        shopifyShop: "[REDACTED]",
+        shopifyToken: "[REDACTED]",
+        shopifyScope: "[REDACTED]",
+        redacted: true,
+        redactedAt: new Date()
+      } 
+    }
+  );
+  
+  // Anonymize products
+  await db.collection("products").updateMany(
+    { shop },
+    { 
+      $set: { 
+        title: "[REDACTED]",
+        description: "[REDACTED]",
+        vendor: "[REDACTED]",
+        tags: [],
+        redacted: true,
+        redactedAt: new Date()
+      } 
+    }
+  );
+  
+  // Anonymize search queries
+  await db.collection("search_queries").updateMany(
+    { shop },
+    { 
+      $set: { 
+        query: "[REDACTED]",
+        customerEmail: "[REDACTED]",
+        customerIp: "[REDACTED]",
+        redacted: true,
+        redactedAt: new Date()
+      } 
+    }
+  );
+  
+  // Add redaction for any other shop data you collect
 } 
