@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
         <meta name="googlebot" content="noimageindex" />
         
         
-        <link rel="icon" href="public/logo-semantix.svg" type="image/png" />
+        <link rel="icon" href="/logo-semantix.svg" type="image/svg+xml" />
         
         
         <title>{metadata.title}</title>

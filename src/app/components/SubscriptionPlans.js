@@ -73,7 +73,7 @@ export default function PaddleSubscriptionPlans() {
           displayMode: "overlay",
           theme: "light",
           locale: "en",
-          successUrl: "http://localhost:3000/subscription/success",
+          successUrl: "https://www.semantix-ai.com/subscription/success",
         },
         customer: {
           email: session.user.email,
