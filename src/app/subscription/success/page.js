@@ -2,13 +2,26 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function PaddleSubscriptionSuccess() {
+// Loading component for Suspense
+function LoadingState() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4 animate-spin" />
+        <p className="text-lg text-gray-600">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main component content
+function SubscriptionSuccessContent() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
@@ -94,5 +107,14 @@ export default function PaddleSubscriptionSuccess() {
         <p className="text-xs text-gray-500 mt-6">Powered by Paddle • Secure payments</p>
       </motion.div>
     </div>
+  );
+}
+
+// Main component with Suspense
+export default function PaddleSubscriptionSuccess() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <SubscriptionSuccessContent />
+    </Suspense>
   );
 }
