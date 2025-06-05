@@ -28,7 +28,7 @@ export async function POST(req) {
 
     // Connect to MongoDB
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db("users");
 
     // Check if URL exists in users collection
     const existingUser = await db.collection("users").findOne({

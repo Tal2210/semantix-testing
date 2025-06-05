@@ -15,7 +15,7 @@ export async function GET() {
   if (!session?.user?.email) return unauth();
 
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db("users");
   const users = db.collection("users");
   const user = await users.findOne(
     { email: session.user.email },
@@ -33,7 +33,7 @@ export async function POST() {
   if (!session?.user?.email) return unauth();
 
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db("users");
   const users = db.collection("users");
 
   // Generate a cheap 32‑hex‑chars random key

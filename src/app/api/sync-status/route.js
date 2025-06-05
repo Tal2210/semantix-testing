@@ -10,17 +10,14 @@ export async function GET(req) {
   if (!email) return Response.json({ error:"Unauthorized" }, { status:401 });
 
   const { searchParams } = new URL(req.url);
-  const dbName = searchParams.get("dbName");
-  
-  if (!dbName) return Response.json({ state:"idle", progress: 0, totalProducts: 0, processedCount: 0 });
+  const dbName = searchParams.get("dbName") || "users"; // Default to "users" if not provided
 
   try {
     const client = await clientPromise;
     const db = client.db(dbName);
 
     // Get the sync status
-    const doc = await client
-      .db()
+    const doc = await db
       .collection("sync_status")
       .findOne({ dbName }, { projection:{ _id:0, state:1, progress: 1 } });
 

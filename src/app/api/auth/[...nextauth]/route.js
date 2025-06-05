@@ -18,7 +18,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         const client = await clientPromise;
-        const db = client.db(); // ✅ FIXED: uses the DB from MONGODB_URI
+        const db = client.db("users"); // Use explicit database name
         const user = await db.collection("users").findOne({ username: credentials.username });
         if (!user) throw new Error("No user found with that username");
 
@@ -56,7 +56,7 @@ export const authOptions = {
     async jwt({ token, user }) {
      const client = await clientPromise;
         const doc = await client
-          .db()
+          .db("users")
           .collection("users")
           .findOne({ email: token.email }, { projection:{ onboardingComplete:1 } });
 
@@ -76,7 +76,7 @@ export const authOptions = {
       console.log("User ID:", user.id);
   
       const client = await clientPromise;
-      const db = client.db();
+      const db = client.db("users"); // Use explicit database name
   
       const apiKey = `semantix_${user.id}_${Date.now()}`;
       await db.collection("users").updateOne(

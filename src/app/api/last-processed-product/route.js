@@ -2,7 +2,7 @@ import { getServerSession }   from "next-auth";
 import { authOptions }        from "../auth/[...nextauth]/route";
 import clientPromise          from "/lib/mongodb";
 
-/* GET /api/last-processed-product?dbName=<name> */
+/* GET /api/last-processed-product?dbName=<n> */
 export async function GET(req) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -10,9 +10,8 @@ export async function GET(req) {
   }
 
   const { searchParams } = new URL(req.url);
-  const dbName = searchParams.get("dbName");
-  if (!dbName) return Response.json({ product:null });
-
+  const dbName = searchParams.get("dbName") || "users"; // Default to "users" if not provided
+  
   try {
     const client = await clientPromise;
     const db = client.db(dbName);

@@ -51,7 +51,7 @@ async function validateWooCredentials(wooUrl, wooKey, wooSecret) {
 /* ---------- little helper – write state to Mongo ------------------- */
 async function setJobState(client, dbName, state) {
   await client
-    .db()
+    .db("users")
     .collection("sync_status")
     .updateOne(
       { dbName },
@@ -226,7 +226,7 @@ export async function POST(req) {
 
     /* 4)  persist the credentials  */
     const client = await clientPromise;
-    const users  = client.db().collection("users");
+    const users = client.db("users").collection("users");
 
     // Check if the user already has a record in the database
     // Remove platform from credentials.
