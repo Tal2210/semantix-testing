@@ -24,12 +24,12 @@ export default function SearchDemo() {
     <div className="min-h-screen text-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-center">
-          <h1 className="text-3xl font-bold mb-8 text-center">חיפוש AI</h1>
+          <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
           <img src="ai.png" alt="ai" className="w-9 h-9 mr-2" />
         </div>
 
         <p className="text-gray-600 mb-8 text-center">
-          לפניכם דמו (מצומצם) של המוצר בשני מתארים- חיפוש סמנטי לפי תיאור וחיפוש לפי תוכן תמונה. התוצאות הרלוונטיות ביותר יסודרו מימין לשמאל, כשהתוצאה הרלוונטית ביותר תופיע מימין למעלה.
+          Below is a demo (limited) of the product in two scenarios - semantic search by description and search by image content. The most relevant results will be arranged from left to right, with the most relevant result appearing in the top right.
         </p>
 
         <div className="bg-gray-400 bg-opacity-20 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
@@ -48,9 +48,9 @@ export default function SearchDemo() {
                   transition-all duration-300 mx-1
                 `}
               >
-                {tab === "products" && "יין"}
-                {tab === "jewelry" && "תכשיטים"}
-                {tab === "glasses" && "משקפי שמש"}
+                {tab === "products" && "Wine"}
+                {tab === "jewelry" && "Jewelry"}
+                {tab === "glasses" && "Sunglasses"}
               </button>
             ))}
           </div>
@@ -192,7 +192,7 @@ function ProductSearch() {
   return (
     <div>
       <h1 className="font-bold mb-8">
-        מבוסס על הקטלוג של{" "}
+        Based on the catalog of{" "}
         <a
           href="https://www.manovino.co.il"
           className="text-blue-600"
@@ -206,7 +206,7 @@ function ProductSearch() {
       <div className="flex">
         <input
           type="text"
-          placeholder='"יין אדום לארוחה איטלקית בפחות מ100 שקלים"'
+          placeholder='"Red wine for an Italian dinner under $100"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -220,7 +220,7 @@ function ProductSearch() {
           onClick={handleSearch}
           className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
         >
-          חפש
+          Search
         </button>
       </div>
 
@@ -267,7 +267,7 @@ function ProductSearch() {
               href={product.url}
               className="text-purple-400 hover:text-purple-100 transition-colors duration-200"
             >
-              לפרטים נוספים
+              More Details
             </a>
           </div>
         ))}
@@ -372,7 +372,7 @@ function JewelrySearch() {
   return (
     <div>
       <h1 className="font-bold mb-8">
-        מבוסס על הקטלוג של{" "}
+        Based on the catalog of{" "}
         <a
           href="https://theydream-online.com"
           className="text-blue-600"
@@ -386,7 +386,7 @@ function JewelrySearch() {
       <div className="flex">
         <input
           type="text"
-          placeholder='"כל התכשיטים שיש בהם שמש או ירח"'
+          placeholder='"Jewelry with sun or moon designs"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -400,7 +400,7 @@ function JewelrySearch() {
           onClick={handleSearch}
           className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
         >
-          חפש
+          Search
         </button>
       </div>
 
@@ -430,7 +430,7 @@ function JewelrySearch() {
               href={product.url}
               className="text-purple-300 hover:text-purple-100 transition-colors duration-200"
             >
-              לפרטים נוספים
+              More Details
             </a>
           </div>
         ))}
@@ -523,7 +523,7 @@ function GlassesSearch() {
       <div className="flex">
         <input
           type="text"
-          placeholder='"משקפי שמש עגולים עם מסגרת מטאלית שחורה"'
+          placeholder='"Round sunglasses with black metal frame"'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -537,7 +537,7 @@ function GlassesSearch() {
           onClick={handleSearch}
           className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
         >
-          חפש
+          Search
         </button>
       </div>
 

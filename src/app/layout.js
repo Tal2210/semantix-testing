@@ -15,13 +15,13 @@ if (typeof window === 'undefined') {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "semantix - חיפוש סמנטי מבוסס AI לתוצאות מדויקות בעסק שלך",
-  description: "מנוע החיפוש המתקדם בעולם לחנויות אי-קומרס בכל הפלטפורמות",
+  title: "Semantix - AI-powered Semantic Search for Precise Results in Your Business",
+  description: "The world's most advanced search engine for e-commerce stores on all platforms",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="he" dir="ltr">
+    <html lang="en" dir="ltr">
       <head>
         <Script
           async src="https://www.googletagmanager.com/gtag/js?id=G-BLXY1X669N"
@@ -70,14 +70,14 @@ export default function RootLayout({ children }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={metadata.description} />
-        <meta name="keywords" content="חיפוש סמנטי, AI, semantix, תוצאות מדויקות, חיפוש בעסק, חיפוש חכם" />
+        <meta name="keywords" content="semantic search, AI, semantix, precise results, business search, smart search" />
         <meta name="author" content="semantix"/>
 
         
         <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://semantix.ai" />
+        <meta property="og:url" content="https://www.semantix-ai.com" />
         <meta property="og:image" content="/main-logo.png" />
         
         <meta name="twitter:card" content="summary_large_image" />
@@ -120,7 +120,7 @@ export default function RootLayout({ children }) {
           </main>
 
           <footer className="relative z-10 w-full border-t border-gray-200 py-4 text-center">
-            <p className="text-gray-600">© 2025 סמנטיקס. כל הזכויות שמורות.</p>
+            <p className="text-gray-600">© 2025 Semantix. All rights reserved.</p>
           </footer>
         </div>
       </body>
