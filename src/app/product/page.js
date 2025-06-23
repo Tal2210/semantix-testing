@@ -121,7 +121,7 @@ function ProductSearch() {
       "sale",
     ],
     noHebrewWord: ["אדום", "לבן", "יין", "מבעבע", "רוזה", "מעל", "עד", "מתחת", "יותר"],
-    categories: ", יין לבן, יין אדום, יין מבעבע, יין רוזה",
+    categories: "Red wine, White wine, Rosé wine, Sparkling wine",
   };
 
   // Fetch products when the component mounts
