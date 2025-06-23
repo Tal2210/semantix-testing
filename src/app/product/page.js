@@ -133,7 +133,7 @@ function ProductSearch() {
           "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         );
         const dbName = encodeURIComponent("manoVino");
-        const collectionName = encodeURIComponent("products");
+        const collectionName = encodeURIComponent("products2");
         const limit = 10;
 
         const url = `https://shopifyserver-1.onrender.com/products?mongodbUri=${mongodbUri}&dbName=${dbName}&collectionName=${collectionName}&limit=${limit}`;
