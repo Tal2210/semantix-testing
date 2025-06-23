@@ -99,8 +99,8 @@ function ProductSearch() {
   const requestBody = {
     mongodbUri:
       "mongodb+srv://galpaz2210:22Galpaz22@cluster0.qiplrsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    dbName: "manoVino",
-    collectionName: "products",
+    dbName: "manoVino2",
+    collectionName: "products2",
     query: query,
     noWord: [
       "wine",
