@@ -1,4 +1,108 @@
-/* bump specificity + !important on every property */
+/* ===== MINIMAL SEMANTIX STYLING - PRESERVE NATIVE WOOCOMMERCE DESIGN ===== */
+
+/* Only add minimal spacing for AI labels - don't override WooCommerce layout */
+.semantix-ajax-results-container,
+.semantix-results-container {
+    /* Minimal container styling - let WooCommerce handle the rest */
+    position: relative;
+    margin-top: 20px; /* Small margin for AI labels */
+}
+
+/* Only style the AI Perfect Match labels - leave everything else to WooCommerce */
+.semantix-ajax-results-container ul.products li.semantix-perfect-match::before,
+.semantix-results-container ul.products li.semantix-perfect-match::before,
+.semantix-ajax-results-container .perfect-match-label,
+.semantix-results-container .perfect-match-label {
+    /* AI Label positioning - above the product */
+    position: absolute !important;
+    top: -35px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 15 !important;
+
+    /* AI Label appearance */
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 120px !important;
+    max-width: 200px !important;
+    background-color: #000 !important;
+    color: #fff !important;
+    padding: 6px 12px !important;
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+    border: 1px solid #333 !important;
+    content: "🤖 AI PERFECT MATCH" !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Add space above first row of products for AI labels */
+.semantix-ajax-results-container ul.products,
+.semantix-results-container ul.products {
+    margin-top: 40px !important; /* Space for AI labels on first row */
+}
+
+/* Add space below products for AI labels on next row */
+.semantix-ajax-results-container ul.products li.product,
+.semantix-results-container ul.products li.product {
+    margin-bottom: 35px !important; /* Space for AI labels below */
+}
+
+/* Mobile responsive adjustments for AI labels only */
+@media (max-width: 480px) {
+    .semantix-ajax-results-container ul.products li.semantix-perfect-match::before,
+    .semantix-results-container ul.products li.semantix-perfect-match::before,
+    .semantix-ajax-results-container .perfect-match-label,
+    .semantix-results-container .perfect-match-label {
+        content: "🤖 AI MATCH" !important;
+        font-size: 0.65rem !important;
+        padding: 5px 10px !important;
+        min-width: 100px !important;
+        top: -30px !important;
+    }
+    
+    .semantix-ajax-results-container ul.products,
+    .semantix-results-container ul.products {
+        margin-top: 35px !important;
+    }
+}
+
+/* Minimal loading and message styling */
+.semantix-loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.semantix-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007cba;
+    border-radius: 50%;
+    animation: semantix-spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes semantix-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.semantix-message {
+    text-align: center;
+    padding: 30px 20px;
+    color: #666;
+    background: #f9f9f9;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+/* Suggestion list styling - keep this for search bar functionality */
 html body .semantix-search-bar-container .semantix-suggestions-list {
     position: absolute !important;
     right: 0 !important;
@@ -7,9 +111,8 @@ html body .semantix-search-bar-container .semantix-suggestions-list {
     background-color: #fff !important;
     border: 1px solid #ddd !important;
     border-radius: 4px !important;
-    width: 100% !important;           /* or calc(100% - 2px) */
+    width: 100% !important;
     max-height: 250px !important;
     overflow-y: auto !important;
     z-index: 9999 !important;
-  }
-  
+}

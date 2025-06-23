@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -37,11 +37,8 @@ import {
   Crown,
   CheckCircle,
   AlertCircle,
-  TrendingUp,
-  ShoppingCart,
-  
+  TrendingUp
 } from "lucide-react";
-
 
 // Re‑usable fullscreen message with improved styling
 const FullScreenMsg = ({ children }) => (
@@ -572,8 +569,6 @@ function SubscriptionPanel({ session, onboarding }) {
   );
 }
 
-
-
 // Panel components now receive both session and onboarding
 function AnalyticsPanel({ session, onboarding }) {
   // Use onboarding.credentials.dbName (if available) as the database name.
@@ -581,10 +576,6 @@ function AnalyticsPanel({ session, onboarding }) {
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  // Add state for cart analytics
-  const [cartAnalytics, setCartAnalytics] = useState([]);
-  const [loadingCart, setLoadingCart] = useState(false);
-  const [cartError, setCartError] = useState("");
 
   const [filters, setFilters] = useState({
     category: "",
@@ -619,29 +610,6 @@ function AnalyticsPanel({ session, onboarding }) {
         setError(err.message);
       } finally {
         setLoading(false);
-      }
-    })();
-  }, [onboardDB]);
-
-  // Fetch cart analytics data
-  useEffect(() => {
-    if (!onboardDB) return;
-    (async () => {
-      setLoadingCart(true);
-      setCartError("");
-      try {
-        const res = await fetch("/api/cart-analytics", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ dbName: onboardDB })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Error fetching cart analytics");
-        setCartAnalytics(data.cartItems || []);
-      } catch (err) {
-        setCartError(err.message);
-      } finally {
-        setLoadingCart(false);
       }
     })();
   }, [onboardDB]);
@@ -753,59 +721,6 @@ function AnalyticsPanel({ session, onboarding }) {
     document.body.removeChild(link);
   };
 
-  // Calculate cart conversion metrics
-  const cartMetrics = useMemo(() => {
-    if (!cartAnalytics.length || !queries.length) return { 
-      conversionRate: 0, 
-      totalCartItems: 0,
-      topQueries: []
-    };
-
-    const totalCartItems = cartAnalytics.length;
-    const conversionRate = ((totalCartItems / queries.length) * 100).toFixed(2);
-    
-    // Group by search query to find top converting queries
-    const queryGroups = {};
-    cartAnalytics.forEach(item => {
-      if (!item.search_query) return;
-      
-      if (!queryGroups[item.search_query]) {
-        queryGroups[item.search_query] = {
-          query: item.search_query,
-          count: 0,
-          products: new Set(),
-          revenue: 0
-        };
-      }
-      
-      queryGroups[item.search_query].count += 1;
-      queryGroups[item.search_query].products.add(item.product_id);
-      
-      // Calculate revenue if price is available
-      if (item.product_price) {
-        const price = parseFloat(item.product_price.replace(/[^0-9.]/g, ''));
-        if (!isNaN(price)) {
-          queryGroups[item.search_query].revenue += price * (item.quantity || 1);
-        }
-      }
-    });
-    
-    // Convert to array and sort by count
-    const topQueries = Object.values(queryGroups)
-      .map(group => ({
-        ...group,
-        products: Array.from(group.products).length
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10); // Get top 10
-    
-    return {
-      conversionRate,
-      totalCartItems,
-      topQueries
-    };
-  }, [cartAnalytics, queries]);
-
   return (
     <div className="w-full">
       {/* Page Header with Card-like Design */}
@@ -868,16 +783,7 @@ function AnalyticsPanel({ session, onboarding }) {
         
               </p>
             </div>
-            {/* New cart conversion rate metric */}
-            <div className="p-4 backdrop-blur-sm bg-white/10 rounded-xl">
-              <p className="text-white/70 text-sm mb-1">Cart Conversion</p>
-              <p className="text-3xl font-bold text-white">
-                {cartMetrics.conversionRate}%
-              </p>
-              <p className="text-white/70 text-xs mt-2">
-                {cartMetrics.totalCartItems} items added to cart
-              </p>
-            </div>
+           
           </div>
         </div>
       </header>
@@ -919,7 +825,78 @@ function AnalyticsPanel({ session, onboarding }) {
                 </div>
               </div>
             </div>
-            {/* Other filter options */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Type
+              </label>
+              <input
+                type="text"
+                value={filters.type}
+                onChange={(e) =>
+                  setFilters({ ...filters, type: e.target.value })
+                }
+                placeholder="Filter by type"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-gray-600 placeholder-gray-400"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Min Price
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                <input
+                  type="number"
+                  value={filters.minPrice}
+                  onChange={(e) =>
+                    setFilters({ ...filters, minPrice: e.target.value })
+                  }
+                  placeholder="0.00"
+                  className="w-full p-3 pl-8 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-gray-600 placeholder-gray-400"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max Price
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                <input
+                  type="number"
+                  value={filters.maxPrice}
+                  onChange={(e) =>
+                    setFilters({ ...filters, maxPrice: e.target.value })
+                  }
+                  placeholder="0.00"
+                  className="w-full p-3 pl-8 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-gray-600 placeholder-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-gray-600"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-gray-600"
+              />
+            </div>
           </div>
         </div>
         
@@ -946,102 +923,6 @@ function AnalyticsPanel({ session, onboarding }) {
           )}
         </div>
       </section>
-
-      {/* Cart Analytics Section */}
-      {cartAnalytics.length > 0 && (
-        <section className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 mb-8">
-          <div className="border-b border-gray-100 p-5">
-            <div className="flex items-center">
-              <ShoppingCart className="h-5 w-5 text-indigo-600 mr-2" />
-              <h2 className="text-lg font-semibold text-gray-800">
-                Search to Cart Conversions
-              </h2>
-            </div>
-          </div>
-          
-          <div className="p-6">
-            <h3 className="text-md font-medium text-gray-700 mb-4">Top Converting Search Queries</h3>
-            
-            {loadingCart ? (
-              <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-              </div>
-            ) : cartError ? (
-              <div className="text-center text-red-500 p-4">{cartError}</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full table-auto">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-100">
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Search Query
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Cart Additions
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Unique Products
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Estimated Revenue
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {cartMetrics.topQueries.map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 text-sm text-gray-800 font-medium">
-                          {item.query}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          <span className="inline-block px-2 py-1 text-xs font-medium bg-green-50 text-green-700 rounded-full">
-                            {item.count}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {item.products}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          ${item.revenue.toFixed(2)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            
-            {cartMetrics.topQueries.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-md font-medium text-gray-700 mb-4">Conversion Visualization</h3>
-                <div className="bg-gray-50 rounded-lg p-4 h-64 flex items-end justify-around">
-                  {cartMetrics.topQueries.slice(0, 5).map((item, index) => {
-                    // Calculate relative height (50% to 100% of container)
-                    const maxCount = Math.max(...cartMetrics.topQueries.slice(0, 5).map(q => q.count));
-                    const height = 50 + ((item.count / maxCount) * 50);
-                    
-                    return (
-                      <div key={index} className="flex flex-col items-center">
-                        <div 
-                          className="bg-gradient-to-t from-indigo-500 to-purple-500 rounded-t-md w-16 shadow-md"
-                          style={{ height: `${height}%` }}
-                        >
-                          <div className="text-white text-center font-bold py-2">
-                            {item.count}
-                          </div>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-2 max-w-[80px] truncate text-center" title={item.query}>
-                          {item.query}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
 
       {/* Table Section - Enhanced Design */}
       {filteredQueries.length > 0 && (
@@ -1125,60 +1006,71 @@ function AnalyticsPanel({ session, onboarding }) {
             </table>
           </div>
           
-          {/* Pagination */}
+          {/* Pagination Controls - Enhanced Design */}
           {totalPages > 1 && (
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
-              <nav className="flex items-center justify-between">
-                <div className="hidden sm:block">
-                  <p className="text-sm text-gray-700">
-                    Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{" "}
-                    <span className="font-medium">
-                      {Math.min(currentPage * itemsPerPage, filteredCount)}
-                    </span>{" "}
-                    of <span className="font-medium">{filteredCount}</span> results
-                  </p>
-                </div>
-                <div className="flex-1 flex justify-center sm:justify-end">
+            <div className="border-t border-gray-100 bg-gray-50 p-4 flex justify-center items-center">
+              <nav className="flex items-center space-x-1">
+                <button
+                  className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-indigo-500 hover:text-indigo-600 disabled:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed transition-colors"
+                  onClick={handlePrevious}
+                  disabled={currentPage === 1}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {startPage > 1 && (
+                  <>
+                    <button
+                      className="w-10 h-10 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                      onClick={() => handlePageClick(1)}
+                    >
+                      1
+                    </button>
+                    {startPage > 2 && (
+                      <span className="text-gray-400 px-2">...</span>
+                    )}
+                  </>
+                )}
+                
+                {paginationNumbers.map((number) => (
                   <button
-                    onClick={handlePrevious}
-                    disabled={currentPage === 1}
-                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                      currentPage === 1
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    } mr-2`}
+                    key={number}
+                    className={`w-10 h-10 rounded-lg ${
+                      number === currentPage 
+                        ? "bg-indigo-600 text-white border-indigo-600" 
+                        : "border border-gray-200 bg-white text-gray-600 hover:border-indigo-500 hover:text-indigo-600"
+                    } transition-colors`}
+                    onClick={() => handlePageClick(number)}
                   >
-                    Previous
+                    {number}
                   </button>
-                  
-                  <div className="hidden md:flex">
-                    {paginationNumbers.map(num => (
-                      <button
-                        key={num}
-                        onClick={() => handlePageClick(num)}
-                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded-md ${
-                          currentPage === num
-                            ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                            : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        {num}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  <button
-                    onClick={handleNext}
-                    disabled={currentPage === totalPages}
-                    className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                      currentPage === totalPages
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    } ml-2`}
-                  >
-                    Next
-                  </button>
-                </div>
+                ))}
+                
+                {endPage < totalPages && (
+                  <>
+                    {endPage < totalPages - 1 && (
+                      <span className="text-gray-400 px-2">...</span>
+                    )}
+                    <button
+                      className="w-10 h-10 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                      onClick={() => handlePageClick(totalPages)}
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+                
+                <button
+                  className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-indigo-500 hover:text-indigo-600 disabled:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed transition-colors"
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
               </nav>
             </div>
           )}
@@ -1187,8 +1079,6 @@ function AnalyticsPanel({ session, onboarding }) {
     </div>
   );
 }
-
-
 
 function SettingsPanel({ session, onboarding, handleDownload: externalDownload }) {
   // Use the onboarding payload to populate initial state.
@@ -2054,7 +1944,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between px-6 py-8">
           <div className="flex items-center">
            <Link href="/">
-                         <img src="/main-logo.svg" alt="semantix- semantic search for E-commerce websites" width={250} height={150} />
+                         <img src="/semantix black-cutout.svg" alt="לוגו סמנטיקס - חיפוש סמנטי לעסק שלך" width={250} height={150} />
                        </Link>
           </div>
           <button
