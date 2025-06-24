@@ -18,28 +18,29 @@ const nextConfig = {
               // everything else can run from your own origin
               "default-src 'self'",
 
-              // scripts: Paddle live+sandbox + ProfitWell
+              // scripts: Paddle live+sandbox + ProfitWell + Google Analytics + Shopify
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' " +
                 "https://cdn.paddle.com https://js.paddle.com https://buy.paddle.com " +
-                "https://sandbox-cdn.paddle.com https://public.profitwell.com https://www.googletagmanager.com",
+                "https://sandbox-cdn.paddle.com https://public.profitwell.com https://www.googletagmanager.com " +
+                "https://cdn.shopify.com",
 
               // styles: allow Paddle CSS (live + sandbox)
               "style-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com",
 
               // images: your own + Paddle assets + your specified image domains
-              // MODIFIED: Replaced generic 'https:' with specific domains from nextConfig.images.domains for better security
               "img-src 'self' data: https://paddle.s3.amazonaws.com https://paddle-static.s3.amazonaws.com " +
-                "https://alcohome.co.il https://shipi.b-cdn.net https://theydream-online.com",
+                "https://alcohome.co.il https://shipi.b-cdn.net https://theydream-online.com " +
+                "https://media.getmood.io",
 
               // fonts: Paddle webfonts
               "font-src 'self' data: https://cdn.paddle.com",
 
-              // XHR/websocket/etc: Paddle APIs (live + sandbox) + your dashboard server + blob for downloads
-              // MODIFIED: Added your dashboard server and 'blob:' for potential file downloads (like the CSV)
+              // XHR/websocket/etc: Paddle APIs + your servers + Google Analytics
               "connect-src 'self' https://checkout.paddle.com https://buy.paddle.com " +
                 "https://vendors.paddle.com https://sandbox-vendors.paddle.com " +
                 "https://api.paddle.com https://sandbox-api.paddle.com " +
-                "https://dashboard-server-ae00.onrender.com https://shopifyserver-1.onrender.com blob:", // <<< MODIFICATION HERE
+                "https://dashboard-server-ae00.onrender.com https://shopifyserver-1.onrender.com " +
+                "https://*.google-analytics.com https://region1.google-analytics.com blob:",
 
               // iframes: allow the overlay host (live + sandbox)
               "frame-src 'self' https://checkout.paddle.com https://buy.paddle.com https://sandbox-buy.paddle.com https://js.paddle.com",
