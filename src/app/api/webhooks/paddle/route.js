@@ -203,6 +203,28 @@ export async function GET(request) {
       webhook_secret_configured: !!process.env.PADDLE_WEBHOOK_SECRET,
       api_key_configured: !!process.env.PADDLE_API_KEY,
       public_key_configured: !!process.env.NEXT_PUBLIC_PADDLE_PUBLIC_KEY
+    },
+    debugging_info: {
+      endpoint_url: 'https://www.semantix-ai.com/webhooks/paddle',
+      supported_events: [
+        'subscription.created',
+        'subscription.updated', 
+        'subscription.activated',
+        'subscription_payment_succeeded',
+        'payment_succeeded',
+        'subscription.canceled',
+        'subscription_cancelled'
+      ],
+      email_extraction_sources: [
+        'customer.email (from Paddle API)',
+        'custom_data.userEmail (from checkout)',
+        'data.customer.email',
+        'data.email',
+        'subData.email',
+        'subData.customer_email',
+        'subData.billing.email',
+        'regex search through entire payload'
+      ]
     }
   });
 }
@@ -252,11 +274,27 @@ async function handleSubscriptionCreated(data) {
     console.error(`║ ❌ Error: No email found for customer ${customerId}
 ║ Full payload: ${JSON.stringify(data, null, 2)}
 ╚════════════════════════════════════════════`);
-    const fallbackEmail = subData.custom_data?.userEmail || subData.email;
+    const fallbackEmail = subData.custom_data?.userEmail || subData.email || subData.customer?.email || data.customer?.email;
     if (!fallbackEmail) {
-        throw new Error('No email found in subscription data or customer details');
+        console.error(`║ ⚠️ No fallback email found either`);
+        console.error(`║ 🔍 Available custom_data:`, JSON.stringify(subData.custom_data, null, 2));
+        
+        // Try regex search as last resort
+        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+        const dataStr = JSON.stringify(data);
+        const emailMatches = dataStr.match(emailRegex);
+        
+        if (emailMatches && emailMatches.length > 0) {
+          const foundEmail = emailMatches[0];
+          console.log(`║ 🔍 Found email via regex search: ${foundEmail}`);
+          email = foundEmail;
+        } else {
+          throw new Error('No email found in subscription data, customer details, or custom data');
+        }
+    } else {
+        email = fallbackEmail;
+        console.warn(`║ ⚠️ Using fallback email: ${fallbackEmail}`);
     }
-    console.warn(`║ ⚠️ Using fallback email: ${fallbackEmail}`);
   }
   
   const finalEmail = email || subData.custom_data?.userEmail || subData.email;
@@ -355,13 +393,34 @@ async function handleTransactionCompleted(data) {
     email = subData.custom_data?.userEmail || 
             subData.email || 
             subData.user?.email || 
-            subData.customer?.email;
+            subData.customer?.email ||
+            subData.customer_email ||
+            subData.billing?.email ||
+            data.customer?.email ||
+            data.email;
     
     if (email) {
       console.log(`║ 📧 Using fallback email: ${email}`);
     } else {
       console.error(`║ ❌ No email found in any data source`);
-      throw new Error('No email found for subscription update');
+      console.error(`║ 🔍 Full webhook data for debugging:`, JSON.stringify(data, null, 2));
+      console.error(`║ 🔍 SubData for debugging:`, JSON.stringify(subData, null, 2));
+      
+      // Try one more approach - look for email anywhere in the data
+      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+      const dataStr = JSON.stringify(data);
+      const emailMatches = dataStr.match(emailRegex);
+      
+      if (emailMatches && emailMatches.length > 0) {
+        email = emailMatches[0];
+        console.log(`║ 🔍 Found email via regex search: ${email}`);
+      } else {
+        // As a last resort, log everything and continue with a warning
+        console.error(`║ ⚠️ CRITICAL: Cannot find email anywhere in webhook data`);
+        console.error(`║ ⚠️ This will cause the subscription update to fail`);
+        console.error(`║ ⚠️ Please check Paddle webhook configuration`);
+        throw new Error('No email found for subscription update - check webhook data structure');
+      }
     }
   }
 

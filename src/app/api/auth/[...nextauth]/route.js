@@ -1,106 +1,128 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import { ObjectId } from "mongodb";
-
-import clientPromise from "/lib/mongodb"; // ✅ FIX path
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
+import clientPromise from "/lib/mongodb";
 
 export const authOptions = {
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text", placeholder: "Your username" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const client = await clientPromise;
-        const db = client.db("users"); // Use explicit database name
-        const user = await db.collection("users").findOne({ username: credentials.username });
-        if (!user) throw new Error("No user found with that username");
-
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) throw new Error("Invalid password");
-
-        return {
-          id: user._id,
-          name: user.username,
-          dbName: user.dbName || "defaultDb",
-        };
-      },
-    }),
-
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "select_account", // Force account selection every time
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
+      allowDangerousEmailAccountLinking: true,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        }
+      }
     }),
   ],
 
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: MongoDBAdapter(clientPromise, {
+    collections: {
+      Users: "users",
+      Accounts: "accounts",
+      Sessions: "sessions",
+      VerificationTokens: "verification_tokens",
+    },
+    databaseName: "users"
+  }),
 
-  session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
-  nextAuthUrl: process.env.NEXTAUTH_URL,
+  session: {
+    strategy: "database"
+  },
 
   callbacks: {
-    async jwt({ token, user }) {
-     const client = await clientPromise;
-        const doc = await client
-          .db("users")
-          .collection("users")
-          .findOne({ email: token.email }, { projection:{ onboardingComplete:1 } });
+    async signIn({ user, account, profile, email }) {
+      try {
+        const client = await clientPromise;
+        const db = client.db("users");
+        
+        // Check if user exists
+        const existingUser = await db.collection("users").findOne({ 
+          email: profile.email 
+        });
 
-        token.onboardingComplete = doc?.onboardingComplete ?? false;
-      return token;
+        if (!existingUser) {
+          // Create new user with all required fields
+          await db.collection("users").insertOne({
+            email: profile.email,
+            name: profile.name,
+            image: profile.picture,
+            emailVerified: new Date(),
+            apiKey: `semantix_${new ObjectId()}_${Date.now()}`,
+            tier: "basic",
+            onboardingComplete: false,
+            createdAt: new Date(),
+            provider: "google"
+          });
+          console.log("Created new user:", profile.email);
+        } else {
+          console.log("User exists:", profile.email);
+          // Update existing user's Google-specific fields
+          await db.collection("users").updateOne(
+            { email: profile.email },
+            {
+              $set: {
+                name: profile.name,
+                image: profile.picture,
+                lastLogin: new Date()
+              }
+            }
+          );
+        }
+        return true;
+      } catch (error) {
+        console.error("SignIn error:", error);
+        return false;
+      }
     },
-    async session({ session, token }) {
-      session.user.onboardingComplete = token.onboardingComplete;
-      return session;
+
+    async session({ session, user }) {
+      try {
+        if (session?.user?.email) {
+          const client = await clientPromise;
+          const db = client.db("users");
+          const dbUser = await db.collection("users").findOne({ 
+            email: session.user.email 
+          });
+          
+          if (dbUser) {
+            session.user.id = dbUser._id.toString();
+            session.user.onboardingComplete = dbUser.onboardingComplete ?? false;
+            session.user.tier = dbUser.tier ?? "basic";
+          }
+        }
+        return session;
+      } catch (error) {
+        console.error("Session error:", error);
+        return session;
+      }
     },
   },
 
   events: {
-    async createUser({ user }) {
-      console.log("🔥 createUser triggered for:", user.email);
-      console.log("User data:", user);
-      console.log("User ID:", user.id);
-  
-      const client = await clientPromise;
-      const db = client.db("users"); // Use explicit database name
-  
-      const apiKey = `semantix_${user.id}_${Date.now()}`;
-      await db.collection("users").updateOne(
-        { _id: new ObjectId(user.id) }, // ✅ הפוך את המזהה ל-ObjectId
-        {
-          $set: {
-            apiKey,
-            tier: "basic",
-            onboardingComplete: false,
-            createdAt: new Date(),
-          },
-        },
-        { upsert: true }
-      );
+    async signIn(message) {
+      console.log("SignIn event:", message);
     },
+    async signOut(message) {
+      console.log("SignOut event:", message);
+    },
+    async error(message) {
+      console.error("Auth error:", message);
+    }
   },
-  
-  debug: true,
 
   pages: {
     signIn: "/",
     signOut: "/",
-    error: "/", // You can improve this later
+    error: "/"
   },
+
+  debug: true
 };
 
 const handler = NextAuth(authOptions);

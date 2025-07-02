@@ -262,7 +262,7 @@ function ProductSearch() {
 
             <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
             <p className="text-black-200 mb-3">{product.description}</p>
-            <p className="text-black-300 font-bold mb-4">${product.price}</p>
+            <p className="text-black-300 font-bold mb-4">{product.price}</p>
             <a
               href={product.url}
               className="text-purple-400 hover:text-purple-100 transition-colors duration-200"

@@ -1,30 +1,62 @@
 /* ===== MINIMAL SEMANTIX STYLING - PRESERVE NATIVE WOOCOMMERCE DESIGN ===== */
 
-/* Only add minimal spacing for AI labels - don't override WooCommerce layout */
-.semantix-ajax-results-container,
-.semantix-results-container {
-    /* Minimal container styling - let WooCommerce handle the rest */
+/* Container margin for AI labels */
+#semantix-results-container,
+.semantix-ajax-results-container {
     position: relative;
-    margin-top: 20px; /* Small margin for AI labels */
+    margin-top: 20px;
 }
 
-/* Only style the AI Perfect Match labels - leave everything else to WooCommerce */
-.semantix-ajax-results-container ul.products li.semantix-perfect-match::before,
-.semantix-results-container ul.products li.semantix-perfect-match::before,
-.semantix-ajax-results-container .perfect-match-label,
-.semantix-results-container .perfect-match-label {
-    /* AI Label positioning - above the product */
+/* MOBILE & TABLET: Force one-column grid & center content */
+@media (max-width: 770px) {
+  /* Keep products list as grid */
+  #semantix-results-container ul.products,
+  .semantix-ajax-results-container ul.products {
+    display: grid !important;
+   
+    grid-gap: 1rem !important;
+    margin-top: 35px !important; /* space for labels */
+  }
+
+  /* Ensure each product is visible and flex-centered */
+  #semantix-results-container ul.products li.product,
+  .semantix-ajax-results-container ul.products li.product {
+    display: flex !important;
+   
+    align-items: center;
+    text-align: center;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    margin-bottom: 35px !important; /* space for label */
+  }
+
+  /* Center image inside product */
+  #semantix-results-container ul.products li.product img,
+  .semantix-ajax-results-container ul.products li.product img {
+    margin: 0 auto !important;
+  }
+
+  /* Title & price spacing */
+  #semantix-results-container ul.products li.product .woocommerce-loop-product__title,
+  #semantix-results-container ul.products li.product .price,
+  .semantix-ajax-results-container ul.products li.product .woocommerce-loop-product__title,
+  .semantix-ajax-results-container ul.products li.product .price {
+    margin: 0.5em 0 1em !important;
+    width: 100%;
+  }
+
+  /* Ensure AI labels (::before) are visible */
+  #semantix-results-container ul.products li.semantix-perfect-match::before,
+  .semantix-ajax-results-container ul.products li.semantix-perfect-match::before {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     position: absolute !important;
     top: -35px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 15 !important;
-
-    /* AI Label appearance */
-    display: inline-block !important;
-    width: auto !important;
-    min-width: 120px !important;
-    max-width: 200px !important;
     background-color: #000 !important;
     color: #fff !important;
     padding: 6px 12px !important;
@@ -35,44 +67,32 @@
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
     border: 1px solid #333 !important;
-    content: "🤖 AI PERFECT MATCH" !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    min-width: 120px !important;
+    max-width: 200px !important;
+  }
 }
 
-/* Add space above first row of products for AI labels */
-.semantix-ajax-results-container ul.products,
-.semantix-results-container ul.products {
-    margin-top: 40px !important; /* Space for AI labels on first row */
-}
-
-/* Add space below products for AI labels on next row */
-.semantix-ajax-results-container ul.products li.product,
-.semantix-results-container ul.products li.product {
-    margin-bottom: 35px !important; /* Space for AI labels below */
-}
-
-/* Mobile responsive adjustments for AI labels only */
+/* EXTRA SMALL MOBILE: Shorten label text */
 @media (max-width: 480px) {
-    .semantix-ajax-results-container ul.products li.semantix-perfect-match::before,
-    .semantix-results-container ul.products li.semantix-perfect-match::before,
-    .semantix-ajax-results-container .perfect-match-label,
-    .semantix-results-container .perfect-match-label {
-        content: "🤖 AI MATCH" !important;
-        font-size: 0.65rem !important;
-        padding: 5px 10px !important;
-        min-width: 100px !important;
-        top: -30px !important;
-    }
-    
-    .semantix-ajax-results-container ul.products,
-    .semantix-results-container ul.products {
-        margin-top: 35px !important;
-    }
+  #semantix-results-container ul.products li.semantix-perfect-match::before,
+  .semantix-ajax-results-container ul.products li.semantix-perfect-match::before {
+    content: "🤖 AI MATCH" !important;
+    font-size: 0.65rem !important;
+    padding: 5px 10px !important;
+    min-width: 100px !important;
+    top: -30px !important;
+  }
+
+  #semantix-results-container ul.products,
+  .semantix-ajax-results-container ul.products {
+    margin-top: 30px !important;
+  }
 }
 
-/* Minimal loading and message styling */
+/* Loading spinner and messages */
 .semantix-loading {
     text-align: center;
     padding: 40px 20px;
@@ -102,7 +122,7 @@
     margin: 20px 0;
 }
 
-/* Suggestion list styling - keep this for search bar functionality */
+/* Suggestions list for search bar */
 html body .semantix-search-bar-container .semantix-suggestions-list {
     position: absolute !important;
     right: 0 !important;

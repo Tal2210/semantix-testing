@@ -10,19 +10,59 @@ import processShopifyImages from "/lib/processShopifyImages";
 /* ---------- credential validation helpers ----------------------- */
 async function validateShopifyCredentials(domain, token) {
   try {
-    const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    if (!domain || !token) {
+      console.error('Missing Shopify credentials:', { domain: !!domain, token: !!token });
+      return false;
+    }
+
+    // Remove any protocol and trailing slashes, ensure .myshopify.com is present
+    let cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    if (!cleanDomain.includes('.myshopify.com')) {
+      cleanDomain = `${cleanDomain}.myshopify.com`;
+    }
+
+    // Validate domain format
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(cleanDomain)) {
+      console.error('Invalid Shopify domain format:', cleanDomain);
+      return false;
+    }
+
+    console.log('Attempting to validate Shopify credentials:', { cleanDomain });
     const url = `https://${cleanDomain}/admin/api/2023-10/shop.json`;
     
     const response = await fetch(url, {
       headers: {
         'X-Shopify-Access-Token': token,
         'Content-Type': 'application/json',
+        'User-Agent': 'Semantix/1.0'
       },
+      // Add SSL/TLS configuration
+      cache: 'no-store',
+      next: { revalidate: 0 },
     });
+    
+    if (!response.ok) {
+      console.error('Shopify validation failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        domain: cleanDomain
+      });
+      try {
+        const errorData = await response.json();
+        console.error('Shopify error details:', errorData);
+      } catch (e) {
+        // Ignore json parse error
+      }
+    }
     
     return response.ok;
   } catch (error) {
-    console.error('Shopify validation error:', error);
+    console.error('Shopify validation error:', {
+      error: error.message,
+      domain,
+      stack: error.stack,
+      cause: error.cause
+    });
     return false;
   }
 }
@@ -189,6 +229,11 @@ export async function POST(req) {
       // "text" | "image"
     } = await req.json();
 
+    // Validate dbName is present
+    if (!dbName) {
+      return Response.json({ error: "missing dbName" }, { status: 400 });
+    }
+
     /* 3) Validate platform credentials before proceeding */
     let isValidCredentials = false;
     
@@ -229,20 +274,39 @@ export async function POST(req) {
     const users = client.db("users").collection("users");
 
     // Check if the user already has a record in the database
+    const existingUser = await users.findOne({ email: userEmail });
+    const isFirstTimeOnboarding = !existingUser?.onboardingComplete;
+
     // Remove platform from credentials.
     const credentials =
       platform === "shopify"
         ? { shopifyDomain, shopifyToken, categories, dbName, type }
         : { wooUrl, wooKey, wooSecret, categories, dbName, type };
 
+    // Update the user record with credentials and trial information
+    const updateData = {
+      credentials,
+      onboardingComplete: true,
+      dbName,
+      platform,
+      syncMode,
+      updatedAt: new Date()
+    };
+
+    // Only set trialStartedAt if this is the first time onboarding
+    if (isFirstTimeOnboarding) {
+      updateData.trialStartedAt = new Date();
+      updateData.trialStatus = 'active';
+    }
+
     // Update the user so that the platform is saved as a top-level field
     await users.updateOne(
       { email: userEmail },
-      { $set: { credentials, onboardingComplete: true, dbName, platform, syncMode } },
+      { $set: updateData },
       { upsert: true }
     );
-    await createEmbeddingIndex(client, dbName);
 
+    await createEmbeddingIndex(client, dbName);
     await createAutocompleteIndex(client, dbName);
 
     /* 5)  mark job=running and launch the heavy lift in background  */
@@ -276,7 +340,11 @@ export async function POST(req) {
     })();
 
     /* 6)  send the client away – 202 Accepted = "working on it" */
-    return Response.json({ success: true, state: "running" }, { status: 202 });
+    return Response.json({ 
+      success: true, 
+      state: "running",
+      isNewTrial: isFirstTimeOnboarding 
+    }, { status: 202 });
   } catch (err) {
     console.error("[onboarding error]", err);
     return Response.json({ error: "Something went wrong" }, { status: 500 });
@@ -291,10 +359,10 @@ export async function GET(req) {
   if (!dbName) return Response.json({ error: "missing dbName" }, { status: 400 });
 
   const client = await clientPromise;
-  const doc    = await client
-                    .db()
-                    .collection("sync_status")
-                    .findOne({ dbName }, { projection: { _id: 0 } });
+  const doc = await client
+    .db()
+    .collection("sync_status")
+    .findOne({ dbName }, { projection: { _id: 0 } });
 
   return Response.json({ state: doc?.state || "pending" });
 }

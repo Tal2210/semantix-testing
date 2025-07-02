@@ -57,8 +57,25 @@ export default function HeaderAuthButton() {
     });
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
-    router.push("/");
+    try {
+      // First clear any local state/storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+      
+      // Sign out and force a full page reload to clear all state
+      await signOut({ 
+        redirect: false
+      });
+      
+      // Manual redirect after cleanup
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Fallback: force reload if something goes wrong
+      window.location.reload();
+    }
   };
 
   return (
@@ -67,36 +84,33 @@ export default function HeaderAuthButton() {
       <div dir="ltr" className="relative z-[9999]">
         {session ? (
           <div className="flex items-center gap-3">
-            {/* DASHBOARD BUTTON MADE INVISIBLE */}
-            {null}
-            {/* <button
-              onClick={() => router.push("/dashboard")}
+            <Link
+              href="/dashboard"
               className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
             >
               <LayoutDashboard size={18} className="stroke-[2.5]" />
               <span>Dashboard</span>
-            </button> */}
+            </Link>
             
             <button 
               onClick={handleLogout}
-              className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+              className="flex items-center gap-2 py-2 px-4 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-300 text-sm font-medium"
               aria-label="Sign out"
             >
               <LogOut size={18} />
+              <span>Logout</span>
             </button>
           </div>
         ) : (
-          // SIGN IN BUTTON MADE INVISIBLE
-          null
-          // <button
-          //   ref={buttonRef}
-          //   onClick={() => setShow((s) => !s)}
-          //   className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
-          //   aria-label="Sign in"
-          // >
-          //   <LogIn size={18} className="stroke-[2.5]" />
-          //   <span>Sign In</span>
-          // </button>
+          <button
+            ref={buttonRef}
+            onClick={() => setShow((s) => !s)}
+            className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
+            aria-label="Sign in"
+          >
+            <LogIn size={18} className="stroke-[2.5]" />
+            <span>Sign In</span>
+          </button>
         )}
       </div>
 

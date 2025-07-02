@@ -1,34 +1,10 @@
 "use client";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  /* ----------------- handlers ----------------- */
-  const handleCredentialsLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    try {
-      const res = await signIn("credentials", {
-        redirect: false,
-        username,
-        password,
-      });
-      if (res.error) setError("Invalid username or password");
-      else router.push("/dashboard");
-    } catch {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     try {
@@ -41,85 +17,34 @@ export default function LoginPage() {
     }
   };
 
-  /* ----------------- UI ----------------- */
   return (
-    <div
-      dir="ltr"
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-100 p-4"
-    >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-          <h1 className="text-3xl font-bold text-center">Welcome Back</h1>
-          <p className="text-blue-100 text-center mt-2">Sign in to continue</p>
-        </div>
-
-        <div className="p-8 space-y-6">
-          {/* credentials form */}
-          <form onSubmit={handleCredentialsLogin} className="space-y-5">
-            {/* username */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Username
-              </label>
-              <input
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
+      {/* Animated background shapes */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-purple-300 to-pink-200 rounded-full filter blur-3xl opacity-30 animate-pulse z-0" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full filter blur-3xl opacity-30 animate-pulse z-0" />
+      <div className="w-full max-w-md z-10">
+        <div className="bg-white/90 rounded-3xl shadow-2xl px-10 py-12 flex flex-col items-center relative">
+          {/* Logo/Icon */}
+          <div className="mb-6">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 48 48">
+                <rect width="48" height="48" rx="24" fill="currentColor" />
+                <text x="50%" y="56%" textAnchor="middle" fill="#fff" fontSize="22" fontWeight="bold" fontFamily="sans-serif" dy=".3em">S</text>
+              </svg>
             </div>
-            {/* password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="text-right">
-              <a className="text-sm text-blue-600 hover:text-blue-800">
-                Forgot password?
-              </a>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition disabled:opacity-70"
-            >
-              {isLoading ? "Signing in..." : "Sign in with Username"}
-            </button>
-          </form>
-
-          {/* divider */}
-          <div className="relative text-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
-            </div>
-            <span className="relative bg-white px-4 text-sm text-gray-500">
-              or
-            </span>
           </div>
-
+          {/* Headline & tagline */}
+          <h1 className="text-3xl font-extrabold text-gray-900 text-center mb-2">Sign in to Semantix AI</h1>
+          <p className="text-lg text-gray-500 text-center mb-8">AI-powered search for your store. Use your Google account to continue.</p>
           {/* Google button with logo */}
           <button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full bg-white border border-gray-300 py-3 rounded-lg font-medium flex items-center justify-center gap-3 hover:bg-gray-50 transition disabled:opacity-70"
+            className="w-full flex items-center justify-center gap-4 py-4 px-6 bg-white border-2 border-gray-200 rounded-xl font-semibold text-lg shadow-md hover:shadow-xl hover:border-blue-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-70 mb-4"
+            style={{ minHeight: 56 }}
           >
-            {/* Google SVG */}
             <svg
-              className="w-5 h-5"
+              className="w-7 h-7"
               viewBox="0 0 533.5 544.3"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -140,28 +65,36 @@ export default function LoginPage() {
                 d="M272 107.7c39.9-.6 77.9 14.1 107 40.8l80.1-80.1C381.6 15.4 311.8-4.2 238 0 134.8 0 45.2 61.2 13.7 149.3l89 70.6C141 155.5 201.1 107.7 272 107.7z"
               />
             </svg>
-            {isLoading ? "Redirecting..." : "Sign in with Google"}
+            {isLoading ? "Redirecting..." : "Continue with Google"}
           </button>
-
-          {/* error */}
+          {/* Error message */}
           {error && (
-            <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-3 rounded-md">
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="w-full mt-2 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-center animate-pulse shadow-sm">
+              <span className="font-semibold">{error}</span>
             </div>
           )}
-
           {/* sign‑up note */}
-          <p className="text-center text-gray-600 text-sm mt-6">
-            Don’t have an account?{" "}
+          <p className="text-center text-gray-500 text-base mt-8">
+            Don’t have an account?{' '}
             <a
               onClick={handleGoogleSignIn}
-              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+              className="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer transition-colors"
             >
               Sign up with Google
             </a>
           </p>
         </div>
       </div>
+      <style jsx>{`
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-pulse {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

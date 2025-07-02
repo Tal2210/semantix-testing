@@ -77,16 +77,20 @@ export default function SubscriptionPage() {
 
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 py-12 px-4">
-      {/* Page Header */}
-      <header className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-            Choose Your Plan
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-            Simple, transparent pricing. Select the plan that best fits your business needs and start leveraging AI-powered semantic search today.
-          </p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+      {/* Launch Era Banner */}
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-base font-semibold shadow-lg mb-4">
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" /></svg>
+          Free for now! Launch Era Pricing
+        </div>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">
+          Get Early Access – $0 for a Limited Time
+        </h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          All plans are <span className="font-bold text-indigo-600">free</span> during our launch era. Enjoy premium features at no cost!
+        </p>
+      </div>
 
       {/* Message Display */}
       {message && (
@@ -134,8 +138,14 @@ export default function SubscriptionPage() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
               <div className="mb-4">
-                <span className="text-4xl font-extrabold text-gray-900">${plan.price}</span>
-                <span className="text-gray-500">/month</span>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-4xl font-extrabold text-gray-900">$0</span>
+                  <span className="text-gray-500">/month</span>
+                </div>
+                <div className="mt-1 flex items-center justify-center gap-2">
+                  <span className="text-lg text-gray-400 line-through">${plan.price}/month</span>
+                  <span className="text-sm font-medium text-indigo-600">Free for now!</span>
+                </div>
               </div>
               <p className="text-sm text-gray-500 h-10">{plan.description || ""}</p>
             </div>
@@ -181,7 +191,7 @@ export default function SubscriptionPage() {
                   ) : (
                     <>
                       <TrendingUp className="w-4 h-4 mr-2 inline" />
-                      Choose {plan.name}
+                      Get Early Access
                     </>
                   )}
                 </button>
@@ -190,8 +200,14 @@ export default function SubscriptionPage() {
           </div>
         ))}
       </div>
-       <div className="mt-12 text-center">
-        <p className="text-gray-600">
+       <div className="mt-16 text-center">
+        <div className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-50 border border-indigo-100">
+          <svg className="w-5 h-5 text-indigo-600 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" /></svg>
+          <p className="text-indigo-700 font-medium">
+            Free for now! Launch Era Pricing • Limited Time Only
+          </p>
+        </div>
+        <p className="mt-4 text-gray-600">
           Questions? <Link href="/contact" className="text-indigo-600 hover:underline font-medium">Contact us</Link>.
         </p>
       </div>

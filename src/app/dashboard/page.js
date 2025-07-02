@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import MenuConnector from '../components/MenuConnector';
 
 // ===============================
 // Add this to your existing dashboard file
@@ -129,8 +130,12 @@ function SubscriptionPanel({ session, onboarding }) {
         successUrl: `${window.location.origin}/subscription/success`,
         cancelUrl: `${window.location.origin}/subscription/cancele`,
         customer: {
-          email: session.user.email,
-          id: session.user.id
+          email: session.user.email
+        },
+        custom_data: {
+          userEmail: session.user.email,
+          userId: session.user.id,
+          userName: session.user.name
         },
         business: {
           name: session.user.name || undefined
@@ -1192,7 +1197,7 @@ function AnalyticsPanel({ session, onboarding }) {
 
 function SettingsPanel({ session, onboarding, handleDownload: externalDownload }) {
   // Use the onboarding payload to populate initial state.
-  const [dbName, setDbName] = useState(onboarding?.dbName || "");
+  const [dbName, setDbName] = useState(onboarding?.credentials?.dbName || "");
   const [categories, setCategories] = useState(
     onboarding?.credentials?.categories
       ? Array.isArray(onboarding.credentials.categories)
@@ -1235,58 +1240,153 @@ function SettingsPanel({ session, onboarding, handleDownload: externalDownload }
 
   // Resync handler – uses the onboard data from props.
   async function handleResync() {
+    // Validate dbName before proceeding
+    if (!dbName) {
+      setMsg("❌ Store name is required for resync");
+      setTimeout(() => setMsg(""), 2000);
+      return;
+    }
+
+    // Validate platform-specific credentials
+    if (platform === "shopify" && (!cred.shopifyDomain || !cred.shopifyToken)) {
+      setMsg("❌ Shopify domain and access token are required");
+      setTimeout(() => setMsg(""), 2000);
+      return;
+    } else if (platform === "woocommerce" && (!cred.wooUrl || !cred.wooKey || !cred.wooSecret)) {
+      setMsg("❌ WooCommerce URL, consumer key, and secret are required");
+      setTimeout(() => setMsg(""), 2000);
+      return;
+    }
+
     setResyncing(true);
     setMsg("");
     try {
-      // Use the onboarding payload as the POST body.
+      // Format Shopify domain if platform is shopify
+      let formattedCred = { ...cred };
+      if (platform === "shopify" && formattedCred.shopifyDomain) {
+        let domain = formattedCred.shopifyDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        if (!domain.includes('.myshopify.com')) {
+          domain = `${domain}.myshopify.com`;
+        }
+        formattedCred.shopifyDomain = domain;
+      }
+
+      // Prepare platform-specific credentials
+      const platformCredentials = platform === "shopify" 
+        ? {
+            shopifyDomain: formattedCred.shopifyDomain,
+            shopifyToken: formattedCred.shopifyToken,
+          }
+        : {
+            wooUrl: formattedCred.wooUrl,
+            wooKey: formattedCred.wooKey,
+            wooSecret: formattedCred.wooSecret,
+          };
+
+      // Build the payload
+      const payload = {
+        platform,
+        dbName,
+        categories: categories.split(",").map(s => s.trim()).filter(Boolean),
+        type: onboarding?.credentials?.type || "text",
+        syncMode: onboarding?.syncMode || "text",
+        ...platformCredentials // Include credentials at top level for API compatibility
+      };
+
+      console.log('Sending resync request with payload:', {
+        ...payload,
+        shopifyToken: payload.shopifyToken ? '***' : undefined,
+        wooSecret: payload.wooSecret ? '***' : undefined
+      });
+
       const res = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(onboarding)
+        credentials: "include",
+        body: JSON.stringify(payload)
       });
-      let json = {};
-      try {
-        json = await res.json();
-      } catch (err) {
-        json = { success: true };
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.message || data.error || `Server returned ${res.status}`);
       }
-      setMsg(json.success ? "🔄 Resync started!" : "❌ Error starting resync");
+
+      setMsg("🔄 Resync started!");
     } catch (err) {
-      setMsg("❌ Error starting resync");
+      console.error("Resync error:", err);
+      setMsg(`❌ ${err.message || "Error starting resync"}`);
     } finally {
       setResyncing(false);
-      setTimeout(() => setMsg(""), 2000);
+      setTimeout(() => setMsg(""), 5000);
     }
   }
 
   // Save handler – update settings using the data from state.
   async function handleSave(e) {
     e.preventDefault();
+    
+    // Validate dbName before proceeding
+    if (!dbName) {
+      setMsg("❌ Store name is required");
+      setTimeout(() => setMsg(""), 2000);
+      return;
+    }
+    
     setSaving(true);
     setMsg("");
     try {
-      const ok = await fetch("/api/onboarding", {
+      // Prepare the categories array
+      const categoriesArray = categories.split(",").map(s => s.trim()).filter(Boolean);
+      
+      // Format Shopify domain if platform is shopify
+      let formattedCred = { ...cred };
+      if (platform === "shopify" && formattedCred.shopifyDomain) {
+        let domain = formattedCred.shopifyDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        if (!domain.includes('.myshopify.com')) {
+          domain = `${domain}.myshopify.com`;
+        }
+        formattedCred.shopifyDomain = domain;
+      }
+
+      // Prepare platform-specific credentials
+      const platformCredentials = platform === "shopify" 
+        ? {
+            shopifyDomain: formattedCred.shopifyDomain,
+            shopifyToken: formattedCred.shopifyToken,
+          }
+        : {
+            wooUrl: formattedCred.wooUrl,
+            wooKey: formattedCred.wooKey,
+            wooSecret: formattedCred.wooSecret,
+          };
+
+      const payload = {
+        platform,
+        dbName,
+        categories: categoriesArray,
+        type: onboarding?.credentials?.type || "text",
+        syncMode: onboarding?.syncMode || "text",
+        ...platformCredentials
+      };
+
+      const response = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          platform,
-          dbName,
-          categories: categories.split(",").map(s => s.trim()).filter(Boolean),
-          shopifyDomain: cred.shopifyDomain,
-          shopifyToken: cred.shopifyToken,
-          wooUrl: cred.wooUrl,
-          wooKey: cred.wooKey,
-          wooSecret: cred.wooSecret,
-          shopifyToken: cred.shopifyToken,
-          wooUrl: cred.wooUrl,
-          wooKey: cred.wooKey,
-          wooSecret: cred.wooSecret
-        })
-      }).then(r => r.ok);
-      setMsg(ok ? "✅ Saved!" : "❌ Error saving");
-      if (ok) setEditing(false);
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Failed to save settings");
+      }
+      
+      setMsg("✅ Saved!");
+      setEditing(false);
     } catch (err) {
-      setMsg("❌ Error saving");
+      console.error("Save error:", err);
+      setMsg(`❌ ${err.message || "Error saving"}`);
     } finally {
       setSaving(false);
       setTimeout(() => setMsg(""), 2000);
@@ -1917,6 +2017,7 @@ export default function DashboardPage() {
   const [active, setActive] = useState("analytics");
   const [onboarding, setOnboarding] = useState(null);
   const [loadingOnboarding, setLoadingOnboarding] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -1935,37 +2036,118 @@ export default function DashboardPage() {
     }
   ]);
 
+  // Debug loading states
+  useEffect(() => {
+    console.log('Session status:', status);
+    console.log('Loading onboarding:', loadingOnboarding);
+  }, [status, loadingOnboarding]);
+
+  // Add global debug function - moved here to maintain hook order
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Make this function available globally so it can be called from anywhere
+      window.openMobileMenu = () => {
+        console.log('Opening mobile menu via global function');
+        setMobileMenuOpen(true);
+      };
+      
+      window.closeMobileMenu = () => {
+        console.log('Closing mobile menu via global function');
+        setMobileMenuOpen(false);
+      };
+      
+      window.toggleMobileMenu = () => {
+        setMobileMenuOpen(prev => {
+          const newState = !prev;
+          console.log('Menu state toggled via global function to:', newState);
+          return newState;
+        });
+      };
+      
+      // Add event listener to the document for a custom event
+      document.addEventListener('toggleMobileMenu', () => {
+        window.toggleMobileMenu();
+      });
+      
+      document.addEventListener('openMobileMenu', () => {
+        window.openMobileMenu();
+      });
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete window.toggleMobileMenu;
+        delete window.openMobileMenu;
+        delete window.closeMobileMenu;
+        document.removeEventListener('toggleMobileMenu', window.toggleMobileMenu);
+        document.removeEventListener('openMobileMenu', window.openMobileMenu);
+      }
+    };
+  }, []);
+
   // Check URL parameters for panel selection
   useEffect(() => {
-    // Get the panel parameter from the URL
     const params = new URLSearchParams(window.location.search);
     const panelParam = params.get('panel');
-    
-    // Check if it's a valid panel ID
     if (panelParam && PANELS.some(p => p.id === panelParam)) {
       setActive(panelParam);
     }
   }, []);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
-    else if (session?.user?.onboardingComplete === false) router.push("/onboarding");
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+    if (session?.user?.onboardingComplete === false) {
+      router.push("/onboarding");
+      return;
+    }
   }, [status, session, router]);
 
+  // Fetch onboarding data
   useEffect(() => {
-    (async () => {
+    let mounted = true;
+
+    const fetchOnboarding = async () => {
       try {
         const res = await fetch("/api/get-onboarding");
         const json = await res.json();
+        
+        if (!mounted) return;
+        
         if (json?.onboarding) {
           setOnboarding(json.onboarding);
         }
       } catch (err) {
         console.warn("Error fetching onboarding:", err);
       } finally {
-        setLoadingOnboarding(false);
+        if (mounted) {
+          setLoadingOnboarding(false);
+        }
       }
-    })();
+    };
+
+    if (session?.user) {
+      fetchOnboarding();
+    } else {
+      setLoadingOnboarding(false);
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [session]);
+
+  // Close mobile menu on resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const markAllAsRead = () => {
@@ -1974,14 +2156,44 @@ export default function DashboardPage() {
 
   const unreadCount = notifications.filter(note => note.unread).length;
 
-  if (status === "loading" || loadingOnboarding) return <FullScreenMsg>Loading session…</FullScreenMsg>;
-  if (!session) return null;
+  // Show loading state only if session is loading or onboarding is loading and session exists
+  if (status === "loading" || (loadingOnboarding && session)) {
+    console.log('Showing loading state');
+    return <FullScreenMsg>Loading session…</FullScreenMsg>;
+  }
+
+  // Return null if no session
+  if (!session) {
+    console.log('No session, returning null');
+    return null;
+  }
 
   const Panel = PANELS.find(p => p.id === active)?.component ?? (() => null);
   const ActiveIcon = PANELS.find(p => p.id === active)?.icon || LayoutDashboard;
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Professional Mobile Menu Button - Only visible on mobile */}
+      <button
+        onClick={() => {
+          console.log('Mobile menu button clicked');
+          setMobileMenuOpen(true);
+        }}
+        className="fixed top-4 left-4 z-[60] bg-white shadow-lg hover:shadow-xl border border-gray-200 p-3 rounded-xl transition-all duration-200 hover:scale-105 lg:hidden"
+        style={{
+          position: 'fixed',
+          top: '16px',
+          left: '16px',
+          zIndex: 60
+        }}
+        aria-label="Open navigation menu"
+      >
+        <Menu className="h-6 w-6 text-gray-700" />
+      </button>
+
+      {/* The MenuConnector is no longer needed as the button is self-contained */}
+      {/* <MenuConnector /> */}
+      
       {/* Global styling */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -2036,95 +2248,73 @@ export default function DashboardPage() {
         }
       `}</style>
       
-      {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+      {/* Mobile menu backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm z-[99] lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Mobile menu */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white transform transition-transform duration-200 ease-in-out lg:translate-x-0 flex flex-col rounded-r-3xl shadow-2xl ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-[100] w-72 bg-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col ${
+            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Sidebar header */}
-        <div className="flex items-center justify-between px-6 py-8">
-          <div className="flex items-center">
-           <Link href="/">
-                         <img src="/main-logo.svg" alt="semantix- semantic search for E-commerce websites" width={250} height={150} />
-                       </Link>
-          </div>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <img src="/main-logo.svg" alt="Semantix Logo" className="h-8 w-auto" />
           <button
-            className="lg:hidden p-2 rounded-full hover:bg-gray-100"
-            onClick={() => setSidebarOpen(false)}
+            type="button"
+            className="p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close sidebar menu"
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
         {/* Nav items */}
         <div className="flex-1 px-4 py-6 overflow-y-auto">
-          <div className="mb-8">
-            <h2 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              Main
-            </h2>
-            <nav className="mt-2 space-y-2">
-              {PANELS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActive(item.id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`flex items-center w-full px-3 py-3 rounded-xl text-sm font-medium transition-all ${
-                    active === item.id
-                      ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700"
-                      : "text-gray-700 hover:bg-gray-50"
+          <nav className="space-y-1">
+            {PANELS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActive(item.id);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center w-full px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  active === item.id
+                    ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <item.icon
+                  className={`h-5 w-5 mr-3 ${
+                    active === item.id ? "text-indigo-600" : "text-gray-400"
                   }`}
-                >
-                  <item.icon
-                    className={`h-5 w-5 mr-3 ${
-                      active === item.id
-                        ? "text-indigo-600"
-                        : "text-gray-400"
-                    }`}
-                  />
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-          
-        
+                />
+                {item.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        {/* User profile */}
-        <div className="p-4 border-t border-gray-100">
-          <div className="flex items-center p-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-medium shadow">
-                {session?.user?.name?.charAt(0) || "U"}
-              </div>
-              <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border-2 border-white rounded-full"></span>
+        {/* User profile in mobile menu */}
+        <div className="border-t border-gray-100 p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <img
+                src={session.user.image || "https://ui-avatars.com/api/?name=" + encodeURIComponent(session.user.name)}
+                alt=""
+                className="h-8 w-8 rounded-full"
+              />
             </div>
             <div className="ml-3">
-              <div className="text-sm font-medium text-gray-900">
-                {session?.user?.name || "User"}
-              </div>
-              <div className="text-xs text-gray-500">
-                {session?.user?.email || "user@example.com"}
-              </div>
-            </div>
-            <div className="ml-auto flex">
-              <button 
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <LogOut className="h-5 w-5" />
-              </button>
+              <p className="text-sm font-medium text-gray-700">{session.user.name}</p>
+              <p className="text-xs text-gray-500">{session.user.email}</p>
             </div>
           </div>
         </div>
@@ -2133,17 +2323,12 @@ export default function DashboardPage() {
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Top navbar */}
-        <header className="fixed top-0 right-0 left-0 lg:left-72 z-30 bg-white backdrop-blur-md bg-opacity-80 border-b border-gray-200">
+        <header 
+          className="fixed top-0 right-0 left-0 lg:left-72 z-[60] bg-white/80 backdrop-blur-md border-b border-gray-200"
+        >
           <div className="flex items-center justify-between h-16 px-4 md:px-6">
             <div className="flex items-center">
-              <button
-                className="lg:hidden p-2 rounded-full hover:bg-gray-100 mr-2"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu className="h-6 w-6 text-gray-500" />
-              </button>
-
-              <div className="hidden md:flex items-center">
+              <div className="hidden sm:flex items-center ml-2">
                 <ActiveIcon className="h-6 w-6 text-indigo-600 mr-2" />
                 <h2 className="text-lg font-medium text-gray-800">
                   {PANELS.find(p => p.id === active)?.label || "Dashboard"}
@@ -2151,15 +2336,12 @@ export default function DashboardPage() {
               </div>
             </div>
 
-      
-              {/* Help button */}
-              <button className="hidden md:flex items-center justify-center p-2 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors">
+            <div className="flex items-center space-x-3">
+              <button className="p-2 rounded-xl hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors">
                 <HelpCircle className="h-5 w-5" />
               </button>
-
-      
             </div>
-      
+          </div>
         </header>
 
         {/* Page content */}

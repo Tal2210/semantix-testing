@@ -31,3 +31,33 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes fadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dashboardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeDown {
+  animation: fadeDown 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-dashboardReveal {
+  animation: dashboardReveal 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
