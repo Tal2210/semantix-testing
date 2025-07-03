@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Semantix AI – Native WooCommerce Search (Preserve Original Design)
+ * Template Name: Semantix AI – Native WooCommerce Search (Multilingual)
  * File: search-custom.php
  * Place this file in: /wp-content/plugins/semantix-ai-search/templates/search-custom.php
  */
@@ -28,7 +28,6 @@ get_header();
 
 /* Simple header styling */
 .semantix-header {
-    direction:rtl;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -37,17 +36,19 @@ get_header();
     border-bottom: 1px solid #eee;
 }
 
-.semantix-search-title {
-
+.semantix-search-query {
     font-size: 24px;
     margin: 0;
     color: inherit;
     font-family: inherit;
+    font-weight: 600;
+	padding-left:20px;
 }
 
 .semantix-powered-logo {
     opacity: 0.7;
     transition: opacity 0.3s ease;
+	padding-right:20px;
 }
 
 .semantix-powered-logo:hover {
@@ -73,7 +74,7 @@ get_header();
     border-top: 3px solid #007cba;
     border-radius: 50%;
     animation: semantix-spin 1s linear infinite;
-    margin: 0 auto 15px;
+    margin: 0 auto;
 }
 
 @keyframes semantix-spin {
@@ -98,7 +99,7 @@ get_header();
         gap: 15px;
     }
     
-    .semantix-search-title {
+    .semantix-search-query {
         font-size: 20px;
     }
 }
@@ -107,7 +108,7 @@ get_header();
 <!-- Use theme's content structure -->
 <div class="semantix-wrapper">
     <div class="semantix-header">
-        <h1 class="semantix-search-title" id="semantix-search-title">תוצאות חיפוש</h1>
+        <div class="semantix-search-query" id="semantix-search-query"></div>
         <a href="https://semantix.co.il" target="_blank" class="semantix-powered-logo">
             <img src="https://semantix-ai.com/powered.png" alt="Semantix logo" width="120">
         </a>
@@ -132,7 +133,7 @@ get_header();
     const WP_AJAX_NONCE = <?php echo wp_json_encode( $ajax_nonce ); ?>;
 
     // DOM Elements
-    const searchTitleEl = document.getElementById('semantix-search-title');
+    const searchQueryEl = document.getElementById('semantix-search-query');
     const resultsContainer = document.getElementById('semantix-results-container');
 
     // Get search term
@@ -144,12 +145,12 @@ get_header();
     
     // Initialize
     if (!searchTerm) {
-        showMessage('אנא הכנס מונח חיפוש.');
+        showMessage('');
         return;
     }
 
-    if (searchTitleEl) {
-        searchTitleEl.textContent = `תוצאות חיפוש עבור "${searchTerm}"`;
+    if (searchQueryEl) {
+        searchQueryEl.textContent = searchTerm;
     }
 
     // Start search
@@ -161,15 +162,18 @@ get_header();
         resultsContainer.innerHTML = `
             <div class="semantix-loading">
                 <div class="semantix-spinner"></div>
-                <p>טוען תוצאות...</p>
             </div>
         `;
     }
 
     function showMessage(message) {
-        resultsContainer.innerHTML = `
-            <div class="semantix-message">${message}</div>
-        `;
+        if (message) {
+            resultsContainer.innerHTML = `
+                <div class="semantix-message">${message}</div>
+            `;
+        } else {
+            resultsContainer.innerHTML = '';
+        }
     }
 
     function getCacheKey(term) {
@@ -248,7 +252,7 @@ get_header();
         });
 
         if (productIds.length === 0) {
-            showMessage('לא נמצאו מוצרים תואמים במערכת לאחר סינון.');
+            showMessage('');
             return;
         }
 
@@ -283,7 +287,7 @@ get_header();
 
             const html = await response.text();
             if (!html.trim()) {
-                showMessage('לא ניתן היה להציג את המוצרים (תשובה ריקה מהשרת).');
+                showMessage('');
                 return;
             }
 
@@ -294,7 +298,7 @@ get_header();
 
         } catch (error) {
             console.error('WordPress AJAX Error:', error);
-            showMessage(`שגיאה בהצגת המוצרים: ${error.message}`);
+            showMessage('');
         } finally {
             initializeNativeWooCommerce();
         }
@@ -341,7 +345,7 @@ get_header();
             const semantixProducts = await fetchSemantixProducts();
             
             if (semantixProducts.length === 0) {
-                showMessage('לא נמצאו תוצאות עבור החיפוש שלך.');
+                showMessage('');
                 return;
             }
 
@@ -350,7 +354,7 @@ get_header();
 
         } catch (error) {
             console.error('Search execution error:', error);
-            showMessage(`שגיאה בטעינת התוצאות: ${error.message}`);
+            showMessage('');
         }
     }
 

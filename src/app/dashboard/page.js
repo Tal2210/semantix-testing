@@ -40,6 +40,7 @@ import {
   AlertCircle,
   TrendingUp,
   ShoppingCart,
+  Lock, // Add lock icon
   
 } from "lucide-react";
 
@@ -53,6 +54,30 @@ const FullScreenMsg = ({ children }) => (
   </div>
 );
 
+// Locked panel component
+const LockedPanel = ({ panelName }) => (
+  <div className="max-w-2xl mx-auto">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+      <div className="p-12 text-center">
+        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+          <Lock className="w-10 h-10 text-gray-400" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Panel Temporarily Locked</h2>
+        <p className="text-gray-600 mb-6">
+          The {panelName} panel is currently under development and will be available soon.
+        </p>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-amber-600 mr-3" />
+            <p className="text-amber-800 text-sm">
+              We're working hard to bring you new features. Check back soon!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 function SubscriptionPanel({ session, onboarding }) {
   const { 
@@ -130,12 +155,8 @@ function SubscriptionPanel({ session, onboarding }) {
         successUrl: `${window.location.origin}/subscription/success`,
         cancelUrl: `${window.location.origin}/subscription/cancele`,
         customer: {
-          email: session.user.email
-        },
-        custom_data: {
-          userEmail: session.user.email,
-          userId: session.user.id,
-          userName: session.user.name
+          email: session.user.email,
+          id: session.user.id
         },
         business: {
           name: session.user.name || undefined
@@ -439,45 +460,61 @@ function SubscriptionPanel({ session, onboarding }) {
       {/* Available Plans */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div className="border-b border-gray-100 p-6">
-          <h2 className="text-xl font-semibold text-gray-800">Available Plans</h2>
-          <p className="text-gray-600 mt-1">Choose the plan that fits your needs</p>
+          <h2 className="text-xl font-semibold text-gray-800">Choose Your Plan</h2>
+          <p className="text-gray-600 mt-1">Select the plan that best fits your business needs</p>
         </div>
 
         <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {Object.entries(SUBSCRIPTION_TIERS).map(([key, plan]) => (
               <div
                 key={key}
-                className={`relative rounded-xl border-2 p-6 transition-all ${
+                className={`relative rounded-2xl border-2 p-8 transition-all transform hover:scale-105 ${
                   plan.tier === currentTier
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-indigo-300 bg-white'
+                    ? 'border-green-500 bg-green-50 shadow-lg'
+                    : plan.popular
+                    ? 'border-purple-500 bg-gradient-to-b from-purple-50 to-indigo-50 shadow-lg'
+                    : 'border-gray-200 hover:border-indigo-300 bg-white shadow-md'
                 }`}
               >
                 {plan.tier === currentTier && (
-                  <div className="absolute -top-3 left-4 px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-full">
-                    Current Plan
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-full shadow-lg">
+                    ✓ Current Plan
                   </div>
                 )}
 
-                {plan.tier === 'pro' && plan.tier !== currentTier && (
-                  <div className="absolute -top-3 left-4 px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full">
-                    Most Popular
+                {plan.popular && plan.tier !== currentTier && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-medium rounded-full shadow-lg">
+                    ⭐ Most Popular
                   </div>
                 )}
 
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <div className="text-center mb-8">
                   <div className="mb-4">
-                    <span className="text-3xl font-extrabold text-gray-900">${plan.price}</span>
-                    <span className="text-gray-500">/month</span>
+                    {plan.tier === 'free' ? (
+                      <div className="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+                        <Shield className="w-8 h-8 text-gray-600" />
+                      </div>
+                    ) : (
+                      <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                        <Crown className="w-8 h-8 text-white" />
+                      </div>
+                    )}
                   </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-4xl font-extrabold text-gray-900">${plan.price}</span>
+                    <span className="text-gray-500 text-lg">/month</span>
+                  </div>
+                  <p className="text-gray-600">
+                    {plan.tier === 'free' ? 'Perfect for getting started' : 'Everything you need to grow'}
+                  </p>
                 </div>
 
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
+                    <li key={index} className="flex items-start text-sm">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
@@ -485,28 +522,26 @@ function SubscriptionPanel({ session, onboarding }) {
 
                 <div className="text-center">
                   {plan.tier === currentTier && !isPendingCancellation ? (
-                    <div className="bg-green-100 text-green-700 py-2 px-4 rounded-lg font-medium text-sm">
-                      Your Current Plan
+                    <div className="bg-green-100 text-green-700 py-3 px-6 rounded-xl font-medium">
+                      ✓ Your Current Plan
                     </div>
                   ) : plan.tier === 'free' ? (
-                    <div className="bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium text-sm">
-                      Free Forever
+                    <div className="bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-medium">
+                      Always Free
                     </div>
                   ) : (
                     <button
                       onClick={() => handleUpgrade(plan.tier)}
                       disabled={upgradeLoading === plan.tier}
-                      className={`w-full py-2 px-4 rounded-lg font-medium transition-colors text-sm ${
-                        plan.tier === 'pro'
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                          : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                      className={`w-full py-3 px-6 rounded-xl font-medium transition-all text-base shadow-md hover:shadow-lg transform hover:translate-y-px ${
+                        'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white'
                       } ${
                         upgradeLoading === plan.tier ? 'opacity-50 cursor-not-allowed' : ''
                       }`}
                     >
                       {upgradeLoading === plan.tier ? (
-                        <span className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
@@ -514,8 +549,8 @@ function SubscriptionPanel({ session, onboarding }) {
                         </span>
                       ) : (
                         <>
-                          <TrendingUp className="w-4 h-4 mr-2 inline" />
-                          {currentTier === 'free' ? 'Get Started' : 'Upgrade'}
+                          <Crown className="w-5 h-5 mr-2 inline" />
+                          {currentTier === 'free' ? 'Upgrade to Premium' : 'Switch to Premium'}
                         </>
                       )}
                     </button>
@@ -523,6 +558,54 @@ function SubscriptionPanel({ session, onboarding }) {
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Comparison Table */}
+          <div className="mt-12 bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">Feature Comparison</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">Feature</th>
+                    <th className="text-center py-3 px-4 font-medium text-gray-700">Free</th>
+                    <th className="text-center py-3 px-4 font-medium text-gray-700">Premium</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">Monthly Searches</td>
+                    <td className="py-3 px-4 text-center text-gray-600">100</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">Unlimited</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">AI Recommendations</td>
+                    <td className="py-3 px-4 text-center text-gray-600">Basic</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">Advanced</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">Analytics Dashboard</td>
+                    <td className="py-3 px-4 text-center text-gray-600">Basic</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">Advanced</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">Support</td>
+                    <td className="py-3 px-4 text-center text-gray-600">Email</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">Priority</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">Custom Integrations</td>
+                    <td className="py-3 px-4 text-center text-gray-400">✗</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">✓</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 text-gray-700">A/B Testing</td>
+                    <td className="py-3 px-4 text-center text-gray-400">✗</td>
+                    <td className="py-3 px-4 text-center text-green-600 font-medium">✓</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -2005,7 +2088,7 @@ const PANELS = [
   { id: "analytics", label: "Analytics", component: AnalyticsPanel, icon: BarChart3 },
   { id: "settings", label: "Plugin Settings", component: SettingsPanel, icon: Settings },
   { id: "apikey", label: "API Key", component: ApiKeyPanel, icon: ListTodo },
-  { id: "subscription", label: "Subscription", component: SubscriptionPanel, icon: CreditCard }
+  { id: "subscription", label: "Subscription", component: SubscriptionPanel, icon: CreditCard, locked: true, lockIcon: true }
 ];
 
 /* =================================================================== */
@@ -2090,9 +2173,20 @@ export default function DashboardPage() {
     const params = new URLSearchParams(window.location.search);
     const panelParam = params.get('panel');
     if (panelParam && PANELS.some(p => p.id === panelParam)) {
-      setActive(panelParam);
+      const panel = PANELS.find(p => p.id === panelParam);
+      if (!panel.locked) {
+        setActive(panelParam);
+      }
     }
   }, []);
+
+  // Prevent accessing locked panels
+  useEffect(() => {
+    const currentPanel = PANELS.find(p => p.id === active);
+    if (currentPanel && currentPanel.locked) {
+      setActive("analytics"); // Redirect to analytics if trying to access locked panel
+    }
+  }, [active]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -2170,19 +2264,21 @@ export default function DashboardPage() {
 
   const Panel = PANELS.find(p => p.id === active)?.component ?? (() => null);
   const ActiveIcon = PANELS.find(p => p.id === active)?.icon || LayoutDashboard;
+  const activePanel = PANELS.find(p => p.id === active);
+  const isActivePanelLocked = activePanel?.locked;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Professional Mobile Menu Button - Only visible on mobile */}
+      {/* Professional Mobile Menu Button - Always visible */}
       <button
         onClick={() => {
           console.log('Mobile menu button clicked');
           setMobileMenuOpen(true);
         }}
-        className="fixed top-4 left-4 z-[60] bg-white shadow-lg hover:shadow-xl border border-gray-200 p-3 rounded-xl transition-all duration-200 hover:scale-105 lg:hidden"
+        className="fixed top-8 left-4 z-[60] bg-white shadow-lg hover:shadow-xl border border-gray-200 p-3 rounded-xl transition-all duration-200 hover:scale-105 lg:hidden"
         style={{
           position: 'fixed',
-          top: '16px',
+          top: '70px',
           left: '16px',
           zIndex: 60
         }}
@@ -2282,21 +2378,30 @@ export default function DashboardPage() {
               <button
                 key={item.id}
                 onClick={() => {
-                  setActive(item.id);
-                  setMobileMenuOpen(false);
+                  if (!item.locked) {
+                    setActive(item.id);
+                    setMobileMenuOpen(false);
+                  }
                 }}
+                disabled={item.locked}
                 className={`flex items-center w-full px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   active === item.id
                     ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700"
+                    : item.locked
+                    ? "text-gray-400 cursor-not-allowed opacity-60"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 <item.icon
                   className={`h-5 w-5 mr-3 ${
-                    active === item.id ? "text-indigo-600" : "text-gray-400"
+                    active === item.id ? "text-indigo-600" : 
+                    item.locked ? "text-gray-300" : "text-gray-400"
                   }`}
                 />
-                {item.label}
+                <span className="flex-1 text-left">{item.label}</span>
+                {item.lockIcon && (
+                  <Lock className="h-4 w-4 text-gray-400 ml-2" />
+                )}
               </button>
             ))}
           </nav>
@@ -2346,7 +2451,11 @@ export default function DashboardPage() {
 
         {/* Page content */}
         <main className="pt-16 p-4 md:p-8 max-w-7xl mx-auto">
-          <Panel session={session} onboarding={onboarding} />
+          {isActivePanelLocked ? (
+            <LockedPanel panelName={activePanel?.label} />
+          ) : (
+            <Panel session={session} onboarding={onboarding} />
+          )}
         </main>
       </div>
     </div>

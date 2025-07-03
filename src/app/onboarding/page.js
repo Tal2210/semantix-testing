@@ -83,11 +83,18 @@ export default function OnboardingPage() {
       color: "#722F37"
     },
     fashion: {
-      name: "F",
+      name: "Fashion Store",
       hebrewName: "Fashion Store",
       icon: "👕",
-      categories: ["Men's Wear", "Women's Wear", "Accessories", "Footwear"],
-      types: ["Casual", "Formal", "Sports", "Seasonal"],
+      categories: [
+        "T-Shirts", "Shirts", "Blouses", "Sweaters", "Hoodies", 
+        "Jackets", "Coats", "Blazers", "Cardigans",
+        "Jeans", "Pants", "Trousers", "Shorts", "Skirts", "Dresses",
+        "Shoes", "Sneakers", "Boots", "Sandals", "Heels",
+        "Bags", "Belts", "Hats", "Scarves", "Jewelry", "Watches",
+        "Underwear", "Socks", "Swimwear", "Activewear", "Sleepwear"
+      ],
+      types: ["Men", "Women", "Children"],
       color: "#4A90E2"
     },
 
