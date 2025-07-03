@@ -256,7 +256,7 @@ async function handleSubscriptionCreated(data) {
 
   const customer = await paddle.getCustomer(customerId);
   console.log(`║ 👤 Customer Details:`, customer);
-  const email = customer?.email;
+  let email = customer?.email;
 
   const tier = getTierFromPriceId(priceId);
   console.log(`║ ✨ Determined Tier:`, tier);
