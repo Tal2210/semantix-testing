@@ -256,7 +256,7 @@ async function handleSubscriptionCreated(data) {
 
   const customer = await paddle.getCustomer(customerId);
   console.log(`║ 👤 Customer Details:`, customer);
-  const email = customer?.email;
+  let email = customer?.email;
 
   const tier = getTierFromPriceId(priceId);
   console.log(`║ ✨ Determined Tier:`, tier);
@@ -270,32 +270,7 @@ async function handleSubscriptionCreated(data) {
 ║ Calculated Tier: ${tier}
 ╠════════════════════════════════════════════`);
 
-  if (!email) {
-    console.error(`║ ❌ Error: No email found for customer ${customerId}
-║ Full payload: ${JSON.stringify(data, null, 2)}
-╚════════════════════════════════════════════`);
-    const fallbackEmail = subData.custom_data?.userEmail || subData.email || subData.customer?.email || data.customer?.email;
-    if (!fallbackEmail) {
-        console.error(`║ ⚠️ No fallback email found either`);
-        console.error(`║ 🔍 Available custom_data:`, JSON.stringify(subData.custom_data, null, 2));
-        
-        // Try regex search as last resort
-        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
-        const dataStr = JSON.stringify(data);
-        const emailMatches = dataStr.match(emailRegex);
-        
-        if (emailMatches && emailMatches.length > 0) {
-          const foundEmail = emailMatches[0];
-          console.log(`║ 🔍 Found email via regex search: ${foundEmail}`);
-          email = foundEmail;
-        } else {
-          throw new Error('No email found in subscription data, customer details, or custom data');
-        }
-    } else {
-        email = fallbackEmail;
-        console.warn(`║ ⚠️ Using fallback email: ${fallbackEmail}`);
-    }
-  }
+  
   
   const finalEmail = email || subData.custom_data?.userEmail || subData.email;
 
