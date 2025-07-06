@@ -263,27 +263,100 @@ function ProductSearch() {
             <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
             {product.description && (
               <div className="text-black-200 mb-3 space-y-2">
-                {product.description.split(/(?=Product Description:|Product Character:|Food Pairing:|\n| - )/g).map((part, idx) => {
-                  // Bold section headers
-                  if (/^Product Description:/.test(part)) {
-                    return <p key={idx}><span className="font-bold">Product Description:</span>{part.replace(/^Product Description:/, "")}</p>;
-                  }
-                  if (/^Product Character:/.test(part)) {
-                    return <p key={idx}><span className="font-bold">Product Character:</span>{part.replace(/^Product Character:/, "")}</p>;
-                  }
-                  if (/^Food Pairing:/.test(part)) {
-                    return <p key={idx}><span className="font-bold">Food Pairing:</span>{part.replace(/^Food Pairing:/, "")}</p>;
-                  }
-                  // List items
-                  if (/^ - /.test(part)) {
-                    return <li key={idx} className="ml-4 list-disc">{part.replace(/^ - /, "")}</li>;
-                  }
-                  // Otherwise, just a paragraph
-                  return <p key={idx}>{part.trim()}</p>;
-                })}
+                {product.description
+                  .split(/(?=Product Description:|Product Character:|Food Pairing:|Kosher:|In our words:|Grape:|Region:|Alcohol:|Taste:|Aroma:|Finish:|\n| - )/g)
+                  .map((part, idx) => {
+                    const trimmedPart = part.trim();
+                    
+                    // Skip empty parts
+                    if (!trimmedPart) return null;
+                    
+                    // Bold section headers
+                    if (/^Product Description:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Product Description:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Product Description:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Product Character:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Product Character:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Product Character:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Food Pairing:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Food Pairing:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Food Pairing:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Kosher:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Kosher:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Kosher:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^In our words:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^In our words:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">In our words:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Grape:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Grape:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Grape:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Region:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Region:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Region:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Alcohol:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Alcohol:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Alcohol:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Taste:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Taste:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Taste:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Aroma:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Aroma:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Aroma:</span> {content}</p>
+                      ) : null;
+                    }
+                    if (/^Finish:/.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^Finish:/, "").trim();
+                      return content ? (
+                        <p key={idx}><span className="font-bold">Finish:</span> {content}</p>
+                      ) : null;
+                    }
+                    // List items
+                    if (/^ - /.test(trimmedPart)) {
+                      const content = trimmedPart.replace(/^ - /, "").trim();
+                      return content ? (
+                        <li key={idx} className="ml-4 list-disc">{content}</li>
+                      ) : null;
+                    }
+                    // Otherwise, just a paragraph (only if not empty)
+                    return trimmedPart ? <p key={idx}>{trimmedPart}</p> : null;
+                  })
+                  .filter(Boolean) // Remove null values
+                }
               </div>
             )}
-            <p className="text-black-300 font-bold mb-4">{product.price}</p>
+            <p className="text-black-300 font-bold mb-4">
+              {typeof product.price === 'number' 
+                ? `$${product.price.toFixed(2)}` 
+                : product.price}
+            </p>
             <a
               href={product.url}
               className="text-purple-400 hover:text-purple-100 transition-colors duration-200"

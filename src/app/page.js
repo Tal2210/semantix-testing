@@ -415,100 +415,6 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Features Section - Enhanced */}
-        <section id="features" className="py-20 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                Everything You Need to Delight Customers
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Powerful features that work together to create the ultimate shopping experience
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {features.map((feature, index) => (
-                <div key={index} className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-purple-200">
-                  <div className="mb-4">
-                    <h3 className="text-2xl font-bold text-gray-800">{feature.title}</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6">{feature.description}</p>
-                  <ul className="space-y-2">
-                    {feature.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-gray-700">
-                        <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {detail}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works - Enhanced */}
-        <section id="how-it-works" className="py-20 px-4 bg-purple-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                Get Started in 3 Simple Steps
-              </h2>
-              <p className="text-xl text-gray-600">
-                No developers, no complex setup, no headaches
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  step: '1',
-                  title: 'Install Plugin',
-                  description: 'One-click installation from your store\'s app marketplace',
-                  icon: 'INSTALL',
-                  time: '1 minute'
-                },
-                {
-                  step: '2',
-                  title: 'Connect Store',
-                  description: 'Automatic sync with your product catalog and data',
-                  icon: 'CONNECT',
-                  time: '2 minutes'
-                },
-                {
-                  step: '3',
-                  title: 'Watch Magic Happen',
-                  description: 'Customers find products faster, buy more, love your store',
-                  icon: 'MAGIC',
-                  time: 'Instant results'
-                }
-              ].map((item, index) => (
-                <div key={index} className="relative">
-                  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
-                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                      {item.step}
-                    </div>
-                    <div className="text-4xl mb-4">{item.icon}</div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 mb-4">{item.description}</p>
-                    <p className="text-sm text-purple-600 font-medium">{item.time}</p>
-                  </div>
-                  {index < 2 && (
-                    <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                      <svg className="w-8 h-8 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Analytics Dashboard Preview - Enhanced */}
         <section className="py-20 px-4 bg-white" ref={dashboardRef}>
           <div className="max-w-7xl mx-auto">
@@ -642,8 +548,99 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Features Section - Enhanced */}
+        <section id="features" className="py-20 px-4 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                Everything You Need to Delight Customers
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Powerful features that work together to create the ultimate shopping experience
+              </p>
+            </div>
 
+            <div className="grid md:grid-cols-2 gap-8">
+              {features.map((feature, index) => (
+                <div key={index} className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-purple-200">
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-bold text-gray-800">{feature.title}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-6">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-gray-700">
+                        <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
+        {/* How It Works - Enhanced */}
+        <section id="how-it-works" className="py-20 px-4 bg-purple-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                Get Started in 3 Simple Steps
+              </h2>
+              <p className="text-xl text-gray-600">
+                No developers, no complex setup, no headaches
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  step: '1',
+                  title: 'Install Plugin',
+                  description: 'One-click installation from your store\'s app marketplace',
+                  icon: 'INSTALL',
+                  time: '1 minute'
+                },
+                {
+                  step: '2',
+                  title: 'Connect Store',
+                  description: 'Automatic sync with your product catalog and data',
+                  icon: 'CONNECT',
+                  time: '2 minutes'
+                },
+                {
+                  step: '3',
+                  title: 'Watch Magic Happen',
+                  description: 'Customers find products faster, buy more, love your store',
+                  icon: 'MAGIC',
+                  time: 'Instant results'
+                }
+              ].map((item, index) => (
+                <div key={index} className="relative">
+                  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
+                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                      {item.step}
+                    </div>
+                    <div className="text-4xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
+                    <p className="text-gray-600 mb-4">{item.description}</p>
+                    <p className="text-sm text-purple-600 font-medium">{item.time}</p>
+                  </div>
+                  {index < 2 && (
+                    <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                      <svg className="w-8 h-8 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* FAQ Section */}
         <section className="py-20 px-4 bg-gray-50">
