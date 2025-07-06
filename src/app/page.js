@@ -271,29 +271,27 @@ const HomePage = () => {
         </div>
 
         {/* Hero Section - Enhanced */}
-        <section className="pt-32 pb-20 px-4 relative overflow-hidden">
+        <section className="pt-16 sm:pt-32 pb-12 sm:pb-20 px-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 opacity-50"></div>
           <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-300 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
           
           <div className="max-w-7xl mx-auto relative z-10">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-12">
             
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6">
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
-                  Turn Browsers Into Buyers
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-6.5xl font-extrabold mb-6 sm:mb-8 leading-relaxed">
+                <span className="bg-gradient-to-t from-purple-600 via-purple-500 to-gray-400 text-transparent bg-clip-text block mb-2 sm:mb-0 pb-1">
+                  Your Users Know What They Want
                 </span>
-                <br />
-                <span className="text-gray-800">With AI-Powered Search</span>
+                <span className="text-gray-800 block sm:inline">Help them find it.</span>
               </h1>
-              <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Let customers search naturally, find exactly what they want, and buy with confidence. 
-                Watch your conversion rates soar with search that actually understands.
+              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-10 px-4 leading-relaxed">
+                Natural search, Accurate results, Confident buying.
               </p>
             </div>
 
             {/* Search Demo - Enhanced */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto mb-12 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 max-w-4xl mx-auto mb-8 sm:mb-12 border border-gray-100">
               <div className="flex items-center mb-6">
                 <div className="flex-1 flex items-center bg-gray-50 rounded-xl px-6 py-4 justify-between">
                   <span className={`text-xl text-gray-700 transition-opacity duration-500 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
@@ -306,29 +304,32 @@ const HomePage = () => {
                 </div>
               </div>
               
-              <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-700 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                {showImages && currentImages.map((image, index) => (
-                  <div key={index} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                    <Image src={image} alt={`Product ${index + 1}`} className="w-full h-48 object-cover" width={300} height={200} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <p className="text-sm font-medium">Perfect Match</p>
-                      <p className="text-xs opacity-90">Click to view</p>
+              {/* Fixed height container to prevent layout shifts */}
+              <div className="h-40 sm:h-48 relative">
+                <div className={`grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 transition-all duration-700 absolute inset-0 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                  {showImages && currentImages.map((image, index) => (
+                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain" width={300} height={200} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
+                        <p className="text-xs opacity-90">Click to view</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={() => router.push('/login')} className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+              <button onClick={() => router.push('/login')} className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3 w-full sm:w-auto justify-center">
                 <span>Start Free Trial</span>
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <button onClick={() => router.push('/product')} className="bg-white text-gray-700 font-bold py-4 px-8 rounded-full text-lg border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
+              <button onClick={() => router.push('/product')} className="bg-white text-gray-700 font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 w-full sm:w-auto">
                 Try it on our live demo!
               </button>
             </div>
@@ -388,22 +389,22 @@ const HomePage = () => {
               </div>
               <div className="relative">
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-6 border border-gray-100">
-                  <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4 border border-red-200">
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 mb-4">
                     <div className="flex items-center mb-2">
                       <span className="text-red-500 mr-2">❌</span>
-                      <p className="text-sm text-red-700 font-bold">Traditional Search</p>
+                      <p className="text-sm text-gray-700 font-bold">Traditional Search</p>
                     </div>
-                    <div className="bg-white rounded border border-red-300 p-3 shadow-sm">
+                    <div className="bg-white rounded p-3 shadow-sm">
                       <p className="text-gray-700 font-medium">"birthday gift for 10 year old who loves science"</p>
                       <p className="text-red-600 text-sm mt-2 font-semibold">❌ No results found</p>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-lg p-4 border border-green-200">
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4">
                     <div className="flex items-center mb-2">
                       <span className="text-green-500 mr-2">✅</span>
-                      <p className="text-sm text-green-700 font-bold">Semantix AI</p>
+                      <p className="text-sm text-gray-700 font-bold">Semantix AI</p>
                     </div>
-                    <div className="bg-white rounded border border-green-300 p-3 shadow-sm">
+                    <div className="bg-white rounded p-3 shadow-sm">
                       <p className="text-gray-700 font-medium">"birthday gift for 10 year old who loves science"</p>
                       <p className="text-green-600 text-sm mt-2 font-semibold">✅ Showing: Chemistry Sets, Microscopes, Robot Kits...</p>
                     </div>
