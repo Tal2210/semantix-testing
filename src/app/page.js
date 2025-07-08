@@ -257,7 +257,7 @@ const HomePage = () => {
                 <button onClick={() => router.push('/product')} className="text-gray-700 hover:text-purple-600 transition-colors bg-transparent border-none cursor-pointer">How it Works</button>
               
                 <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
-                <button onClick={() => router.push('/onboarding')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <button onClick={() => window.open('https://calendly.com/semantix-sales', '_blank')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   Get Started
                 </button>
               </div>
