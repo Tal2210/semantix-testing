@@ -271,7 +271,7 @@ function ProductSearch() {
                     // Skip empty parts
                     if (!trimmedPart) return null;
                     
-                    // Bold section headers
+                  // Bold section headers
                     if (/^Product Description:/.test(trimmedPart)) {
                       const content = trimmedPart.replace(/^Product Description:/, "").trim();
                       return content ? (
@@ -307,7 +307,7 @@ function ProductSearch() {
                       return content ? (
                         <p key={idx}><span className="font-bold">Grape:</span> {content}</p>
                       ) : null;
-                    }
+                  }
                     if (/^Region:/.test(trimmedPart)) {
                       const content = trimmedPart.replace(/^Region:/, "").trim();
                       return content ? (
@@ -337,14 +337,14 @@ function ProductSearch() {
                       return content ? (
                         <p key={idx}><span className="font-bold">Finish:</span> {content}</p>
                       ) : null;
-                    }
-                    // List items
+                  }
+                  // List items
                     if (/^ - /.test(trimmedPart)) {
                       const content = trimmedPart.replace(/^ - /, "").trim();
                       return content ? (
                         <li key={idx} className="ml-4 list-disc">{content}</li>
                       ) : null;
-                    }
+                  }
                     // Otherwise, just a paragraph (only if not empty)
                     return trimmedPart ? <p key={idx}>{trimmedPart}</p> : null;
                   })

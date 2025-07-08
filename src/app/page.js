@@ -254,7 +254,7 @@ const HomePage = () => {
               </div>
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors">Features</a>
-                <a href="#how-it-works" className="text-gray-700 hover:text-purple-600 transition-colors">How it Works</a>
+                <button onClick={() => router.push('/product')} className="text-gray-700 hover:text-purple-600 transition-colors bg-transparent border-none cursor-pointer">How it Works</button>
               
                 <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
                 <button onClick={() => router.push('/onboarding')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
@@ -265,10 +265,7 @@ const HomePage = () => {
           </div>
         </nav>
 
-        {/* Launch Announcement Banner */}
-        <div className="bg-purple-700 text-white py-3 px-4 text-center text-sm font-medium">
-          LAUNCH PHASE: All premium features free during beta
-        </div>
+
 
         {/* Hero Section - Enhanced */}
         <section className="pt-16 sm:pt-32 pb-12 sm:pb-20 px-4 relative overflow-hidden">
@@ -279,8 +276,8 @@ const HomePage = () => {
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-8 sm:mb-12">
             
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-6.5xl font-extrabold mb-6 sm:mb-8 leading-relaxed">
-                <span className="bg-gradient-to-t from-purple-600 via-purple-500 to-gray-400 text-transparent bg-clip-text block mb-2 sm:mb-0 pb-1">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-6.5xl font-extrabold mb-6 sm:mb-8 leading-tight">
+                <span className="bg-gradient-to-t from-purple-600 via-purple-500 to-gray-400 text-transparent bg-clip-text block mb-1 sm:mb-0 pb-0 sm:pb-1">
                   Your Users Know What They Want
                 </span>
                 <span className="text-gray-800 block sm:inline">Help them find it.</span>
@@ -293,23 +290,23 @@ const HomePage = () => {
             {/* Search Demo - Enhanced */}
             <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 max-w-4xl mx-auto mb-8 sm:mb-12 border border-gray-100">
               <div className="flex items-center mb-6">
-                <div className="flex-1 flex items-center bg-gray-50 rounded-xl px-6 py-4 justify-between">
-                  <span className={`text-xl text-gray-700 transition-opacity duration-500 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
+                <div className="flex-1 flex items-start bg-gray-50 rounded-xl px-6 py-4 justify-between min-h-[80px]">
+                  <span className={`text-lg sm:text-xl text-gray-700 transition-opacity duration-500 leading-tight ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
                     {text}
                     <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-purple-600`}>|</span>
                   </span>
-                  <svg className="w-6 h-6 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-gray-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
               </div>
               
               {/* Fixed height container to prevent layout shifts */}
-              <div className="h-40 sm:h-48 relative">
+              <div className="h-56 sm:h-60 relative overflow-hidden">
                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 transition-all duration-700 absolute inset-0 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                   {showImages && currentImages.map((image, index) => (
-                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain" width={300} height={200} />
+                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain p-2" width={300} height={200} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
