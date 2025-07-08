@@ -290,12 +290,12 @@ const HomePage = () => {
             {/* Search Demo - Enhanced */}
             <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 max-w-4xl mx-auto mb-8 sm:mb-12 border border-gray-100">
               <div className="flex items-center mb-6">
-                <div className="flex-1 flex items-start bg-gray-50 rounded-xl px-6 py-4 justify-between min-h-[80px]">
+                <div className="flex-1 flex items-center bg-gray-50 rounded-xl px-6 py-4 justify-between min-h-[80px]">
                   <span className={`text-lg sm:text-xl text-gray-700 transition-opacity duration-500 leading-tight ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
                     {text}
                     <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-purple-600`}>|</span>
                   </span>
-                  <svg className="w-6 h-6 text-gray-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
@@ -305,8 +305,8 @@ const HomePage = () => {
               <div className="h-56 sm:h-60 relative overflow-hidden">
                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 transition-all duration-700 absolute inset-0 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                   {showImages && currentImages.map((image, index) => (
-                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain p-2" width={300} height={200} />
+                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-gradient-to-br from-gray-50 to-white">
+                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-cover" width={300} height={200} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
