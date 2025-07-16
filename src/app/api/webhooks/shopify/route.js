@@ -28,6 +28,10 @@ async function verifyWebhookSignature(request, body) {
 
 export async function POST(request) {
   try {
+    console.log("--- Shopify Webhook Received ---");
+    console.log("Request URL:", request.url);
+    console.log("Request Headers:", JSON.stringify(Object.fromEntries(request.headers.entries()), null, 2));
+
     // Get the raw request body as a string
     const body = await request.text();
     
@@ -45,7 +49,7 @@ export async function POST(request) {
     const topic = request.headers.get("x-shopify-topic");
     const shop = request.headers.get("x-shopify-shop-domain");
     
-    console.log(`Received webhook: ${topic} from ${shop}`);
+    console.log(`Processing webhook: ${topic} from ${shop}`);
     
     // Connect to MongoDB
     const client = await clientPromise;
@@ -99,6 +103,7 @@ export async function POST(request) {
     }
     
     // Return a success response
+    console.log(`--- Finished processing webhook: ${topic} ---`);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Webhook processing error:", error);
