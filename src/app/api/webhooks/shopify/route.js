@@ -3,6 +3,17 @@ import crypto from "crypto";
 import clientPromise from "/lib/mongodb";
 import { SHOPIFY_API_SECRET } from "/lib/shopify-app-config";
 
+export async function GET(request) {
+  console.log("GET request received for Shopify webhook URL.");
+  return NextResponse.json(
+    {
+      message:
+        "This is the Shopify webhook endpoint. It only accepts POST requests from Shopify.",
+    },
+    { status: 200 }
+  );
+}
+
 /**
  * Verify the webhook signature
  * @param {Request} request - The incoming request
