@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: false,
-  skipMiddlewareUrlNormalize: true,
   images: {
     domains: [
       'alcohome.co.il',
@@ -27,15 +25,21 @@ const nextConfig = {
                 "https://cdn.shopify.com",
 
               // styles: allow Paddle CSS (live + sandbox)
-              "style-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com",
+              "style-src 'self' 'unsafe-inline' https://cdn.paddle.com https://sandbox-cdn.paddle.com https://fonts.googleapis.com",
 
               // images: your own + Paddle assets + your specified image domains
-              "img-src 'self' data: https://paddle.s3.amazonaws.com https://paddle-static.s3.amazonaws.com " +
+              "img-src 'self' data: blob: https: https://paddle.s3.amazonaws.com https://paddle-static.s3.amazonaws.com " +
                 "https://alcohome.co.il https://shipi.b-cdn.net https://theydream-online.com " +
-                "https://media.getmood.io",
+                "https://media.getmood.io https://cdn.shopify.com https://*.shopify.com " +
+                "https://*.shopifycdn.com https://*.cloudinary.com https://*.cloudfront.net " +
+                "https://*.amazonaws.com https://*.b-cdn.net https://*.imgix.net " +
+                "https://*.fastly.com https://*.akamaized.net https://*.googleusercontent.com " +
+                "https://*.fbcdn.net https://*.cdninstagram.com https://*.twimg.com " +
+                "https://*.gravatar.com https://*.wp.com https://*.wixstatic.com " +
+                "https://*.squarespace.com https://*.unsplash.com https://*.pexels.com",
 
               // fonts: Paddle webfonts
-              "font-src 'self' data: https://cdn.paddle.com",
+              "font-src 'self' data: https://cdn.paddle.com https://fonts.gstatic.com",
 
               // XHR/websocket/etc: Paddle APIs + your servers + Google Analytics
               "connect-src 'self' https://checkout.paddle.com https://buy.paddle.com " +
@@ -83,5 +87,4 @@ const nextConfig = {
 }
 
 export default nextConfig
-
 
