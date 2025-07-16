@@ -604,8 +604,8 @@ function semantix_native_search_template( $template ) {
 
         if ($template_type === 'custom') {
             $custom_template = plugin_dir_path( __FILE__ ) . 'templates/search-custom-template.php';
-            if ( file_exists( $custom_template ) ) {
-                return $custom_template;
+        if ( file_exists( $custom_template ) ) {
+            return $custom_template;
             }
         }
 
@@ -1133,7 +1133,7 @@ function semantix_search_placeholders_page() {
             <div class="semantix-admin-box">
                 <h2><?php echo esc_html__('Dynamic Placeholders', 'semantix-ai-search'); ?></h2>
                 <p><?php echo esc_html__('Add search suggestions that will rotate in the search bar placeholder. Each line will be displayed as a separate placeholder.', 'semantix-ai-search'); ?></p>
-                <table class="form-table">
+            <table class="form-table">
                     <tr valign="top">
                         <th scope="row"><?php echo esc_html__('Placeholder Suggestions', 'semantix-ai-search'); ?></th>
                         <td>
@@ -1293,7 +1293,7 @@ function semantix_search_advanced_page() {
 }
 
 if (!function_exists('semantix_register_settings')) {
-    function semantix_register_settings() {
+function semantix_register_settings() {
         // Placeholder settings
         register_setting('semantix-placeholders-group', 'semantix_placeholders', ['type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field']);
         register_setting('semantix-placeholders-group', 'semantix_placeholder_speed', ['type' => 'number', 'sanitize_callback' => 'absint']);

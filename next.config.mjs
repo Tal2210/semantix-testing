@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  trailingSlash: false,
+  skipMiddlewareUrlNormalize: true,
   images: {
     domains: [
       'alcohome.co.il',
