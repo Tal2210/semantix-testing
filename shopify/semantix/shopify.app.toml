@@ -6,6 +6,10 @@ handle = "semantix-1"
 application_url = "https://semantix-ai.com"
 embedded = false
 
+# App icon - must be a 512x512 PNG file
+[app_icon]
+path = "app_icon.png"
+
 [build]
 include_config_on_deploy = true
 
@@ -14,12 +18,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_themes,write_themes"
+scopes = "read_themes,write_themes,read_products,write_products,read_content,write_content"
 
 [auth]
 redirect_urls = [ 
+  "https://semantix-ai.com/api/shopify-auth-callback",
   "https://semantix-ai.com/api/auth/callback",
-  "https://semantix-ai.com/api/auth"
+  "https://semantix-ai.com/dashboard"
 ]
 
 [pos]
@@ -28,3 +33,9 @@ embedded = false
 # Explicitly declare theme app extension capability
 [capabilities]
 theme_app_extension = true
+
+# Privacy compliance URLs
+[privacy_compliance]
+customer_data_request_url = "https://semantix-ai.com/api/webhooks/shopify"
+customer_redact_url = "https://semantix-ai.com/api/webhooks/shopify"
+shop_redact_url = "https://semantix-ai.com/api/webhooks/shopify"

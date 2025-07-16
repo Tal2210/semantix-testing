@@ -217,7 +217,7 @@ const HomePage = () => {
                 <a href="#how-it-works" className="text-gray-700 hover:text-purple-600 transition-colors">How it Works</a>
               
                 <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
-                <button onClick={() => router.push('/onboarding')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <button onClick={() => router.push('/onboarding')} className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   Get Started
                 </button>
               </div>
@@ -295,7 +295,7 @@ const HomePage = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={() => router.push('/login')} className="group bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3">
+              <button onClick={() => router.push('/login')} className="group bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3">
                 <span>Start Free Trial</span>
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -347,7 +347,7 @@ const HomePage = () => {
                     </div>
                   </div>
                 </div>
-                <button onClick={() => router.push('/product')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <button onClick={() => router.push('/product')} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   See the Difference →
                 </button>
               </div>
@@ -447,7 +447,7 @@ const HomePage = () => {
               ].map((item, index) => (
                 <div key={index} className="relative">
                   <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
-                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                       {item.step}
                     </div>
                     <div className="text-4xl mb-4">{item.icon}</div>
@@ -609,7 +609,7 @@ const HomePage = () => {
                   ].map((item, index) => (
                     <div key={index} className="flex flex-col items-center flex-1">
                       <div 
-                        className="bg-gradient-to-t from-indigo-500 to-purple-500 rounded-t-md w-16 shadow-md flex items-start justify-center"
+                        className="bg-indigo-600 rounded-t-md w-16 shadow-md flex items-start justify-center"
                         style={{ height: item.height }}
                       >
                         <div className="text-white text-center font-bold py-2 text-sm">
@@ -820,7 +820,7 @@ const HomePage = () => {
                 </div>
               </div>
               
-              <button onClick={() => router.push('/product')} className="group bg-white text-purple-600 font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 transform hover:scale-110 hover:shadow-2xl flex items-center gap-3 mx-auto">
+              <button onClick={() => router.push('/product')} className="group bg-white hover:bg-gray-50 text-purple-600 font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 transform hover:scale-110 hover:shadow-2xl flex items-center gap-3 mx-auto">
                 <span>Start Your Free Trial</span>
                 <svg className="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />

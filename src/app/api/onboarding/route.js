@@ -111,6 +111,20 @@ async function createEmbeddingIndex(client, dbName) {
     console.log(`Collection '${collectionName}' did not exist and was created.`);
   }
 
+  // Check if the vector_index already exists
+  try {
+    const existingIndexes = await db.collection(collectionName).listSearchIndexes().toArray();
+    const vectorIndexExists = existingIndexes.some(index => index.name === "vector_index");
+    
+    if (vectorIndexExists) {
+      console.log("Vector index 'vector_index' already exists, skipping creation.");
+      return { acknowledged: true, message: "Index already exists" };
+    }
+  } catch (error) {
+    // If listSearchIndexes fails, we'll try to create the index anyway
+    console.log("Could not check existing indexes, proceeding with creation:", error.message);
+  }
+
   const indexConfig = {
     name: "vector_index",
    
@@ -139,13 +153,23 @@ async function createEmbeddingIndex(client, dbName) {
     }
   };
 
-  // Use the createSearchIndexes command to create the Atlas Search index.
-  const result = await db.command({
-    createSearchIndexes: collectionName,
-    indexes: [indexConfig]
-  });
-  console.log("Embedding search index created:", result);
-  return result;
+  try {
+    // Use the createSearchIndexes command to create the Atlas Search index.
+    const result = await db.command({
+      createSearchIndexes: collectionName,
+      indexes: [indexConfig]
+    });
+    console.log("Embedding search index created:", result);
+    return result;
+  } catch (error) {
+    // Handle the specific case where the index already exists
+    if (error.code === 68 && error.codeName === 'IndexAlreadyExists') {
+      console.log("Vector index already exists, continuing...");
+      return { acknowledged: true, message: "Index already exists" };
+    }
+    // Re-throw other errors
+    throw error;
+  }
 }
 
 async function createAutocompleteIndex(client, dbName) {
@@ -157,6 +181,20 @@ async function createAutocompleteIndex(client, dbName) {
   if (!collections.length) {
     await db.createCollection(collectionName);
     console.log(`Collection '${collectionName}' was created.`);
+  }
+
+  // Check if the default index already exists
+  try {
+    const existingIndexes = await db.collection(collectionName).listSearchIndexes().toArray();
+    const defaultIndexExists = existingIndexes.some(index => index.name === "default");
+    
+    if (defaultIndexExists) {
+      console.log("Autocomplete index 'default' already exists, skipping creation.");
+      return { acknowledged: true, message: "Index already exists" };
+    }
+  } catch (error) {
+    // If listSearchIndexes fails, we'll try to create the index anyway
+    console.log("Could not check existing indexes, proceeding with creation:", error.message);
   }
 
   // Define the new autocomplete search index configuration.
@@ -195,13 +233,23 @@ async function createAutocompleteIndex(client, dbName) {
     }
   };
 
-  // Use the createSearchIndexes command to create the Atlas Search index.
-  const result = await db.command({
-    createSearchIndexes: collectionName,
-    indexes: [autocompleteIndexConfig]
-  });
-  console.log("Autocomplete search index created:", result);
-  return result;
+  try {
+    // Use the createSearchIndexes command to create the Atlas Search index.
+    const result = await db.command({
+      createSearchIndexes: collectionName,
+      indexes: [autocompleteIndexConfig]
+    });
+    console.log("Autocomplete search index created:", result);
+    return result;
+  } catch (error) {
+    // Handle the specific case where the index already exists
+    if (error.code === 68 && error.codeName === 'IndexAlreadyExists') {
+      console.log("Autocomplete index already exists, continuing...");
+      return { acknowledged: true, message: "Index already exists" };
+    }
+    // Re-throw other errors
+    throw error;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -226,6 +274,7 @@ export async function POST(req) {
       categories,
       syncMode,
       type, 
+      context,
       // "text" | "image"
     } = await req.json();
 
@@ -290,6 +339,7 @@ export async function POST(req) {
       dbName,
       platform,
       syncMode,
+      context,
       updatedAt: new Date()
     };
 

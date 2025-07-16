@@ -63,6 +63,7 @@ export default function OnboardingPage() {
   const sDB = session?.user?.dbName ?? "";
   const sCats = (sCreds.categories ?? []).join(", ");
   const sType = sCreds.type ?? "";
+  const sContext = session?.user?.context ?? "";
   const sPreset = session?.user?.preset ?? "";
 
   const storePresets = {
@@ -112,7 +113,7 @@ export default function OnboardingPage() {
   // Initialize platform from session if available; otherwise user must choose
   const [platform, setPlatform] = useState(sCreds.platform ?? "");
   const [syncMode, setSyncMode] = useState(sCreds.syncMode ?? "text");
-  const [selectedPreset, setSelectedPreset] = useState(sPreset);
+  const [selectedPreset, setSelectedPreset] = useState(sContext);
   const [form, setForm] = useState({
     shopifyDomain: sCreds.shopifyDomain ?? "",
     shopifyToken: sCreds.shopifyToken ?? "",
@@ -136,6 +137,7 @@ export default function OnboardingPage() {
         if (!j?.onboarding) { setLoadedOnboarding(true); return; }
         const c = j.onboarding.credentials ?? {};
         if (!platform && c.platform) setPlatform(c.platform);
+        if (!selectedPreset && j.onboarding.context) setSelectedPreset(j.onboarding.context);
         setSyncMode(c.syncMode ?? "text");
         setForm({
           shopifyDomain: c.shopifyDomain ?? "",
@@ -153,7 +155,7 @@ export default function OnboardingPage() {
         setLoadedOnboarding(true);
       }
     })();
-  }, [loadedOnboarding, status, platform]);
+  }, [loadedOnboarding, status, platform, selectedPreset]);
 
   /* ---------- UI / flow flags ------------------------------------ */
   const [banner, setBanner] = useState("");
@@ -313,6 +315,7 @@ export default function OnboardingPage() {
           dbName,
           categories: categories.split(",").map(s => s.trim()).filter(Boolean),
           type: typeFilter,
+          context: selectedPreset,
           ...form
         })
       });
@@ -525,22 +528,31 @@ export default function OnboardingPage() {
           
           <div className="flex flex-col md:flex-row gap-8 justify-center">
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <button
-                onClick={() => setPlatform("shopify")}
-                className="w-full md:w-64 group flex flex-col items-center bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-8 transition hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 h-full"
-              >
-                <div className="w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mb-6 group-hover:bg-green-100 transition-colors">
-                  <img src="/shopify.png" alt="Shopify" className="w-16 h-16 object-contain" />
+              <div className="w-full md:w-64 group flex flex-col items-center bg-gray-50 rounded-2xl shadow-lg border-2 border-gray-200 p-8 transition opacity-60 cursor-not-allowed h-full relative">
+                {/* Lock Icon */}
+                <div className="absolute top-4 right-4 w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-3">Shopify</h3>
-                <p className="text-gray-600 text-center">Connect with Shopify to sync your products and store data</p>
-                <div className="mt-6 px-4 py-2 bg-green-50 text-green-700 rounded-full font-medium text-sm group-hover:bg-green-600 group-hover:text-white transition-colors">
-                  Select Shopify
+                
+                <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6 transition-colors">
+                  <img src="/shopify.png" alt="Shopify" className="w-16 h-16 object-contain grayscale" />
                 </div>
-              </button>
+                <h3 className="text-2xl font-bold text-gray-500 mb-3">Shopify</h3>
+                <p className="text-gray-400 text-center mb-4">Connect with Shopify to sync your products and store data</p>
+                
+                {/* Coming Soon Badge */}
+                <div className="mt-4 px-4 py-2 bg-amber-100 text-amber-700 rounded-full font-medium text-sm border border-amber-200">
+                  🚀 Coming really soon!
+                </div>
+                
+                {/* Overlay to prevent clicks */}
+                <div className="absolute inset-0 bg-transparent rounded-2xl"></div>
+              </div>
             </motion.div>
             
             <motion.div

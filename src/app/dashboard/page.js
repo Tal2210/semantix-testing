@@ -41,7 +41,7 @@ import {
   TrendingUp,
   ShoppingCart,
   Lock, // Add lock icon
-  
+  BookOpen, // Add book icon for instructions
 } from "lucide-react";
 
 
@@ -2083,11 +2083,276 @@ function ApiKeyPanel({ session, onboarding }) {
   );
 }
 
+function InstructionsPanel({ session, onboarding }) {
+  // Only show for WooCommerce users - fix the platform detection
+  const isWooCommerceUser = onboarding?.platform === 'woocommerce';
+  
+  if (!isWooCommerceUser) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+          <div className="p-12 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-100 flex items-center justify-center">
+              <BookOpen className="w-10 h-10 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Instructions Available for WooCommerce</h2>
+            <p className="text-gray-600">
+              Installation instructions are currently available for WooCommerce users only.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+          <div className="flex items-center">
+            <BookOpen className="w-8 h-8 text-white mr-4" />
+            <div>
+              <h1 className="text-2xl font-bold text-white">WooCommerce Installation Guide</h1>
+              <p className="text-blue-100 mt-1">Step-by-step instructions to install Semantix AI in your WooCommerce store</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Prerequisites */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <CheckCircle className="w-6 h-6 text-green-600 mr-3" />
+            Prerequisites
+          </h2>
+          <div className="space-y-3">
+            <div className="flex items-start">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
+              <p className="text-gray-600">WordPress admin access to your WooCommerce store</p>
+            </div>
+            <div className="flex items-start">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
+              <p className="text-gray-600">Your Semantix AI API key (available in the API Key tab)</p>
+            </div>
+            <div className="flex items-start">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></div>
+              <p className="text-gray-600">WooCommerce plugin installed and activated</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Step-by-step instructions */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+            <Settings className="w-6 h-6 text-blue-600 mr-3" />
+            Installation Steps
+          </h2>
+          
+          <div className="space-y-8">
+            {/* Step 1 */}
+            <div className="flex">
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                1
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Access WordPress Admin</h3>
+                <p className="text-gray-600 mb-3">
+                  Log in to your WordPress admin dashboard and navigate to the plugins section.
+                </p>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-700">
+                    <strong>URL:</strong> yourstore.com/wp-admin → Plugins → Installed Plugins
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex">
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                2
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Find Semantix Search Plugin</h3>
+                <p className="text-gray-600 mb-3">
+                  Look for "Semantix Search" in your installed plugins list and click "Settings" or "Configure".
+                </p>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <AlertCircle className="w-5 h-5 text-amber-600 mr-2 mt-0.5" />
+                    <p className="text-sm text-amber-800">
+                      If you don't see the plugin, please download and install it from the WordPress plugin repository first.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex">
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                3
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Navigate to Advanced Settings</h3>
+                <p className="text-gray-600 mb-3">
+                  In the plugin settings, look for the sidebar menu and click on "Advanced Settings".
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    The menu should look like the image you provided, with options for Dashboard, Customization, Placeholders, and Advanced Settings.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="flex">
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                4
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Enter Your API Key</h3>
+                <p className="text-gray-600 mb-3">
+                  In the Advanced Settings section, you'll find a field labeled "Semantix AI API Key". Paste your API key here.
+                </p>
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Your API Key:</span>
+                    <button 
+                      onClick={() => {
+                        // Navigate to API Key tab
+                        const event = new CustomEvent('switchPanel', { detail: 'apikey' });
+                        document.dispatchEvent(event);
+                      }}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium hover:underline"
+                    >
+                      Get API Key →
+                    </button>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded p-3">
+                    <code className="text-sm text-gray-600 break-all">
+                      Copy your API key from the "API Key" tab above
+                    </code>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 5 */}
+            <div className="flex">
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm mr-4">
+                5
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Save Settings</h3>
+                <p className="text-gray-600 mb-3">
+                  Click "Save Changes" or "Update Settings" to apply your API key configuration.
+                </p>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2 mt-0.5" />
+                    <p className="text-sm text-green-800">
+                      Once saved, Semantix AI will be active on your store and customers can start using intelligent search!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Troubleshooting */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <HelpCircle className="w-6 h-6 text-orange-600 mr-3" />
+            Troubleshooting
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="border-l-4 border-orange-400 pl-4">
+              <h4 className="font-semibold text-gray-800">Can't find the plugin settings?</h4>
+              <p className="text-gray-600 text-sm mt-1">
+                Make sure the Semantix Search plugin is activated. Check under WordPress Admin → Plugins → Installed Plugins.
+              </p>
+            </div>
+            
+            <div className="border-l-4 border-orange-400 pl-4">
+              <h4 className="font-semibold text-gray-800">API key not working?</h4>
+              <p className="text-gray-600 text-sm mt-1">
+                Ensure you've copied the complete API key without any extra spaces. Try regenerating a new key if needed.
+              </p>
+            </div>
+            
+            <div className="border-l-4 border-orange-400 pl-4">
+              <h4 className="font-semibold text-gray-800">Search not showing results?</h4>
+              <p className="text-gray-600 text-sm mt-1">
+                Allow 5-10 minutes for the initial sync to complete. Check your internet connection and API key validity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Support */}
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <Users className="w-6 h-6 text-purple-600 mr-3" />
+            Need Help?
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-purple-50 rounded-lg p-4">
+              <h4 className="font-semibold text-purple-800 mb-2">Contact Support</h4>
+              <p className="text-purple-700 text-sm mb-3">
+                Our team is here to help with installation and configuration.
+              </p>
+              <a 
+                href="mailto:support@semantix-ai.com" 
+                className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm"
+              >
+                support@semantix-ai.com
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+            
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-800 mb-2">Documentation</h4>
+              <p className="text-blue-700 text-sm mb-3">
+                Comprehensive guides and API documentation available.
+              </p>
+              <a 
+                href="#" 
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm"
+              >
+                View Documentation
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* -------- tiny helper so sidebar labels & panels stay together ---- */
 const PANELS = [
   { id: "analytics", label: "Analytics", component: AnalyticsPanel, icon: BarChart3 },
   { id: "settings", label: "Plugin Settings", component: SettingsPanel, icon: Settings },
   { id: "apikey", label: "API Key", component: ApiKeyPanel, icon: ListTodo },
+  { id: "instructions", label: "Instructions", component: InstructionsPanel, icon: BookOpen },
   { id: "subscription", label: "Subscription", component: SubscriptionPanel, icon: CreditCard, locked: true, lockIcon: true }
 ];
 
@@ -2147,14 +2412,26 @@ export default function DashboardPage() {
         });
       };
       
-      // Add event listener to the document for a custom event
-      document.addEventListener('toggleMobileMenu', () => {
-        window.toggleMobileMenu();
-      });
+      // Add event listener for panel switching
+      const handlePanelSwitch = (event) => {
+        const panelId = event.detail;
+        if (PANELS.some(p => p.id === panelId)) {
+          const panel = PANELS.find(p => p.id === panelId);
+          if (!panel.locked) {
+            setActive(panelId);
+          }
+        }
+      };
       
-      document.addEventListener('openMobileMenu', () => {
-        window.openMobileMenu();
-      });
+      // Add event listener to the document for a custom event
+      document.addEventListener('toggleMobileMenu', window.toggleMobileMenu);
+      
+      document.addEventListener('openMobileMenu', window.openMobileMenu);
+      
+      document.addEventListener('switchPanel', handlePanelSwitch);
+      
+      // Store reference for cleanup
+      window.handlePanelSwitch = handlePanelSwitch;
     }
     
     return () => {
@@ -2164,6 +2441,8 @@ export default function DashboardPage() {
         delete window.closeMobileMenu;
         document.removeEventListener('toggleMobileMenu', window.toggleMobileMenu);
         document.removeEventListener('openMobileMenu', window.openMobileMenu);
+        document.removeEventListener('switchPanel', window.handlePanelSwitch);
+        delete window.handlePanelSwitch;
       }
     };
   }, []);
