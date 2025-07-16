@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsGrid = document.getElementById('semantix-custom-results-grid');
 
     async function fetchResults() {
-        const url = new URL('https://dashboard-server-ae00.onrender.com/search');
+        const url = new URL(SEMANTIX_DATA.apiEndpoint);
         url.searchParams.set('query', SEMANTIX_DATA.searchQuery);
         url.searchParams.set('dbName', SEMANTIX_DATA.dbName);
         url.searchParams.set('collectionName1', SEMANTIX_DATA.collection1);
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('https://dashboard-server-ae00.onrender.com/search', { headers });
+            const response = await fetch(url.toString(), { headers });
             if (!response.ok) {
                 throw new Error(`API Error: ${response.statusText}`);
             }
