@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MenuConnector from '../components/MenuConnector';
+import ProductsPanel from '../components/ProductsPanel';
 
 // ===============================
 // Add this to your existing dashboard file
@@ -42,6 +43,7 @@ import {
   ShoppingCart,
   Lock, // Add lock icon
   BookOpen, // Add book icon for instructions
+  Package, // Add Package icon for products panel
 } from "lucide-react";
 
 
@@ -2350,6 +2352,7 @@ function InstructionsPanel({ session, onboarding }) {
 /* -------- tiny helper so sidebar labels & panels stay together ---- */
 const PANELS = [
   { id: "analytics", label: "Analytics", component: AnalyticsPanel, icon: BarChart3 },
+  { id: "products", label: "Products", component: ProductsPanel, icon: Package },
   { id: "settings", label: "Plugin Settings", component: SettingsPanel, icon: Settings },
   { id: "apikey", label: "API Key", component: ApiKeyPanel, icon: ListTodo },
   { id: "instructions", label: "Instructions", component: InstructionsPanel, icon: BookOpen },

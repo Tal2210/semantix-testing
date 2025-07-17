@@ -150,9 +150,16 @@ get_header();
         searchTitleEl.textContent = `תוצאות חיפוש עבור "${searchTerm}"`;
     }
 
-    // Start search
-    showLoading();
-    executeSearch();
+    // Check for cached results on page load
+    const cachedResults = getFromCache(getCacheKey(searchTerm));
+    if (cachedResults) {
+        console.log('Loading results from localStorage on page load');
+        renderProducts(cachedResults.semantixProducts, cachedResults.renderedHtml);
+    } else {
+        // Start search if no cached results
+        showLoading();
+        executeSearch();
+    }
 
     // Helper functions
     function showLoading() {
@@ -171,33 +178,33 @@ get_header();
     }
 
     function getCacheKey(term) {
-        return `semantix_native_${encodeURIComponent(term)}`;
+        return `semantix_local_search_${encodeURIComponent(term)}`;
     }
 
     function getFromCache(key) {
         try {
-            const cached = sessionStorage.getItem(key);
+            const cached = localStorage.getItem(key);
             if (cached) {
                 const { timestamp, data } = JSON.parse(cached);
                 if (Date.now() - timestamp < CACHE_DURATION) {
                     return data;
                 }
-                sessionStorage.removeItem(key);
+                localStorage.removeItem(key);
             }
         } catch (e) {
-            sessionStorage.removeItem(key);
+            localStorage.removeItem(key);
         }
         return null;
     }
 
     function saveToCache(key, data) {
         try {
-            sessionStorage.setItem(key, JSON.stringify({
+            localStorage.setItem(key, JSON.stringify({
                 timestamp: Date.now(),
                 data: data
             }));
         } catch (e) {
-            console.warn('Failed to save to cache:', e);
+            console.warn('Failed to save to localStorage:', e);
         }
     }
 
@@ -207,7 +214,7 @@ get_header();
         const cached = getFromCache(cacheKey);
         
         if (cached) {
-            console.log('Loading Semantix results from cache');
+            console.log('Loading Semantix results from localStorage');
             return cached;
         }
 
@@ -251,35 +258,31 @@ get_header();
         console.log('Highlight map:', highlightMap);
 
         if (productIds.length === 0) {
-            showMessage('לא נמצאו מוצרים תואמים במערכת לאחר סינון.');
-            return;
+            return '';
         }
 
-        // Check cache for rendered HTML
-        const cacheKey = getCacheKey(`native_${productIds.join(',')}`);
+        const cacheKey = getCacheKey(`rendered_${searchTerm}`);
         const cached = getFromCache(cacheKey);
         
         if (cached) {
-            console.log('Loading native products from cache');
-            resultsContainer.innerHTML = cached;
-            initializeNativeWooCommerce();
-            return;
+            console.log('Loading rendered WooCommerce products from localStorage');
+            return cached;
         }
+        
+        const formData = new FormData();
+        formData.append('action', 'semantix_render_products');
+        formData.append('product_ids', JSON.stringify(productIds));
+        formData.append('highlight_map', JSON.stringify(highlightMap));
+        formData.append('search_term', searchTerm);
+        formData.append('nonce', WP_AJAX_NONCE);
+
+        console.log('Sending AJAX request with:', {
+            product_ids: productIds,
+            highlight_map: highlightMap,
+            search_term: searchTerm
+        });
 
         try {
-            const formData = new URLSearchParams();
-            formData.append('action', 'semantix_render_products');
-            formData.append('product_ids', JSON.stringify(productIds));
-            formData.append('highlight_map', JSON.stringify(highlightMap));
-            formData.append('search_term', searchTerm);
-            formData.append('nonce', WP_AJAX_NONCE);
-
-            console.log('Sending AJAX request with:', {
-                product_ids: productIds,
-                highlight_map: highlightMap,
-                search_term: searchTerm
-            });
-
             const response = await fetch(WP_AJAX_URL, {
                 method: 'POST',
                 body: formData
@@ -288,28 +291,18 @@ get_header();
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('AJAX Response Error:', errorText);
-                throw new Error(`WordPress AJAX Error: ${response.status} - ${errorText}`);
+                throw new Error(`AJAX Error: ${response.status}`);
             }
 
-            const html = await response.text();
-            console.log('AJAX Response HTML length:', html.length);
-            console.log('AJAX Response HTML preview:', html.substring(0, 500));
+            const data = await response.json();
+            const renderedHtml = data.success ? data.data : '';
             
-            if (!html.trim()) {
-                showMessage('לא ניתן היה להציג את המוצרים (תשובה ריקה מהשרת).');
-                return;
-            }
-
-            resultsContainer.innerHTML = html;
-            
-            // Cache the rendered HTML
-            saveToCache(cacheKey, html);
-
+            saveToCache(cacheKey, renderedHtml);
+            return renderedHtml;
         } catch (error) {
             console.error('WordPress AJAX Error:', error);
             showMessage(`שגיאה בהצגת המוצרים: ${error.message}`);
-        } finally {
-            initializeNativeWooCommerce();
+            return ''; // Return empty string on error
         }
     }
 
@@ -348,23 +341,41 @@ get_header();
         }, 100);
     }
 
-    // Main execution - preserve native WooCommerce experience
+    // Main search function
     async function executeSearch() {
         try {
             const semantixProducts = await fetchSemantixProducts();
-            
+
             if (semantixProducts.length === 0) {
-                showMessage('לא נמצאו תוצאות עבור החיפוש שלך.');
+                showMessage('לא נמצאו מוצרים התואמים את החיפוש שלך.');
                 return;
             }
 
-            await fetchRenderedWooCommerceProducts(semantixProducts);
-            console.log(`Native search completed for: ${searchTerm}`);
+            const renderedHtml = await fetchRenderedWooCommerceProducts(semantixProducts);
+
+            if (!renderedHtml.trim()) {
+                showMessage('לא נמצאו מוצרים התואמים את החיפוש שלך.');
+                return;
+            }
+            
+            renderProducts(semantixProducts, renderedHtml);
 
         } catch (error) {
             console.error('Search execution error:', error);
-            showMessage(`שגיאה בטעינת התוצאות: ${error.message}`);
+            showMessage('אירעה שגיאה בביצוע החיפוש. נסה שנית מאוחר יותר.');
         }
+    }
+
+    function renderProducts(semantixProducts, renderedHtml) {
+        resultsContainer.innerHTML = renderedHtml;
+
+        // Save the combined results to cache for faster page load next time
+        const combinedCacheKey = getCacheKey(searchTerm);
+        saveToCache(combinedCacheKey, { semantixProducts, renderedHtml });
+
+        // Your existing logic for Add to Cart, etc. can go here
+        // For example, re-initializing any JS that needs to run on the new content.
+        initializeNativeWooCommerce();
     }
 
 })();

@@ -16,30 +16,35 @@ export async function GET(req) {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    // Get the sync status
-    const doc = await db
+    // Get the sync status from users.sync_status collection
+    const statusDoc = await client
+      .db("users")
       .collection("sync_status")
-      .findOne({ dbName }, { projection:{ _id:0, state:1, progress: 1 } });
+      .findOne({ dbName }, { projection: { _id: 0, state: 1, processedCount: 1, totalProducts: 1, progress: 1 } });
 
-    // Get total number of products
-    const totalProducts = await db
-      .collection("products")
-      .countDocuments();
+    // Use real-time progress data if available, otherwise calculate from database
+    let totalProducts = statusDoc?.totalProducts;
+    let processedCount = statusDoc?.processedCount;
 
-    // Get number of processed products (those with images or descriptions)
-    const processedCount = await db
-      .collection("products")
-      .countDocuments({ 
-        $or: [
-         
-          { embedding: { $exists: true, $ne: null } }
-        ],
-        fetchedAt: { $exists: true }
-      });
+    // Fall back to database queries if real-time data is not available
+    if (typeof totalProducts !== 'number') {
+      totalProducts = await db.collection("products").countDocuments();
+    }
+
+    if (typeof processedCount !== 'number') {
+      processedCount = await db
+        .collection("products")
+        .countDocuments({ 
+          $or: [
+            { embedding: { $exists: true, $ne: null } }
+          ],
+          fetchedAt: { $exists: true }
+        });
+    }
 
     return Response.json({ 
-      state: doc?.state ?? "idle", 
-      progress: doc?.progress ?? 0,
+      state: statusDoc?.state ?? "idle", 
+      progress: statusDoc?.progress ?? 0,
       totalProducts,
       processedCount
     });

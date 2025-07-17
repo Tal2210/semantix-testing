@@ -37,18 +37,27 @@ function ProgressBar({ totalProducts, processedCount }) {
     <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md p-6 shadow-lg border-t border-white/20 z-[9999]">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-white text-sm font-medium">
-            Processing Products
-          </p>
+          <div className="flex items-center space-x-3">
+            <div className="w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+            <p className="text-white text-sm font-medium">
+              Processing Products
+            </p>
+          </div>
           <p className="text-white text-sm font-medium">
             {processedCount} of {totalProducts} ({progress}%)
           </p>
         </div>
-        <div className="w-full bg-white/20 rounded-full h-3 relative overflow-hidden">
+        <div className="w-full bg-white/20 rounded-full h-3 relative overflow-hidden mb-3">
           <div 
             className="bg-purple-500 h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
+        </div>
+        <div className="flex items-center justify-center space-x-2 text-white/80 text-xs">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>You can safely leave this tab - processing will continue in the background</span>
         </div>
       </div>
     </div>
