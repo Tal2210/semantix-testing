@@ -4,43 +4,71 @@ import clientPromise from "/lib/mongodb";
 import { SHOPIFY_API_SECRET } from "/lib/shopify-app-config";
 
 /**
- * Verify the webhook signature
+ * Verify the webhook signature according to Shopify documentation
  * @param {Request} request - The incoming request
  * @param {string} body - The request body as a string
  * @returns {boolean} - Whether the signature is valid
  */
 async function verifyWebhookSignature(request, body) {
   const hmacHeader = request.headers.get("x-shopify-hmac-sha256");
-  if (!hmacHeader) return false;
+  if (!hmacHeader) {
+    console.error("Missing x-shopify-hmac-sha256 header");
+    return false;
+  }
   
   const secret = SHOPIFY_API_SECRET;
-  if (!secret) return false;
+  if (!secret) {
+    console.error("Missing SHOPIFY_API_SECRET");
+    return false;
+  }
   
+  // Create HMAC using the secret and request body
   const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body);
-  const digest = hmac.digest("base64");
+  hmac.update(body, "utf8");
+  const calculatedDigest = hmac.digest("base64");
   
+  // Compare the calculated digest with the header using timing-safe comparison
   return crypto.timingSafeEqual(
-    Buffer.from(hmacHeader),
-    Buffer.from(digest)
+    Buffer.from(calculatedDigest, "utf8"),
+    Buffer.from(hmacHeader, "utf8")
   );
+}
+
+// Handle GET requests (webhook verification)
+export async function GET(request) {
+  console.log("--- Shopify Webhook GET Request ---");
+  console.log("Request URL:", request.url);
+  console.log("Request Headers:", JSON.stringify(Object.fromEntries(request.headers.entries()), null, 2));
+  
+  // Return 200 OK for webhook verification
+  return new Response("OK", { status: 200 });
 }
 
 export async function POST(request) {
   try {
     console.log("--- Shopify Webhook Received ---");
     console.log("Request URL:", request.url);
+    console.log("Request Method:", request.method);
     console.log("Request Headers:", JSON.stringify(Object.fromEntries(request.headers.entries()), null, 2));
+
+    // Check if SHOPIFY_API_SECRET is configured
+    if (!SHOPIFY_API_SECRET) {
+      console.error("SHOPIFY_API_SECRET is not configured");
+      return new Response("Server Configuration Error", { status: 500 });
+    }
 
     // Get the raw request body as a string
     const body = await request.text();
+    console.log("Request body length:", body.length);
     
     // Verify the webhook signature
     const isValid = await verifyWebhookSignature(request, body);
     if (!isValid) {
-      console.error("Invalid webhook signature");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+      console.error("Invalid webhook signature - returning HTTP 401");
+      return new Response("Unauthorized", { status: 401 });
     }
+    
+    console.log("Webhook signature verified successfully");
     
     // Parse the request body
     const data = JSON.parse(body);
@@ -104,10 +132,10 @@ export async function POST(request) {
     
     // Return a success response
     console.log(`--- Finished processing webhook: ${topic} ---`);
-    return NextResponse.json({ success: true });
+    return new Response("OK", { status: 200 });
   } catch (error) {
     console.error("Webhook processing error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return new Response("Internal Server Error", { status: 500 });
   }
 }
 
