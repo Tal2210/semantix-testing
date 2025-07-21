@@ -1,165 +1,100 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import clientPromise from "/lib/mongodb";
-import { SHOPIFY_API_SECRET } from "/lib/shopify-app-config";
+import { verifyShopifyWebhook } from "/lib/shopify-webhook-verifier";
 
-/**
- * Verify the webhook signature according to Shopify documentation
- * @param {Request} request - The incoming request
- * @param {string} body - The request body as a string
- * @returns {boolean} - Whether the signature is valid
- */
-async function verifyWebhookSignature(request, body) {
-  const hmacHeader = request.headers.get("x-shopify-hmac-sha256");
-  if (!hmacHeader) {
-    console.error("Missing x-shopify-hmac-sha256 header");
-    return false;
-  }
-  
-  const secret = SHOPIFY_API_SECRET;
-  if (!secret) {
-    console.error("Missing SHOPIFY_API_SECRET");
-    return false;
-  }
-  
-  // Create HMAC using the secret and request body
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body, "utf8");
-  const calculatedDigest = hmac.digest("base64");
-  
-  // Compare the calculated digest with the header using timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(calculatedDigest, "utf8"),
-    Buffer.from(hmacHeader, "utf8")
-  );
-}
 
 // Handle GET requests (webhook verification)
 export async function GET(request) {
   console.log("--- Shopify Webhook GET Request ---");
-  console.log("Request URL:", request.url);
-  console.log("Request Headers:", JSON.stringify(Object.fromEntries(request.headers.entries()), null, 2));
-  
-  // Return 200 OK for webhook verification
+  // This endpoint is hit by Shopify to verify the URL.
   return new Response("OK", { status: 200 });
 }
 
 export async function POST(request) {
+  console.log("--- Shopify Webhook Received ---");
+  
+  const body = await request.text();
+
+  // Unified verification
+  const isValid = await verifyShopifyWebhook(request, body);
+  if (!isValid) {
+    // The verifier already logs the specific reason for failure.
+    return new Response("Unauthorized", { status: 401 });
+  }
+  
+  console.log("Webhook signature verified successfully.");
+  
+  // Process the verified webhook
   try {
-    console.log("--- Shopify Webhook Received ---");
-    console.log("Request URL:", request.url);
-    console.log("Request Method:", request.method);
-    console.log("Request Headers:", JSON.stringify(Object.fromEntries(request.headers.entries()), null, 2));
-
-    // Check if SHOPIFY_API_SECRET is configured
-    if (!SHOPIFY_API_SECRET) {
-      console.error("SHOPIFY_API_SECRET is not configured");
-      return new Response("Server Configuration Error", { status: 500 });
-    }
-
-    // Get the raw request body as a string
-    const body = await request.text();
-    console.log("Request body length:", body.length);
-    
-    // Verify the webhook signature
-    const isValid = await verifyWebhookSignature(request, body);
-    if (!isValid) {
-      console.error("Invalid webhook signature - returning HTTP 401");
-      return new Response("Unauthorized", { status: 401 });
-    }
-    
-    console.log("Webhook signature verified successfully");
-    
-    // Parse the request body
     const data = JSON.parse(body);
-    
-    // Get the webhook topic from the headers
     const topic = request.headers.get("x-shopify-topic");
     const shop = request.headers.get("x-shopify-shop-domain");
-    
+
     console.log(`Processing webhook: ${topic} from ${shop}`);
     
-    // Connect to MongoDB
     const client = await clientPromise;
     const db = client.db("users");
     
-    // Store the webhook in the database
+    // Store all incoming webhooks for auditing and debugging.
     await db.collection("shopify_webhooks").insertOne({
-      topic,
-      shop,
-      data,
-      receivedAt: new Date()
+        topic,
+        shop,
+        data,
+        receivedAt: new Date()
     });
-    
-    // Handle different webhook topics
+
+    // Route to the correct handler based on the topic
     switch (topic) {
-      case "products/create":
-      case "products/update":
-        // Process product update
-        await processProductUpdate(db, shop, data);
-        break;
+        case "products/create":
+        case "products/update":
+            await processProductUpdate(db, shop, data);
+            break;
+            
+        case "products/delete":
+            await processProductDeletion(db, shop, data);
+            break;
+            
+        case "app/uninstalled":
+            await handleAppUninstall(db, shop);
+            break;
         
-      case "products/delete":
-        // Process product deletion
-        await processProductDeletion(db, shop, data);
-        break;
-        
-      case "app/uninstalled":
-        // Handle app uninstallation
-        await handleAppUninstall(db, shop);
-        break;
-      
-      // GDPR Webhooks
-      case "customers/data_request":
-        // Handle customer data request
-        await handleCustomerDataRequest(db, shop, data);
-        break;
-        
-      case "customers/redact":
-        // Handle customer data redaction
-        await handleCustomerRedact(db, shop, data);
-        break;
-        
-      case "shop/redact":
-        // Handle shop data redaction
-        await handleShopRedact(db, shop, data);
-        break;
-        
-      default:
-        // Log other webhook topics
-        console.log(`Unhandled webhook topic: ${topic}`);
+        // GDPR webhooks are handled by their own dedicated endpoints now,
+        // but we log them here if they are ever sent to the main endpoint.
+        case "customers/data_request":
+        case "customers/redact":
+        case "shop/redact":
+            console.warn(`Received GDPR webhook topic '${topic}' on the main endpoint. This should be configured to use its dedicated API route.`);
+            break;
+            
+        default:
+            console.log(`Unhandled webhook topic received: ${topic}`);
     }
     
-    // Return a success response
     console.log(`--- Finished processing webhook: ${topic} ---`);
     return new Response("OK", { status: 200 });
+
   } catch (error) {
-    console.error("Webhook processing error:", error);
+    console.error("Webhook processing error after signature validation:", error);
+    // Return 500 if the error happens after successful validation
     return new Response("Internal Server Error", { status: 500 });
   }
 }
 
+// --- HELPER FUNCTIONS ---
+
 /**
- * Process a product update webhook
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {Object} data - The webhook data
+ * Processes product creation and update webhooks.
  */
 async function processProductUpdate(db, shop, data) {
   try {
-    // Find the user associated with this shop
     const user = await db.collection("users").findOne({ shopifyShop: shop });
     if (!user) {
-      console.error(`No user found for shop: ${shop}`);
-      return;
+      console.error(`Product update webhook received, but no user found for shop: ${shop}`);
+      return; // Or handle as an error case
     }
     
-    // Update or create the product in the database
     await db.collection("products").updateOne(
-      { 
-        shopifyId: data.id.toString(),
-        shop 
-      },
+      { shopifyId: data.id.toString(), shop },
       {
         $set: {
           title: data.title,
@@ -174,346 +109,45 @@ async function processProductUpdate(db, shop, data) {
           userId: user._id,
           userEmail: user.email
         },
-        $setOnInsert: {
-          createdAt: new Date()
-        }
+        $setOnInsert: { createdAt: new Date() }
       },
       { upsert: true }
     );
     
-    console.log(`Processed product update for ${data.title} (${data.id})`);
+    console.log(`Processed product update for: ${data.title} (ID: ${data.id})`);
   } catch (error) {
-    console.error("Error processing product update:", error);
+    console.error("Error in processProductUpdate:", error);
   }
 }
 
 /**
- * Process a product deletion webhook
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {Object} data - The webhook data
+ * Processes product deletion webhooks.
  */
 async function processProductDeletion(db, shop, data) {
   try {
-    // Mark the product as deleted in the database
     await db.collection("products").updateOne(
-      { 
-        shopifyId: data.id.toString(),
-        shop 
-      },
-      {
-        $set: {
-          deleted: true,
-          deletedAt: new Date()
-        }
-      }
+      { shopifyId: data.id.toString(), shop },
+      { $set: { deleted: true, deletedAt: new Date() } }
     );
-    
     console.log(`Processed product deletion for product ID: ${data.id}`);
   } catch (error) {
-    console.error("Error processing product deletion:", error);
+    console.error("Error in processProductDeletion:", error);
   }
 }
 
 /**
- * Handle app uninstallation webhook
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
+ * Handles the app uninstallation webhook.
  */
 async function handleAppUninstall(db, shop) {
   try {
-    // Update the installation record
-    await db.collection("shopify_installations").updateMany(
-      { shop },
-      {
-        $set: {
-          active: false,
-          uninstalledAt: new Date()
-        }
-      }
-    );
-    
-    // Update the user record
+    // Here you would deactivate the user, cancel subscriptions, etc.
     await db.collection("users").updateMany(
       { shopifyShop: shop },
-      {
-        $set: {
-          shopifyConnected: false,
-          shopifyUninstalledAt: new Date()
-        }
-      }
+      { $set: { shopifyConnected: false, shopifyUninstalledAt: new Date(), active: false } }
     );
-    
     console.log(`Processed app uninstallation for shop: ${shop}`);
-  } catch (error) {
-    console.error("Error handling app uninstall:", error);
+  } catch (error)
+  {
+    console.error("Error in handleAppUninstall:", error);
   }
-}
-
-/**
- * Handle customer data request webhook (GDPR)
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {Object} data - The webhook data
- */
-async function handleCustomerDataRequest(db, shop, data) {
-  try {
-    console.log(`Processing customer data request for shop: ${shop}`);
-    
-    // Extract customer info from the webhook data
-    const { shop_id, shop_domain, customer, orders_requested } = data;
-    const customerId = customer.id;
-    const customerEmail = customer.email;
-    
-    // Log the request in a dedicated GDPR collection
-    await db.collection("gdpr_requests").insertOne({
-      type: "data_request",
-      shop,
-      shopId: shop_id,
-      customerId,
-      customerEmail,
-      ordersRequested: orders_requested,
-      requestedAt: new Date(),
-      status: "received",
-      completedAt: null
-    });
-    
-    // Find all customer data in your database
-    const customerData = await collectCustomerData(db, shop, customerId, customerEmail);
-    
-    // Store the collected data for later export
-    await db.collection("gdpr_data_exports").insertOne({
-      shop,
-      customerId,
-      customerEmail,
-      data: customerData,
-      createdAt: new Date()
-    });
-    
-    // Update the request status
-    await db.collection("gdpr_requests").updateOne(
-      { shop, customerId, type: "data_request" },
-      { 
-        $set: { 
-          status: "completed",
-          completedAt: new Date()
-        } 
-      }
-    );
-    
-    console.log(`Completed customer data request for customer ID: ${customerId}`);
-  } catch (error) {
-    console.error("Error handling customer data request:", error);
-  }
-}
-
-/**
- * Handle customer data redaction webhook (GDPR)
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {Object} data - The webhook data
- */
-async function handleCustomerRedact(db, shop, data) {
-  try {
-    console.log(`Processing customer data redaction for shop: ${shop}`);
-    
-    // Extract customer info from the webhook data
-    const { shop_id, shop_domain, customer } = data;
-    const customerId = customer.id;
-    const customerEmail = customer.email;
-    
-    // Log the request in a dedicated GDPR collection
-    await db.collection("gdpr_requests").insertOne({
-      type: "customer_redact",
-      shop,
-      shopId: shop_id,
-      customerId,
-      customerEmail,
-      requestedAt: new Date(),
-      status: "received",
-      completedAt: null
-    });
-    
-    // Redact or anonymize customer data
-    await redactCustomerData(db, shop, customerId, customerEmail);
-    
-    // Update the request status
-    await db.collection("gdpr_requests").updateOne(
-      { shop, customerId, type: "customer_redact" },
-      { 
-        $set: { 
-          status: "completed",
-          completedAt: new Date()
-        } 
-      }
-    );
-    
-    console.log(`Completed customer data redaction for customer ID: ${customerId}`);
-  } catch (error) {
-    console.error("Error handling customer data redaction:", error);
-  }
-}
-
-/**
- * Handle shop data redaction webhook (GDPR)
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {Object} data - The webhook data
- */
-async function handleShopRedact(db, shop, data) {
-  try {
-    console.log(`Processing shop data redaction for shop: ${shop}`);
-    
-    // Extract shop info from the webhook data
-    const { shop_id, shop_domain } = data;
-    
-    // Log the request in a dedicated GDPR collection
-    await db.collection("gdpr_requests").insertOne({
-      type: "shop_redact",
-      shop,
-      shopId: shop_id,
-      requestedAt: new Date(),
-      status: "received",
-      completedAt: null
-    });
-    
-    // Redact or anonymize shop data
-    await redactShopData(db, shop, shop_id);
-    
-    // Update the request status
-    await db.collection("gdpr_requests").updateOne(
-      { shop, shopId: shop_id, type: "shop_redact" },
-      { 
-        $set: { 
-          status: "completed",
-          completedAt: new Date()
-        } 
-      }
-    );
-    
-    console.log(`Completed shop data redaction for shop: ${shop}`);
-  } catch (error) {
-    console.error("Error handling shop data redaction:", error);
-  }
-}
-
-/**
- * Collect all data related to a customer
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {string} customerId - The customer ID
- * @param {string} customerEmail - The customer email
- * @returns {Object} - The collected customer data
- */
-async function collectCustomerData(db, shop, customerId, customerEmail) {
-  // Collect all data related to this customer from your database
-  const searchQueries = await db.collection("search_queries").find({
-    shop,
-    customerId: customerId.toString()
-  }).toArray();
-  
-  const searchInteractions = await db.collection("search_interactions").find({
-    shop,
-    customerId: customerId.toString()
-  }).toArray();
-  
-  // Return the collected data
-  return {
-    searchQueries,
-    searchInteractions,
-    // Add any other customer-related data you collect
-  };
-}
-
-/**
- * Redact or anonymize customer data
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {string} customerId - The customer ID
- * @param {string} customerEmail - The customer email
- */
-async function redactCustomerData(db, shop, customerId, customerEmail) {
-  // Anonymize search queries
-  await db.collection("search_queries").updateMany(
-    { shop, customerId: customerId.toString() },
-    { 
-      $set: { 
-        query: "[REDACTED]",
-        customerEmail: "[REDACTED]",
-        customerIp: "[REDACTED]",
-        redacted: true,
-        redactedAt: new Date()
-      } 
-    }
-  );
-  
-  // Anonymize search interactions
-  await db.collection("search_interactions").updateMany(
-    { shop, customerId: customerId.toString() },
-    { 
-      $set: { 
-        customerEmail: "[REDACTED]",
-        customerIp: "[REDACTED]",
-        redacted: true,
-        redactedAt: new Date()
-      } 
-    }
-  );
-  
-  // Add redaction for any other customer data you collect
-}
-
-/**
- * Redact or anonymize shop data
- * @param {Object} db - MongoDB database connection
- * @param {string} shop - The shop domain
- * @param {string} shopId - The shop ID
- */
-async function redactShopData(db, shop, shopId) {
-  // Delete or anonymize all data related to this shop
-  
-  // Anonymize shop information
-  await db.collection("users").updateMany(
-    { shopifyShop: shop },
-    { 
-      $set: { 
-        shopifyShop: "[REDACTED]",
-        shopifyToken: "[REDACTED]",
-        shopifyScope: "[REDACTED]",
-        redacted: true,
-        redactedAt: new Date()
-      } 
-    }
-  );
-  
-  // Anonymize products
-  await db.collection("products").updateMany(
-    { shop },
-    { 
-      $set: { 
-        title: "[REDACTED]",
-        description: "[REDACTED]",
-        vendor: "[REDACTED]",
-        tags: [],
-        redacted: true,
-        redactedAt: new Date()
-      } 
-    }
-  );
-  
-  // Anonymize search queries
-  await db.collection("search_queries").updateMany(
-    { shop },
-    { 
-      $set: { 
-        query: "[REDACTED]",
-        customerEmail: "[REDACTED]",
-        customerIp: "[REDACTED]",
-        redacted: true,
-        redactedAt: new Date()
-      } 
-    }
-  );
-  
-  // Add redaction for any other shop data you collect
 } 
