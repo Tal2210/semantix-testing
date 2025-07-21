@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Image from 'next/image';
+import ImageCarousel from './components/ImageCarousel';
 
 const HomePage = () => {
   const router = useRouter();
@@ -10,8 +11,8 @@ const HomePage = () => {
     {
       query: "Red wine that pairs well with steak dinner, up to 20$",
       images: [
-        "/wine2.png",
         "/wine1.png",
+        "/wine2.png",
         "/wine3.png",
         "/wine4.png",
       ]
@@ -138,11 +139,39 @@ const HomePage = () => {
     return () => observer.disconnect();
   }, []);
 
-  const stats = [
-    { label: 'Average Conversion Increase', value: '32%', icon: '📈' },
-    { label: 'Setup Time', value: '< 5 min', icon: '⚡' },
+  const [queriesSaved, setQueriesSaved] = useState(0);
+  const [productsSold, setProductsSold] = useState(0);
 
-    { label: 'Queries Processed', value: '100k+', icon: '🔍' },
+  useEffect(() => {
+    const animateNumbers = () => {
+      const queriesTarget = 45000;
+      const productsTarget = 10000;
+      const duration = 2000; // 2 seconds
+      const steps = 60;
+      const queriesStep = queriesTarget / steps;
+      const productsStep = productsTarget / steps;
+      
+      let currentStep = 0;
+      const interval = setInterval(() => {
+        currentStep++;
+        setQueriesSaved(Math.floor(currentStep * queriesStep));
+        setProductsSold(Math.floor(currentStep * productsStep));
+        
+        if (currentStep >= steps) {
+          setQueriesSaved(queriesTarget);
+          setProductsSold(productsTarget);
+          clearInterval(interval);
+        }
+      }, duration / steps);
+    };
+
+    // Start animation when component mounts
+    animateNumbers();
+  }, []);
+
+  const stats = [
+    { label: 'Queries Saved', value: `${queriesSaved.toLocaleString()}+`, icon: 'SAVED', isMain: true },
+    { label: 'Products Sold', value: `${productsSold.toLocaleString()}+`, icon: 'SOLD', isMain: true },
   ];
 
   const features = [
@@ -172,11 +201,22 @@ const HomePage = () => {
     },
   ];
 
+  const painPoints = [
+    {
+      title: 'Smart Product Discovery',
+      description: 'AI understands customer intent beyond exact keywords',
+      icon: 'SMART',
+    },
+    {
+      title: 'Real-time Learning',
+      description: 'Algorithms improve with every search interaction',
+      icon: 'LEARN',
+    }
+  ];
+
   const integrations = [
-    { name: 'WooCommerce', logo: '🛒', status: 'available', description: 'Live and ready!' },
-    { name: 'Shopify', logo: '🛍️', status: 'coming-soon', description: 'Coming Q2 2025' },
-    { name: 'Magento', logo: '🏪', status: 'planned', description: 'On roadmap' },
-    { name: 'BigCommerce', logo: '🏬', status: 'planned', description: 'On roadmap' },
+    { name: 'WooCommerce', logo: 'WOO', status: 'available', description: 'Ready to install' },
+    { name: 'Shopify', logo: 'SHOP', status: 'coming-soon', description: 'Coming Q2 2025' },
   ];
 
   const faqs = [
@@ -199,12 +239,12 @@ const HomePage = () => {
   ];
 
   return (
-    <>
+    <div className="relative w-full overflow-x-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <Head>
         <meta name="robots" content="noimageindex" />
         <meta name="googlebot" content="noimageindex" />
       </Head>
-      <div className="min-h-screen bg-white">
+      <div className="relative">
         {/* Navigation Bar */}
         <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-lg z-50 border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,10 +254,10 @@ const HomePage = () => {
               </div>
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors">Features</a>
-                <a href="#how-it-works" className="text-gray-700 hover:text-purple-600 transition-colors">How it Works</a>
+                <button onClick={() => router.push('/product')} className="text-gray-700 hover:text-purple-600 transition-colors bg-transparent border-none cursor-pointer">How it Works</button>
               
                 <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
-                <button onClick={() => router.push('/onboarding')} className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <button onClick={() => window.open('https://calendly.com/semantix-sales', '_blank')} className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   Get Started
                 </button>
               </div>
@@ -225,51 +265,33 @@ const HomePage = () => {
           </div>
         </nav>
 
-        {/* Launch Announcement Banner */}
-        <div className="fixed top-16 left-0 right-0 bg-gradient-to-r from-indigo-600 to-purple-600 text-white z-40 border-b border-indigo-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div className="flex items-center justify-center text-center">
-              <div className="flex items-center space-x-3">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
-                  🚀 LAUNCH PHASE
-                </span>
-                <p className="text-sm md:text-base font-medium">
-                  We're currently in launch phase and working exclusively with 
-                  <span className="font-bold mx-1">WooCommerce</span>
-                  stores. Shopify support coming soon!
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         {/* Hero Section - Enhanced */}
-        <section className="pt-32 pb-20 px-4 relative overflow-hidden">
+        <section className="pt-16 sm:pt-32 pb-12 sm:pb-20 px-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 opacity-50"></div>
           <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-300 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
           
           <div className="max-w-7xl mx-auto relative z-10">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-12">
             
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6">
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
-                  Turn Browsers Into Buyers
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-6.5xl font-extrabold mb-6 sm:mb-8 leading-tight">
+                <span className="bg-gradient-to-t from-purple-600 via-purple-500 to-gray-400 text-transparent bg-clip-text block mb-1 sm:mb-0 pb-0 sm:pb-1">
+                  Your Users Know What They Want
                 </span>
-                <br />
-                <span className="text-gray-800">With AI-Powered Search</span>
+                <span className="text-gray-800 block sm:inline">Help Them Find It.</span>
               </h1>
-              <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Let customers search naturally, find exactly what they want, and buy with confidence. 
-                Watch your conversion rates soar with search that actually understands.
+              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-10 px-4 leading-relaxed">
+              Natural search, Accurate results, Confident buying.
               </p>
             </div>
 
             {/* Search Demo - Enhanced */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto mb-12 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 max-w-4xl mx-auto mb-8 sm:mb-12 border border-gray-100">
               <div className="flex items-center mb-6">
-                <div className="flex-1 flex items-center bg-gray-50 rounded-xl px-6 py-4 justify-between">
-                  <span className={`text-xl text-gray-700 transition-opacity duration-500 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
+                <div className="flex-1 flex items-center bg-gray-50 rounded-xl px-6 py-4 justify-between min-h-[80px]">
+                  <span className={`text-lg sm:text-xl text-gray-700 transition-opacity duration-500 leading-tight ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
                     {text}
                     <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-purple-600`}>|</span>
                   </span>
@@ -279,192 +301,88 @@ const HomePage = () => {
                 </div>
               </div>
               
-              <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-700 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              {/* Fixed height container to prevent layout shifts */}
+              <div className="h-56 sm:h-60 relative overflow-hidden">
+                <div className={`grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 transition-all duration-700 absolute inset-0 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 {showImages && currentImages.map((image, index) => (
-                  <div key={index} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                    <Image src={image} alt={`Product ${index + 1}`} className="w-full h-48 object-cover" width={300} height={200} />
+                    <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-gradient-to-br from-gray-50 to-white">
+                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain p-3" width={300} height={200} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <p className="text-sm font-medium">Perfect Match</p>
+                      <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
                       <p className="text-xs opacity-90">Click to view</p>
                     </div>
                   </div>
                 ))}
+                </div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={() => router.push('/login')} className="group bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3">
-                <span>Start Free Trial</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+              <button onClick={() => window.open('https://calendly.com/semantix-sales', '_blank')} className="group bg-gradient-to-r from-purple-600 to-purple-500 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3 w-full sm:w-auto justify-center">
+                <span>Get Started</span>
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <button onClick={() => router.push('/product')} className="bg-white text-gray-700 font-bold py-4 px-8 rounded-full text-lg border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
-                Try it on out live demo!
+              <button onClick={() => router.push('/product')} className="bg-white text-gray-700 font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 w-full sm:w-auto">
+                Try it on our live demo!
               </button>
             </div>
           </div>
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 px-4 bg-gradient-to-r from-purple-600 to-pink-600">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <section className="py-4 px-2">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center text-white">
-                  <div className="text-4xl mb-2">{stat.icon}</div>
-                  <div className="text-3xl md:text-4xl font-bold mb-1">{stat.value}</div>
-                  <div className="text-purple-100">{stat.label}</div>
+                <div key={index} className="text-center">
+                  <div className="font-bold mb-1 text-5xl md:text-6xl text-gray-900">{stat.value}</div>
+                  <div className="text-3xl font-serif italic tracking-wider mt-2 drop-shadow animate-fade-in-up bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Carousel Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <ImageCarousel />
           </div>
         </section>
 
         {/* Problem/Solution Section */}
-        <section className="py-20 px-4 bg-gray-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-bold text-gray-800 mb-6">
-                  Your Customers Don't Think in Keywords
-                </h2>
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-4">
-                    <span className="text-red-500 text-2xl">❌</span>
-                    <div>
-                      <p className="font-semibold text-gray-800">Traditional Search Fails</p>
-                      <p className="text-gray-600">Customers search for "red wine for steak" but get zero results because your products are tagged as "Cabernet Sauvignon"</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <span className="text-green-500 text-2xl">✅</span>
-                    <div>
-                      <p className="font-semibold text-gray-800">Semantix AI Understands</p>
-                      <p className="text-gray-600">Our AI knows that Cabernet pairs perfectly with steak and shows relevant results instantly</p>
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => router.push('/product')} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                  See the Difference →
-                </button>
-              </div>
-              <div className="relative">
-                <div className="bg-white rounded-2xl shadow-xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                  <div className="bg-red-50 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-red-600 font-medium mb-2">❌ Traditional Search</p>
-                    <div className="bg-white rounded border border-red-200 p-3">
-                      <p className="text-gray-700">"birthday gift for 10 year old who loves science"</p>
-                      <p className="text-red-500 text-sm mt-2">No results found</p>
-                    </div>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4">
-                    <p className="text-sm text-green-600 font-medium mb-2">✅ Semantix AI</p>
-                    <div className="bg-white rounded border border-green-200 p-3">
-                      <p className="text-gray-700">"birthday gift for 10 year old who loves science"</p>
-                      <p className="text-green-600 text-sm mt-2">Showing: Chemistry Sets, Microscopes, Robot Kits...</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section - Enhanced */}
-        <section id="features" className="py-20 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                Everything You Need to Delight Customers
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Powerful features that work together to create the ultimate shopping experience
+        <section className="py-20 px-4 bg-white">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-8">
+              Your Customers Don't Think in Keywords
+            </h2>
+            
+            <div className="space-y-6 mb-12 text-lg sm:text-xl text-gray-600 leading-relaxed">
+              <p>
+                They want to find exactly what they need. We help them think like customers, not search engines.
+              </p>
+              
+              <p>
+                Everyone knows the search experience is broken. Customers can't find what they're looking for because traditional search requires exact keyword matches. They search naturally - in exactly the same way they would ask a friend.
+              </p>
+              
+              <p>
+                Behind Semantix there's an AI that has learned from millions of searches and understands exactly what customers mean, no matter how they choose to search.
               </p>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {features.map((feature, index) => (
-                <div key={index} className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-purple-200">
-                  <div className="flex items-center mb-4">
-                    <span className="text-4xl mr-4">{feature.icon}</span>
-                    <h3 className="text-2xl font-bold text-gray-800">{feature.title}</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6">{feature.description}</p>
-                  <ul className="space-y-2">
-                    {feature.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-gray-700">
-                        <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {detail}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works - Enhanced */}
-        <section id="how-it-works" className="py-20 px-4 bg-gradient-to-br from-purple-50 to-pink-50">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                Get Started in 3 Simple Steps
-              </h2>
-              <p className="text-xl text-gray-600">
-                No developers, no complex setup, no headaches
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  step: '1',
-                  title: 'Install Plugin',
-                  description: 'One-click installation from your store\'s app marketplace',
-                  icon: '🔌',
-                  time: '1 minute'
-                },
-                {
-                  step: '2',
-                  title: 'Connect Store',
-                  description: 'Automatic sync with your product catalog and data',
-                  icon: '🔄',
-                  time: '2 minutes'
-                },
-                {
-                  step: '3',
-                  title: 'Watch Magic Happen',
-                  description: 'Customers find products faster, buy more, love your store',
-                  icon: '✨',
-                  time: 'Instant results'
-                }
-              ].map((item, index) => (
-                <div key={index} className="relative">
-                  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
-                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                      {item.step}
-                    </div>
-                    <div className="text-4xl mb-4">{item.icon}</div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
-                    <p className="text-gray-600 mb-4">{item.description}</p>
-                    <p className="text-sm text-purple-600 font-medium">{item.time}</p>
-                  </div>
-                  {index < 2 && (
-                    <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                      <svg className="w-8 h-8 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            
+            <button 
+              onClick={() => router.push('/product')} 
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 inline-flex items-center gap-3"
+            >
+              <span>See the Difference →</span>
+            </button>
           </div>
         </section>
 
@@ -596,175 +514,99 @@ const HomePage = () => {
                 </div>
               </section>
 
-              {/* Conversion Visualization */}
-              <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
-                <h3 className="text-md font-medium text-gray-700 mb-4">Weekly Conversion Trends</h3>
-                <div className="bg-gray-50 rounded-lg p-4 h-64 flex items-end justify-around">
-                  {[
-                    { day: 'Mon', conversions: 127, height: '90%' },
-                    { day: 'Tue', conversions: 89, height: '70%' },
-                    { day: 'Wed', conversions: 156, height: '100%' },
-                    { day: 'Thu', conversions: 112, height: '85%' },
-                    { day: 'Fri', conversions: 134, height: '92%' },
-                  ].map((item, index) => (
-                    <div key={index} className="flex flex-col items-center flex-1">
-                      <div 
-                        className="bg-indigo-600 rounded-t-md w-16 shadow-md flex items-start justify-center"
-                        style={{ height: item.height }}
-                      >
-                        <div className="text-white text-center font-bold py-2 text-sm">
-                          {item.conversions}
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-2">{item.day}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+
             </div>
           </div>
         </section>
 
-        {/* ROI Calculator Section */}
-        <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-pink-600">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-4xl font-bold mb-4">
-              Calculate Your ROI
-            </h2>
-            <p className="text-xl mb-12 text-purple-100">
-              See how much revenue Semantix AI could add to your store
-            </p>
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-8">
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <div>
-                  <label className="block text-purple-100 mb-2">Monthly Visitors</label>
-                  <input 
-                    type="number" 
-                    value={roiInputs.monthlyVisitors}
-                    onChange={(e) => setRoiInputs({...roiInputs, monthlyVisitors: parseInt(e.target.value) || 0})}
-                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-purple-100 mb-2">Average Order Value</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-3 text-white">$</span>
-                    <input 
-                      type="number" 
-                      value={roiInputs.avgOrderValue}
-                      onChange={(e) => setRoiInputs({...roiInputs, avgOrderValue: parseFloat(e.target.value) || 0})}
-                      className="w-full pl-8 pr-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50" 
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-purple-100 mb-2">Current Conversion Rate</label>
-                  <div className="relative">
-                    <input 
-                      type="number" 
-                      value={roiInputs.currentConversionRate}
-                      onChange={(e) => setRoiInputs({...roiInputs, currentConversionRate: parseFloat(e.target.value) || 0})}
-                      step="0.1"
-                      min="0"
-                      max="100"
-                      className="w-full pr-8 px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50" 
-                    />
-                    <span className="absolute right-4 top-3 text-white">%</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/20 rounded-lg p-6">
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <div className="text-left">
-                    <p className="text-purple-100 mb-1 text-sm">Current Monthly Revenue</p>
-                    <p className="text-2xl font-bold">${roi.currentMonthlyRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <div className="text-left">
-                    <p className="text-purple-100 mb-1 text-sm">Projected Monthly Revenue</p>
-                    <p className="text-2xl font-bold text-green-300">${roi.projectedMonthlyRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                </div>
-                
-                <div className="border-t border-white/20 pt-6">
-                  <p className="text-purple-100 mb-2">Estimated Additional Monthly Revenue</p>
-                  <p className="text-5xl font-bold mb-4">
-                    ${roi.additionalMonthlyRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </p>
-                  <p className="text-purple-100">
-                    That's <span className="font-bold text-green-300">${roi.additionalYearlyRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> in additional revenue per year
-                  </p>
-                  <p className="text-purple-100 mt-2 text-sm">
-                    Based on 32% average conversion increase • {roi.additionalOrders} more orders per month
-                  </p>
-                </div>
-              </div>
-              
-              <div className="mt-6 text-sm text-purple-100">
-                <p>New conversion rate: <span className="font-bold">{roi.newConversionRate}%</span> (up from {roiInputs.currentConversionRate}%)</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials - Enhanced */}
-        <section id="testimonials" className="py-20 px-4 bg-white">
+        {/* Features Section - Enhanced */}
+        <section id="features" className="py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                Loved by 2,500+ Store Owners
+                Everything You Need to Delight Customers
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Powerful features that work together to create the ultimate shopping experience
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {features.map((feature, index) => (
+                <div key={index} className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-purple-200">
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-bold text-gray-800">{feature.title}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-6">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-gray-700">
+                        <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works - Enhanced */}
+        <section id="how-it-works" className="py-20 px-4 bg-purple-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                Get Started in 3 Simple Steps
               </h2>
               <p className="text-xl text-gray-600">
-                See why merchants are switching to Semantix AI
+                No developers, no complex setup, no headaches
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  name: 'Sarah Chen',
-                  role: 'CEO, FashionForward',
-                  image: '/testimonial-avatar1.png',
-                  quote: 'Our conversion rate jumped 38% in the first month. Customers finally find what they\'re looking for!',
-                  rating: 5,
-                  metric: '+38% conversions'
+                  step: '1',
+                  title: 'Install Plugin',
+                  description: 'One-click installation from your store\'s app marketplace',
+                  icon: 'INSTALL',
+                  time: '1 minute'
                 },
                 {
-                  name: 'Marcus Rodriguez',
-                  role: 'Founder, TechGadgets Pro',
-                  image: '/testimonial-avatar2.png',
-                  quote: 'Setup took 3 minutes. The insights we get are invaluable. Best investment we\'ve made.',
-                  rating: 5,
-                  metric: '3 min setup'
+                  step: '2',
+                  title: 'Connect Store',
+                  description: 'Automatic sync with your product catalog and data',
+                  icon: 'CONNECT',
+                  time: '2 minutes'
                 },
                 {
-                  name: 'Emily Watson',
-                  role: 'Marketing Director, HomeDecor Plus',
-                  image: '/testimonial-avatar3.png',
-                  quote: 'No more "no results found"! Our customers are happier and our support tickets dropped 50%.',
-                  rating: 5,
-                  metric: '-50% support tickets'
-                },
-              ].map((testimonial, index) => (
-                <div key={index} className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="flex items-center mb-4">
-                    <Image src={testimonial.image} alt={testimonial.name} width={60} height={60} className="rounded-full mr-4" />
-                    <div>
-                      <h4 className="font-bold text-gray-800">{testimonial.name}</h4>
-                      <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  step: '3',
+                  title: 'Watch Magic Happen',
+                  description: 'Customers find products faster, buy more, love your store',
+                  icon: 'MAGIC',
+                  time: 'Instant results'
+                }
+              ].map((item, index) => (
+                <div key={index} className="relative">
+                  <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
+                    <div className="absolute -top-6 -left-6 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                      {item.step}
                     </div>
+                    <div className="text-4xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{item.title}</h3>
+                    <p className="text-gray-600 mb-4">{item.description}</p>
+                    <p className="text-sm text-purple-600 font-medium">{item.time}</p>
                   </div>
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  {index < 2 && (
+                    <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                      <svg className="w-8 h-8 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
-                    ))}
-                  </div>
-                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
-                  <div className="bg-white rounded-lg px-4 py-2 inline-block">
-                    <p className="text-purple-600 font-bold">{testimonial.metric}</p>
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -794,101 +636,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Final CTA - Enhanced */}
-        <section className="py-20 px-4 bg-gradient-to-br from-purple-600 via-pink-600 to-purple-600">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-5xl font-bold mb-6">
-              Ready to Transform Your Store?
-            </h2>
-            <p className="text-2xl mb-8 text-purple-100">
-              Join 2,500+ stores already delighting customers with AI-powered search
-            </p>
-            
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-8 mb-8">
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <div>
-                  <p className="text-3xl font-bold mb-2">✓</p>
-                  <p className="text-lg">14-day free trial</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold mb-2">✓</p>
-                  <p className="text-lg">No credit card required</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold mb-2">✓</p>
-                  <p className="text-lg">5-minute setup</p>
-                </div>
-              </div>
-              
-              <button onClick={() => router.push('/product')} className="group bg-white hover:bg-gray-50 text-purple-600 font-bold py-4 px-10 rounded-full text-xl transition-all duration-300 transform hover:scale-110 hover:shadow-2xl flex items-center gap-3 mx-auto">
-                <span>Start Your Free Trial</span>
-                <svg className="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-            </div>
 
-            <div className="flex justify-center gap-6">
-              <a href="https://wa.me/972542251558" target="_blank" rel="noopener noreferrer" className="bg-white/20 backdrop-blur rounded-full p-3 hover:bg-white/30 transition-all duration-300">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.546 20.2A1.01 1.01 0 0 0 3.8 21.454l3.032-.892A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-                </svg>
-              </a>
-              <a href="mailto:Sales@semantix-ai.com" className="bg-white/20 backdrop-blur rounded-full p-3 hover:bg-white/30 transition-all duration-300">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </a>
-              <a href="https://www.linkedin.com/company/semantix-io/" target="_blank" rel="noopener noreferrer" className="bg-white/20 backdrop-blur rounded-full p-3 hover:bg-white/30 transition-all duration-300">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.85-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-4 gap-8">
-              <div>
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text mb-4">Semantix AI</h3>
-                <p className="text-gray-400">AI-powered search that understands your customers</p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">Product</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-
-                  <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">Company</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">Support</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-              <p>&copy; 2024 Semantix AI. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
       </div>
 
       <style jsx>{`
@@ -922,7 +670,7 @@ const HomePage = () => {
           animation: dashboardReveal 1s ease-out forwards;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 
