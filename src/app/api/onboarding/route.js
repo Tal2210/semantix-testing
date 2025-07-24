@@ -89,19 +89,13 @@ async function validateWooCredentials(wooUrl, wooKey, wooSecret) {
 }
 
 /* ---------- little helper – write state to Mongo ------------------- */
-async function setJobState(client, dbName, state, progressData = {}) {
-  const updateData = {
-    state,
-    updatedAt: new Date(),
-    ...progressData
-  };
-
+async function setJobState(client, dbName, state) {
   await client
     .db("users")
     .collection("sync_status")
     .updateOne(
       { dbName },
-      { $set: updateData },
+      { $set: { state, updatedAt: new Date() } },
       { upsert: true }
     );
 }

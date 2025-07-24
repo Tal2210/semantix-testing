@@ -33,13 +33,13 @@ export async function GET(req) {
 
     if (typeof processedCount !== 'number') {
       processedCount = await db
-        .collection("products")
-        .countDocuments({ 
-          $or: [
-            { embedding: { $exists: true, $ne: null } }
-          ],
-          fetchedAt: { $exists: true }
-        });
+      .collection("products")
+      .countDocuments({ 
+        $or: [
+          { embedding: { $exists: true, $ne: null } }
+        ],
+        fetchedAt: { $exists: true }
+      });
     }
 
     return Response.json({ 

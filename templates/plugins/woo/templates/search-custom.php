@@ -157,8 +157,8 @@ get_header();
         renderProducts(cachedResults.semantixProducts, cachedResults.renderedHtml);
     } else {
         // Start search if no cached results
-        showLoading();
-        executeSearch();
+    showLoading();
+    executeSearch();
     }
 
     // Helper functions
@@ -268,19 +268,19 @@ get_header();
             console.log('Loading rendered WooCommerce products from localStorage');
             return cached;
         }
-        
-        const formData = new FormData();
-        formData.append('action', 'semantix_render_products');
-        formData.append('product_ids', JSON.stringify(productIds));
-        formData.append('highlight_map', JSON.stringify(highlightMap));
-        formData.append('search_term', searchTerm);
-        formData.append('nonce', WP_AJAX_NONCE);
 
-        console.log('Sending AJAX request with:', {
-            product_ids: productIds,
-            highlight_map: highlightMap,
-            search_term: searchTerm
-        });
+        const formData = new FormData();
+            formData.append('action', 'semantix_render_products');
+            formData.append('product_ids', JSON.stringify(productIds));
+            formData.append('highlight_map', JSON.stringify(highlightMap));
+            formData.append('search_term', searchTerm);
+            formData.append('nonce', WP_AJAX_NONCE);
+
+            console.log('Sending AJAX request with:', {
+                product_ids: productIds,
+                highlight_map: highlightMap,
+                search_term: searchTerm
+            });
 
         try {
             const response = await fetch(WP_AJAX_URL, {
@@ -345,7 +345,7 @@ get_header();
     async function executeSearch() {
         try {
             const semantixProducts = await fetchSemantixProducts();
-
+            
             if (semantixProducts.length === 0) {
                 showMessage('לא נמצאו מוצרים התואמים את החיפוש שלך.');
                 return;
@@ -357,7 +357,7 @@ get_header();
                 showMessage('לא נמצאו מוצרים התואמים את החיפוש שלך.');
                 return;
             }
-            
+
             renderProducts(semantixProducts, renderedHtml);
 
         } catch (error) {

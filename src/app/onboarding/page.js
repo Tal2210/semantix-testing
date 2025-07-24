@@ -39,9 +39,9 @@ function ProgressBar({ totalProducts, processedCount }) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-3">
             <div className="w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-            <p className="text-white text-sm font-medium">
-              Processing Products
-            </p>
+          <p className="text-white text-sm font-medium">
+            Processing Products
+          </p>
           </div>
           <p className="text-white text-sm font-medium">
             {processedCount} of {totalProducts} ({progress}%)
