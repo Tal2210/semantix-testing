@@ -32,8 +32,8 @@ export default function SearchDemo() {
           Below is a demo (limited) of the product in two scenarios - semantic search by description and search by image content. The most relevant results will be arranged from left to right, with the most relevant result appearing in the top right.
         </p>
 
-        <div className="bg-gray-400 bg-opacity-20 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
-          <div className="flex justify-center mb-8 bg-gray-100 p-2 shadow-inner">
+        <div className="bg-purple-200 bg-opacity-30 rounded-xl p-6 backdrop-filter backdrop-blur-lg">
+          <div className="flex justify-center mb-8 bg-purple-100 p-2 shadow-inner">
             {["products", "jewelry", "glasses"].map((tab) => (
               <button
                 key={tab}
@@ -43,7 +43,7 @@ export default function SearchDemo() {
                   ${
                     activeTab === tab
                       ? "bg-white text-purple-700 shadow-md"
-                      : "text-gray-600 hover:bg-gray-200"
+                      : "text-purple-600 hover:bg-purple-300"
                   }
                   transition-all duration-300 mx-1
                 `}
@@ -203,25 +203,27 @@ function ProductSearch() {
         </a>
       </h1>
 
-      <div className="flex">
-        <input
-          type="text"
-          placeholder='"Red wine for an Italian dinner under $100"'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-          className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
-        >
-          Search
-        </button>
+      <div className="relative max-w-2xl mx-auto">
+        <div className="flex items-center bg-white bg-opacity-80 border border-purple-300 rounded-full px-4 py-2 shadow-lg focus-within:ring-2 focus-within:ring-purple-600 transition-all">
+          <input
+            type="text"
+            placeholder='"Red wine for an Italian dinner under $100"'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            className="animated-placeholder flex-1 p-2 bg-transparent text-black placeholder-gray-500 outline-none"
+          />
+          <button
+            onClick={handleSearch}
+            className="ml-2 px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-200 font-medium whitespace-nowrap"
+          >
+            Search
+          </button>
+        </div>
       </div>
 
       {loading && <Spinner />}
@@ -281,6 +283,13 @@ function JewelrySearch() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Function to remove Hebrew characters and clean product names
+  const removeHebrewText = (text) => {
+    if (!text) return '';
+    // Remove Hebrew characters (Unicode range: \u0590-\u05FF)
+    return text.replace(/[\u0590-\u05FF]/g, '').trim();
+  };
 
   const requestBody = {
     mongodbUri:
@@ -383,25 +392,27 @@ function JewelrySearch() {
         </a>
       </h1>
 
-      <div className="flex">
-        <input
-          type="text"
-          placeholder='"Jewelry with sun or moon designs"'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-          className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
-        >
-          Search
-        </button>
+      <div className="relative max-w-2xl mx-auto">
+        <div className="flex items-center bg-white bg-opacity-80 border border-purple-300 rounded-full px-4 py-2 shadow-lg focus-within:ring-2 focus-within:ring-purple-600 transition-all">
+          <input
+            type="text"
+            placeholder='"Jewelry with sun or moon designs"'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            className="animated-placeholder flex-1 p-2 bg-transparent text-black placeholder-gray-500 outline-none"
+          />
+          <button
+            onClick={handleSearch}
+            className="ml-2 px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-200 font-medium whitespace-nowrap"
+          >
+            Search
+          </button>
+        </div>
       </div>
 
       {loading && <Spinner />}
@@ -419,19 +430,10 @@ function JewelrySearch() {
                 width={200}
                 height={100}
                 src={product.image}
-                alt={product.name}
+                alt=""
                 className="rounded-md object-cover h-full"
               />
             </div>
-
-            <p className="text-xl font-semibold mb-2 text-black">{product.name}</p>
-
-            <a
-              href={product.url}
-              className="text-purple-300 hover:text-purple-100 transition-colors duration-200"
-            >
-              More Details
-            </a>
           </div>
         ))}
       </div>
@@ -520,25 +522,27 @@ function GlassesSearch() {
 
   return (
     <div>
-      <div className="flex">
-        <input
-          type="text"
-          placeholder='"Round sunglasses with black metal frame"'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-          className="animated-placeholder w-full p-3 border border-purple-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-600 bg-white bg-opacity-20 text-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="p-3 mr-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors duration-200"
-        >
-          Search
-        </button>
+      <div className="relative max-w-2xl mx-auto">
+        <div className="flex items-center bg-white bg-opacity-80 border border-purple-300 rounded-full px-4 py-2 shadow-lg focus-within:ring-2 focus-within:ring-purple-600 transition-all">
+          <input
+            type="text"
+            placeholder='"Round sunglasses with black metal frame"'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            className="animated-placeholder flex-1 p-2 bg-transparent text-black placeholder-gray-500 outline-none"
+          />
+          <button
+            onClick={handleSearch}
+            className="ml-2 px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-200 font-medium whitespace-nowrap"
+          >
+            Search
+          </button>
+        </div>
       </div>
 
       {loading && <Spinner />}

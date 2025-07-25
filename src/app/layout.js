@@ -112,12 +112,8 @@ export default function RootLayout({ children }) {
                   <Link href="#features" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
                     Features
                   </Link>
-                  <Link href="#how-it-works" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                  <Link href="/product" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
                     How it Works
-                  </Link>
-                 
-                  <Link href="/subscription" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
-                    Pricing
                   </Link>
                 
                   <Link href="/terms" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
