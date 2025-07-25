@@ -14,8 +14,8 @@ export default function GetStartedButton() {
   // Only show Get Started button for non-logged in users
   return (
     <Link 
-      href="/onboarding" 
-      className="hidden sm:inline-flex bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium"
+      href="/login" 
+      className="hidden sm:inline-flex bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium"
     >
       Get Started
     </Link>

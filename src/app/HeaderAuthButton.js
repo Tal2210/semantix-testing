@@ -105,11 +105,13 @@ export default function HeaderAuthButton() {
           <button
             ref={buttonRef}
             onClick={() => setShow((s) => !s)}
-            className="flex items-center gap-2 py-2 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
+            className="flex items-center gap-2 py-2 px-4 rounded-full bg-black text-white border border-black hover:bg-white hover:text-black hover:shadow-lg transition-all duration-300 text-sm font-medium transform hover:translate-y-[-1px] active:translate-y-[1px]"
             aria-label="Sign in"
           >
-            <LogIn size={18} className="stroke-[2.5]" />
-            <span>Sign In</span>
+            <span>Sign in</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
           </button>
         )}
       </div>

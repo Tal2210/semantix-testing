@@ -89,7 +89,9 @@ export default function RootLayout({ children }) {
         <meta name="googlebot" content="noimageindex" />
         
         
-        <link rel="icon" href="/logo-semantix.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.png?v=3" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png?v=3" />
+        <link rel="shortcut icon" href="/favicon.png?v=3" />
         
         
         <title>{metadata.title}</title>

@@ -306,7 +306,18 @@ const HomePage = () => {
                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 transition-all duration-700 absolute inset-0 ${showImages && !isFadingOut ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 {showImages && currentImages.map((image, index) => (
                     <div key={index} className="group relative overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-gradient-to-br from-gray-50 to-white">
-                      <Image src={image} alt={`Product ${index + 1}`} className="w-full h-full object-contain p-3" width={300} height={200} />
+                      <Image 
+                        src={image} 
+                        alt={`Product ${index + 1}`} 
+                        className={`w-full h-full object-contain p-3 ${
+                          // Remove backgrounds for wine and jewelry images
+                          (image.includes('/wine') || image.includes('theydream-online.com')) 
+                            ? 'remove-bg-white' 
+                            : ''
+                        }`} 
+                        width={300} 
+                        height={200} 
+                      />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
@@ -555,9 +566,13 @@ const HomePage = () => {
         </section>
 
         {/* How It Works - Enhanced */}
-        <section id="how-it-works" className="py-20 px-4 bg-purple-50">
+        <section id="how-it-works" className="py-20 px-4 bg-purple-50 relative">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-full text-sm font-medium mb-4">
+                <span className="animate-pulse mr-2">🚀</span>
+                Coming Soon
+              </div>
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
                 Get Started in 3 Simple Steps
               </h2>

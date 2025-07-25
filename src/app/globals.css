@@ -103,3 +103,15 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+
+/* Background removal for product images */
+.remove-bg {
+  mix-blend-mode: multiply;
+  filter: contrast(1.1) brightness(1.1);
+}
+
+.remove-bg-white {
+  background: white;
+  mix-blend-mode: multiply;
+  filter: contrast(1.2) brightness(1.05) saturate(1.1);
+}
