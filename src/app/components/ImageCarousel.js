@@ -31,9 +31,15 @@ const ImageCarousel = () => {
       size: 'normal'
     },
     {
-      src: '/wineroute-logo.png',
+      src: '/wineroute_logo.png',
       url: 'https://www.wineroute.co.il',
       name: 'Wine Route',
+      size: 'normal'
+    },
+    {
+      src: '/cheers_logo.png',
+      url: 'https://www.cheers.co.il',
+      name: 'Cheers',
       size: 'normal'
     }
   ];

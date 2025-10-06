@@ -170,8 +170,10 @@ const HomePage = () => {
   }, []);
 
   const stats = [
-    { label: 'Queries Saved', value: `${queriesSaved.toLocaleString()}+`, icon: 'SAVED', isMain: true },
-    { label: 'Products Sold', value: `${productsSold.toLocaleString()}+`, icon: 'SOLD', isMain: true },
+    { label: 'Conversion Rate', value: '23%', icon: 'CONVERT', isMain: true },
+    { label: 'Products Sold', value: '50,000+', icon: 'SOLD', isMain: true },
+    { label: 'Complex Queries Saved', value: '100,000+', icon: 'SAVED', isMain: true },
+    { label: 'Revenue Generated', value: '$1M+', icon: 'REVENUE', isMain: true },
   ];
 
   const features = [
@@ -310,9 +312,13 @@ const HomePage = () => {
                         src={image} 
                         alt={`Product ${index + 1}`} 
                         className={`w-full h-full object-contain p-3 ${
-                          // Remove backgrounds for wine and jewelry images
-                          (image.includes('/wine') || image.includes('theydream-online.com')) 
+                          // Remove backgrounds for wine, jewelry, and watch images
+                          image.includes('/wine') 
                             ? 'remove-bg-white' 
+                            : image.includes('theydream-online.com')
+                            ? 'remove-bg-jewelry'
+                            : image.includes('shipi.b-cdn.net')
+                            ? 'remove-bg-white'
                             : ''
                         }`} 
                         width={300} 
@@ -345,14 +351,27 @@ const HomePage = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="py-4 px-2">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <section className="py-16 px-4 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Proven Results That Drive Revenue
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Real metrics from stores using Semantix AI to transform their search experience
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="font-bold mb-1 text-5xl md:text-6xl text-gray-900">{stat.value}</div>
-                  <div className="text-3xl font-serif italic tracking-wider mt-2 drop-shadow animate-fade-in-up bg-gradient-to-r from-purple-500 to-pink-400 bg-clip-text text-transparent">
-                    {stat.label}
+                <div key={index} className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/50 hover:border-purple-200">
+                  <div className="text-center">
+                    <div className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                      {stat.value}
+                    </div>
+                    <div className="text-lg font-medium text-gray-700 leading-tight">
+                      {stat.label}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -411,17 +430,8 @@ const HomePage = () => {
 
             <div className={`transform ${dashboardVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'} transition-all duration-1000`}>
               {/* Analytics Dashboard Header */}
-              <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl shadow-xl mb-6">
-                <div className="absolute inset-0 opacity-10">
-                  <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <defs>
-                      <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                  </svg>
-                </div>
+              <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 rounded-2xl shadow-xl mb-6">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 to-pink-400/10"></div>
                 <div className="relative p-8 flex flex-col md:flex-row justify-between items-center">
                   <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">Analytics Dashboard</h1>
