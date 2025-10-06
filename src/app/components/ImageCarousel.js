@@ -29,6 +29,12 @@ const ImageCarousel = () => {
       url: 'https://www.alcohome.co.il',
       name: 'Alcohome',
       size: 'normal'
+    },
+    {
+      src: '/wineroute-logo.png',
+      url: 'https://www.wineroute.co.il',
+      name: 'Wine Route',
+      size: 'normal'
     }
   ];
 

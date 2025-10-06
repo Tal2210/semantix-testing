@@ -15,7 +15,7 @@ export default function GetStartedButton() {
   return (
     <Link 
       href="/login" 
-      className="hidden sm:inline-flex bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium"
+      className="hidden sm:inline-flex items-center bg-gradient-to-r from-purple-600 to-purple-500 text-white px-4 py-1.5 rounded-full hover:shadow-lg transition-all duration-300 text-sm font-medium"
     >
       Get Started
     </Link>
