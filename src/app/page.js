@@ -327,7 +327,6 @@ const HomePage = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <p className="text-xs sm:text-sm font-medium">Perfect Match</p>
-                      <p className="text-xs opacity-90">Click to view</p>
                     </div>
                   </div>
                 ))}
@@ -351,7 +350,7 @@ const HomePage = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 px-4 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+        <section className="py-16 px-4 bg-gradient-to-br from-purple-50 to-pink-50">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
