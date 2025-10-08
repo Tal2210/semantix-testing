@@ -13,11 +13,13 @@ export default function GetStartedButton() {
 
   // Only show Get Started button for non-logged in users
   return (
-    <Link 
-      href="/login" 
+    <a 
+      href="https://calendly.com/semantix-sales/30min" 
+      target="_blank"
+      rel="noopener noreferrer"
       className="hidden sm:inline-flex items-center bg-gradient-to-r from-purple-600 to-purple-500 text-white px-4 py-1.5 rounded-full hover:shadow-lg transition-all duration-300 text-sm font-medium"
     >
       Get Started
-    </Link>
+    </a>
   );
 } 

@@ -259,7 +259,7 @@ const HomePage = () => {
                 <button onClick={() => router.push('/product')} className="text-gray-700 hover:text-purple-600 transition-colors bg-transparent border-none cursor-pointer">How it Works</button>
               
                 <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
-                <button onClick={() => window.open('https://calendly.com/semantix-sales', '_blank')} className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <button onClick={() => window.open('https://calendly.com/semantix-sales/30min', '_blank')} className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   Get Started
                 </button>
               </div>
@@ -337,7 +337,7 @@ const HomePage = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
-              <button onClick={() => window.open('https://calendly.com/semantix-sales', '_blank')} className="group bg-gradient-to-r from-purple-600 to-purple-500 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3 w-full sm:w-auto justify-center">
+              <button onClick={() => window.open('https://calendly.com/semantix-sales/30min', '_blank')} className="group bg-gradient-to-r from-purple-600 to-purple-500 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-3 w-full sm:w-auto justify-center">
                 <span>Get Started</span>
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
